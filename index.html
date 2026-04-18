@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ନହନ୍ତରା</title>
+    <title>ନହନ୍ତରା - ମୋ ସ୍ବାଭିମାନ</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,16 @@
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #f5f5f5;
-            padding-bottom: 70px;
+        }
+
+        /* Main App Container */
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Header */
@@ -46,12 +55,17 @@
             cursor: pointer;
         }
 
-        /* Main Content */
+        /* Content Area (scrollable) */
+        .content {
+            flex: 1;
+            padding: 12px;
+            padding-bottom: 70px;
+            overflow-y: auto;
+        }
+
+        /* Screens */
         .screen {
             display: none;
-            padding: 12px;
-            max-width: 500px;
-            margin: 0 auto;
         }
 
         .screen.active {
@@ -173,14 +187,14 @@
             color: #e74c3c;
         }
 
-        /* Gallery Grid */
-        .gallery-grid {
+        /* Posts Grid (formerly Gallery) */
+        .posts-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 4px;
         }
 
-        .gallery-img {
+        .grid-img {
             aspect-ratio: 1;
             width: 100%;
             object-fit: cover;
@@ -399,79 +413,85 @@
             border-radius: 25px;
             font-size: 13px;
             display: none;
+            z-index: 200;
         }
     </style>
 </head>
 <body>
 
+<div class="app">
+    <!-- Header -->
     <div class="header">
         <h2>🌾 ମୋ ନହନ୍ତରା</h2>
         <div class="profile-icon" onclick="goToProfile()">👤</div>
     </div>
 
-    <!-- Home Screen -->
-    <div id="homeScreen" class="screen active">
-        <div class="post-box">
-            <div class="post-input">
-                <input type="text" id="postText" placeholder="କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
+    <!-- Content Area -->
+    <div class="content">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="screen active">
+            <div class="post-box">
+                <div class="post-input">
+                    <input type="text" id="postText" placeholder="କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
+                </div>
+                <div class="post-buttons">
+                    <button class="photo-btn" onclick="document.getElementById('postFile').click()">📷 ଫଟୋ</button>
+                    <button class="post-submit" onclick="submitPost()">📤 ପୋଷ୍ଟ</button>
+                </div>
+                <input type="file" id="postFile" accept="image/*" style="display:none">
             </div>
-            <div class="post-buttons">
-                <button class="photo-btn" onclick="document.getElementById('postFile').click()">📷 ଫଟୋ</button>
-                <button class="post-submit" onclick="submitPost()">📤 ପୋଷ୍ଟ</button>
-            </div>
-            <input type="file" id="postFile" accept="image/*" style="display:none">
-        </div>
-        <div id="postsList"></div>
-    </div>
-
-    <!-- Posts Screen (Gallery) -->
-    <div id="postsScreen" class="screen">
-        <div id="allPostsGrid" class="gallery-grid"></div>
-    </div>
-
-    <!-- Chat Screen -->
-    <div id="chatScreen" class="screen">
-        <div class="chat-area">
-            <div id="chatMessages" class="chat-messages"></div>
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ...">
-                <button onclick="sendChatMsg()">➤</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SOS Screen -->
-    <div id="sosScreen" class="screen">
-        <div class="sos-btn" onclick="sendSOS()">🆘 SOS - ଜରୁରୀ ସହାୟତା</div>
-        
-        <div class="help-card">
-            <textarea id="corruptionText" placeholder="⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ... (କେଉଁଠାରେ? କିଏ?)"></textarea>
-            <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ କର</button>
+            <div id="postsList"></div>
         </div>
 
-        <div class="help-card">
-            <textarea id="helpText" placeholder="🛠️ ସମସ୍ୟା... (ବିଜୁଳି, ପାଣି, ରାସ୍ତା)"></textarea>
-            <button onclick="requestHelp()">🙏 ସହାୟତା ଚାହିଁ</button>
+        <!-- Posts Screen (formerly Gallery) -->
+        <div id="postsScreen" class="screen">
+            <div id="allPostsGrid" class="posts-grid"></div>
         </div>
 
-        <div id="requestsList"></div>
-    </div>
-
-    <!-- Profile Screen -->
-    <div id="profileScreen" class="screen">
-        <div class="profile-card">
-            <div class="profile-avatar" onclick="document.getElementById('avatarFile').click()">
-                <span id="avatarEmoji">👤</span>
+        <!-- Chat Screen -->
+        <div id="chatScreen" class="screen">
+            <div class="chat-area">
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ...">
+                    <button onclick="sendChatMsg()">➤</button>
+                </div>
             </div>
-            <input type="file" id="avatarFile" accept="image/*" style="display:none">
-            <input type="text" id="userName" placeholder="ଆପଣଙ୍କର ନାମ">
-            <input type="text" id="userVillage" placeholder="ମୋହଲ୍ଲା / ଗାଁ">
-            <select id="userRole">
-                <option value="user">🌾 ସାଧାରଣ ସଦସ୍ୟ</option>
-                <option value="admin">👑 ପ୍ରଶାସକ</option>
-            </select>
-            <button onclick="saveUserProfile()">💾 ସେଭ୍ କର</button>
-            <button class="logout" onclick="logout()">🚪 ଲଗ୍ ଆଉଟ୍</button>
+        </div>
+
+        <!-- SOS Screen -->
+        <div id="sosScreen" class="screen">
+            <div class="sos-btn" onclick="sendSOS()">🆘 SOS - ଜରୁରୀ ସହାୟତା</div>
+            
+            <div class="help-card">
+                <textarea id="corruptionText" placeholder="⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ... (କେଉଁଠାରେ? କିଏ?)"></textarea>
+                <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ କର</button>
+            </div>
+
+            <div class="help-card">
+                <textarea id="helpText" placeholder="🛠️ ସମସ୍ୟା... (ବିଜୁଳି, ପାଣି, ରାସ୍ତା)"></textarea>
+                <button onclick="requestHelp()">🙏 ସହାୟତା ଚାହିଁ</button>
+            </div>
+
+            <div id="requestsList"></div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profileScreen" class="screen">
+            <div class="profile-card">
+                <div class="profile-avatar" onclick="document.getElementById('avatarFile').click()">
+                    <span id="avatarEmoji">👤</span>
+                </div>
+                <input type="file" id="avatarFile" accept="image/*" style="display:none">
+                <input type="text" id="userName" placeholder="ଆପଣଙ୍କର ନାମ">
+                <input type="text" id="userVillage" placeholder="ମୋହଲ୍ଲା / ଗାଁ">
+                <select id="userRole">
+                    <option value="user">🌾 ସାଧାରଣ ସଦସ୍ୟ</option>
+                    <option value="admin">👑 ପ୍ରଶାସକ</option>
+                </select>
+                <button onclick="saveUserProfile()">💾 ସେଭ୍ କର</button>
+                <button class="logout" onclick="logout()">🚪 ଲଗ୍ ଆଉଟ୍</button>
+            </div>
         </div>
     </div>
 
@@ -498,300 +518,301 @@
             <div class="nav-label">ମୋର</div>
         </div>
     </div>
+</div>
 
-    <div id="toast" class="toast"></div>
+<div id="toast" class="toast"></div>
 
-    <script>
-        // ============ DATA ============
-        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-            id: 'user_' + Date.now(),
-            name: '',
-            village: '',
-            role: 'user',
-            avatar: '👤',
-            likedPosts: []
+<script>
+    // ============ DATA ============
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+        id: 'user_' + Date.now(),
+        name: '',
+        village: '',
+        role: 'user',
+        avatar: '👤',
+        likedPosts: []
+    };
+    
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
+    let helpReqs = JSON.parse(localStorage.getItem('helpReqs')) || [];
+
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // ============ NAVIGATION ============
+    function changeScreen(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screen + 'Screen').classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        event.target.closest('.nav-item').classList.add('active');
+        
+        if (screen === 'home') loadPosts();
+        if (screen === 'posts') loadGallery();
+        if (screen === 'chat') loadChat();
+        if (screen === 'sos') loadRequests();
+        if (screen === 'profile') loadProfile();
+    }
+
+    function goToProfile() {
+        changeScreen('profile');
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelectorAll('.nav-item')[4].classList.add('active');
+    }
+
+    // ============ POSTS ============
+    function submitPost() {
+        let text = document.getElementById('postText').value;
+        let file = document.getElementById('postFile').files[0];
+        
+        if (!text && !file) {
+            showToast('କିଛି ଲେଖ କିମ୍ବା ଫଟୋ ଦିଅ');
+            return;
+        }
+        
+        let post = {
+            id: Date.now(),
+            text: text,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            time: new Date().toLocaleString(),
+            likes: [],
+            image: null
         };
         
-        let posts = JSON.parse(localStorage.getItem('posts')) || [];
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-        let helpReqs = JSON.parse(localStorage.getItem('helpReqs')) || [];
-
-        // Save current user
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-        // ============ NAVIGATION ============
-        function changeScreen(screen) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screen + 'Screen').classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
-            
-            if (screen === 'home') loadPosts();
-            if (screen === 'posts') loadGallery();
-            if (screen === 'chat') loadChat();
-            if (screen === 'sos') loadRequests();
-            if (screen === 'profile') loadProfile();
-        }
-
-        function goToProfile() {
-            changeScreen('profile');
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.querySelectorAll('.nav-item')[4].classList.add('active');
-        }
-
-        // ============ POSTS ============
-        function submitPost() {
-            let text = document.getElementById('postText').value;
-            let file = document.getElementById('postFile').files[0];
-            
-            if (!text && !file) {
-                showToast('କିଛି ଲେଖ କିମ୍ବା ଫଟୋ ଦିଅ');
-                return;
-            }
-            
-            let post = {
-                id: Date.now(),
-                text: text,
-                userName: currentUser.name || 'ଗ୍ରାମୀଣ',
-                userId: currentUser.id,
-                time: new Date().toLocaleString(),
-                likes: [],
-                image: null
-            };
-            
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    post.image = e.target.result;
-                    posts.unshift(post);
-                    savePosts();
-                };
-                reader.readAsDataURL(file);
-            } else {
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                post.image = e.target.result;
                 posts.unshift(post);
                 savePosts();
-            }
-            
-            document.getElementById('postText').value = '';
-            document.getElementById('postFile').value = '';
-            showToast('✅ ପୋଷ୍ଟ ହେଲା');
-        }
-        
-        function savePosts() {
-            localStorage.setItem('posts', JSON.stringify(posts));
-            loadPosts();
-            loadGallery();
-        }
-        
-        function loadPosts() {
-            let container = document.getElementById('postsList');
-            if (posts.length === 0) {
-                container.innerHTML = '<div class="empty">🌾 କୋଉଠି ପୋଷ୍ଟ ନାହିଁ<br>ପ୍ରଥମ ପୋଷ୍ଟ କର!</div>';
-                return;
-            }
-            
-            container.innerHTML = posts.map(post => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="post-avatar">${post.userName.charAt(0).toUpperCase()}</div>
-                        <div>
-                            <div class="post-name">${post.userName}</div>
-                            <div class="post-time">${post.time}</div>
-                        </div>
-                    </div>
-                    <div class="post-text">${post.text || ''}</div>
-                    ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
-                    <div class="post-actions">
-                        <span onclick="likePost(${post.id})" class="${post.likes.includes(currentUser.id) ? 'liked' : ''}">❤️ ${post.likes.length}</span>
-                        <span>💬 0</span>
-                        ${(currentUser.role === 'admin' || post.userId === currentUser.id) ? `<span onclick="deletePost(${post.id})">🗑️</span>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function likePost(id) {
-            let post = posts.find(p => p.id === id);
-            if (post.likes.includes(currentUser.id)) {
-                post.likes = post.likes.filter(uid => uid !== currentUser.id);
-            } else {
-                post.likes.push(currentUser.id);
-            }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            posts.unshift(post);
             savePosts();
         }
         
-        function deletePost(id) {
-            posts = posts.filter(p => p.id !== id);
-            savePosts();
-            showToast('🗑️ ଲିଭାଗଲା');
-        }
-        
-        function loadGallery() {
-            let container = document.getElementById('allPostsGrid');
-            let images = posts.filter(p => p.image);
-            if (images.length === 0) {
-                container.innerHTML = '<div class="empty">📸 କୋଉଠି ଫଟୋ ନାହିଁ</div>';
-                return;
-            }
-            container.innerHTML = images.map(p => `<img src="${p.image}" class="gallery-img" onclick="window.open('${p.image}')">`).join('');
-        }
-        
-        // ============ CHAT ============
-        function sendChatMsg() {
-            let input = document.getElementById('chatInput');
-            let text = input.value.trim();
-            if (!text) return;
-            
-            messages.push({
-                id: Date.now(),
-                user: currentUser.name || 'ଗ୍ରାମୀଣ',
-                userId: currentUser.id,
-                text: text,
-                time: new Date().toLocaleTimeString()
-            });
-            localStorage.setItem('messages', JSON.stringify(messages));
-            input.value = '';
-            loadChat();
-        }
-        
-        function loadChat() {
-            let container = document.getElementById('chatMessages');
-            if (messages.length === 0) {
-                container.innerHTML = '<div class="empty">💬 ଚାଟ୍ ଆରମ୍ଭ କର</div>';
-                return;
-            }
-            container.innerHTML = messages.map(m => `
-                <div class="msg ${m.userId === currentUser.id ? 'msg-right' : ''}">
-                    <div class="msg-user">${m.user}</div>
-                    <div class="msg-text">${m.text}</div>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        }
-        
-        // ============ SOS & HELP ============
-        function sendSOS() {
-            helpReqs.unshift({
-                id: Date.now(),
-                type: '🚨 SOS',
-                user: currentUser.name || 'ଗ୍ରାମୀଣ',
-                userId: currentUser.id,
-                time: new Date().toLocaleString(),
-                status: 'pending'
-            });
-            localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
-            showToast('🆘 SOS ପଠାଗଲା!');
-            loadRequests();
-        }
-        
-        function reportCorruption() {
-            let desc = document.getElementById('corruptionText').value;
-            if (!desc) { showToast('ବିବରଣୀ ଲେଖ'); return; }
-            helpReqs.unshift({
-                id: Date.now(),
-                type: '⚠️ ଦୁର୍ନୀତି',
-                description: desc,
-                user: currentUser.name || 'ଗ୍ରାମୀଣ',
-                userId: currentUser.id,
-                time: new Date().toLocaleString(),
-                status: 'pending'
-            });
-            localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
-            document.getElementById('corruptionText').value = '';
-            showToast('📢 ରିପୋର୍ଟ ହେଲା');
-            loadRequests();
-        }
-        
-        function requestHelp() {
-            let desc = document.getElementById('helpText').value;
-            if (!desc) { showToast('ସମସ୍ୟା ଲେଖ'); return; }
-            helpReqs.unshift({
-                id: Date.now(),
-                type: '🛠️ ସମସ୍ୟା',
-                description: desc,
-                user: currentUser.name || 'ଗ୍ରାମୀଣ',
-                userId: currentUser.id,
-                time: new Date().toLocaleString(),
-                status: 'pending'
-            });
-            localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
-            document.getElementById('helpText').value = '';
-            showToast('🙏 ସହାୟତା ମାଗିଲେ');
-            loadRequests();
-        }
-        
-        function loadRequests() {
-            let container = document.getElementById('requestsList');
-            let myReqs = helpReqs.filter(r => r.userId === currentUser.id || currentUser.role === 'admin');
-            if (myReqs.length === 0) {
-                container.innerHTML = '<div class="empty">📋 କୌଣସି ରିପୋର୍ଟ ନାହିଁ</div>';
-                return;
-            }
-            container.innerHTML = myReqs.map(r => `
-                <div class="help-card">
-                    <div><strong>${r.type}</strong> 🕐 ${r.time}</div>
-                    <div>👤 ${r.user}</div>
-                    ${r.description ? `<div>📝 ${r.description}</div>` : ''}
-                    <div style="color:${r.status === 'pending' ? 'orange' : 'green'}">${r.status === 'pending' ? '⏳ ଅପେକ୍ଷା' : '✅ ସମାଧାନ'}</div>
-                    ${currentUser.role === 'admin' && r.status === 'pending' ? `<button onclick="resolveReq(${r.id})" style="margin-top:8px;">✅ ସମାଧାନ</button>` : ''}
-                </div>
-            `).join('');
-        }
-        
-        function resolveReq(id) {
-            helpReqs = helpReqs.map(r => r.id === id ? {...r, status: 'resolved'} : r);
-            localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
-            loadRequests();
-            showToast('✅ ସମାଧାନ ହେଲା');
-        }
-        
-        // ============ PROFILE ============
-        function loadProfile() {
-            document.getElementById('userName').value = currentUser.name || '';
-            document.getElementById('userVillage').value = currentUser.village || '';
-            document.getElementById('userRole').value = currentUser.role;
-            document.getElementById('avatarEmoji').innerHTML = currentUser.avatar || '👤';
-        }
-        
-        function saveUserProfile() {
-            currentUser.name = document.getElementById('userName').value || 'ଗ୍ରାମୀଣ';
-            currentUser.village = document.getElementById('userVillage').value;
-            currentUser.role = document.getElementById('userRole').value;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showToast('💾 ସେଭ୍ ହେଲା');
-            loadPosts();
-        }
-        
-        document.getElementById('avatarFile').onchange = function(e) {
-            let file = e.target.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function(ev) {
-                    currentUser.avatar = `<img src="${ev.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    loadProfile();
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        
-        function logout() {
-            localStorage.removeItem('currentUser');
-            location.reload();
-        }
-        
-        // ============ UTILS ============
-        function showToast(msg) {
-            let toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2000);
-        }
-        
-        // Load initial data
+        document.getElementById('postText').value = '';
+        document.getElementById('postFile').value = '';
+        showToast('✅ ପୋଷ୍ଟ ହେଲା');
+    }
+    
+    function savePosts() {
+        localStorage.setItem('posts', JSON.stringify(posts));
         loadPosts();
+        loadGallery();
+    }
+    
+    function loadPosts() {
+        let container = document.getElementById('postsList');
+        if (posts.length === 0) {
+            container.innerHTML = '<div class="empty">🌾 କୋଉଠି ପୋଷ୍ଟ ନାହିଁ<br>ପ୍ରଥମ ପୋଷ୍ଟ କର!</div>';
+            return;
+        }
+        
+        container.innerHTML = posts.map(post => `
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">${post.userName.charAt(0).toUpperCase()}</div>
+                    <div>
+                        <div class="post-name">${post.userName}</div>
+                        <div class="post-time">${post.time}</div>
+                    </div>
+                </div>
+                <div class="post-text">${post.text || ''}</div>
+                ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
+                <div class="post-actions">
+                    <span onclick="likePost(${post.id})" class="${post.likes.includes(currentUser.id) ? 'liked' : ''}">❤️ ${post.likes.length}</span>
+                    <span>💬 0</span>
+                    ${(currentUser.role === 'admin' || post.userId === currentUser.id) ? `<span onclick="deletePost(${post.id})">🗑️</span>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function likePost(id) {
+        let post = posts.find(p => p.id === id);
+        if (post.likes.includes(currentUser.id)) {
+            post.likes = post.likes.filter(uid => uid !== currentUser.id);
+        } else {
+            post.likes.push(currentUser.id);
+        }
+        savePosts();
+    }
+    
+    function deletePost(id) {
+        posts = posts.filter(p => p.id !== id);
+        savePosts();
+        showToast('🗑️ ଲିଭାଗଲା');
+    }
+    
+    function loadGallery() {
+        let container = document.getElementById('allPostsGrid');
+        let images = posts.filter(p => p.image);
+        if (images.length === 0) {
+            container.innerHTML = '<div class="empty">📸 କୋଉଠି ଫଟୋ ନାହିଁ</div>';
+            return;
+        }
+        container.innerHTML = images.map(p => `<img src="${p.image}" class="grid-img" onclick="window.open('${p.image}')">`).join('');
+    }
+    
+    // ============ CHAT ============
+    function sendChatMsg() {
+        let input = document.getElementById('chatInput');
+        let text = input.value.trim();
+        if (!text) return;
+        
+        messages.push({
+            id: Date.now(),
+            user: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            text: text,
+            time: new Date().toLocaleTimeString()
+        });
+        localStorage.setItem('messages', JSON.stringify(messages));
+        input.value = '';
         loadChat();
-    </script>
+    }
+    
+    function loadChat() {
+        let container = document.getElementById('chatMessages');
+        if (messages.length === 0) {
+            container.innerHTML = '<div class="empty">💬 ଚାଟ୍ ଆରମ୍ଭ କର</div>';
+            return;
+        }
+        container.innerHTML = messages.map(m => `
+            <div class="msg ${m.userId === currentUser.id ? 'msg-right' : ''}">
+                <div class="msg-user">${m.user}</div>
+                <div class="msg-text">${m.text}</div>
+            </div>
+        `).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+    
+    // ============ SOS & HELP ============
+    function sendSOS() {
+        helpReqs.unshift({
+            id: Date.now(),
+            type: '🚨 SOS',
+            user: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            time: new Date().toLocaleString(),
+            status: 'pending'
+        });
+        localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
+        showToast('🆘 SOS ପଠାଗଲା!');
+        loadRequests();
+    }
+    
+    function reportCorruption() {
+        let desc = document.getElementById('corruptionText').value;
+        if (!desc) { showToast('ବିବରଣୀ ଲେଖ'); return; }
+        helpReqs.unshift({
+            id: Date.now(),
+            type: '⚠️ ଦୁର୍ନୀତି',
+            description: desc,
+            user: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            time: new Date().toLocaleString(),
+            status: 'pending'
+        });
+        localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
+        document.getElementById('corruptionText').value = '';
+        showToast('📢 ରିପୋର୍ଟ ହେଲା');
+        loadRequests();
+    }
+    
+    function requestHelp() {
+        let desc = document.getElementById('helpText').value;
+        if (!desc) { showToast('ସମସ୍ୟା ଲେଖ'); return; }
+        helpReqs.unshift({
+            id: Date.now(),
+            type: '🛠️ ସମସ୍ୟା',
+            description: desc,
+            user: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            time: new Date().toLocaleString(),
+            status: 'pending'
+        });
+        localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
+        document.getElementById('helpText').value = '';
+        showToast('🙏 ସହାୟତା ମାଗିଲେ');
+        loadRequests();
+    }
+    
+    function loadRequests() {
+        let container = document.getElementById('requestsList');
+        let myReqs = helpReqs.filter(r => r.userId === currentUser.id || currentUser.role === 'admin');
+        if (myReqs.length === 0) {
+            container.innerHTML = '<div class="empty">📋 କୌଣସି ରିପୋର୍ଟ ନାହିଁ</div>';
+            return;
+        }
+        container.innerHTML = myReqs.map(r => `
+            <div class="help-card">
+                <div><strong>${r.type}</strong> 🕐 ${r.time}</div>
+                <div>👤 ${r.user}</div>
+                ${r.description ? `<div>📝 ${r.description}</div>` : ''}
+                <div style="color:${r.status === 'pending' ? 'orange' : 'green'}">${r.status === 'pending' ? '⏳ ଅପେକ୍ଷା' : '✅ ସମାଧାନ'}</div>
+                ${currentUser.role === 'admin' && r.status === 'pending' ? `<button onclick="resolveReq(${r.id})" style="margin-top:8px;">✅ ସମାଧାନ</button>` : ''}
+            </div>
+        `).join('');
+    }
+    
+    function resolveReq(id) {
+        helpReqs = helpReqs.map(r => r.id === id ? {...r, status: 'resolved'} : r);
+        localStorage.setItem('helpReqs', JSON.stringify(helpReqs));
+        loadRequests();
+        showToast('✅ ସମାଧାନ ହେଲା');
+    }
+    
+    // ============ PROFILE ============
+    function loadProfile() {
+        document.getElementById('userName').value = currentUser.name || '';
+        document.getElementById('userVillage').value = currentUser.village || '';
+        document.getElementById('userRole').value = currentUser.role;
+        document.getElementById('avatarEmoji').innerHTML = currentUser.avatar || '👤';
+    }
+    
+    function saveUserProfile() {
+        currentUser.name = document.getElementById('userName').value || 'ଗ୍ରାମୀଣ';
+        currentUser.village = document.getElementById('userVillage').value;
+        currentUser.role = document.getElementById('userRole').value;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        showToast('💾 ସେଭ୍ ହେଲା');
+        loadPosts();
+    }
+    
+    document.getElementById('avatarFile').onchange = function(e) {
+        let file = e.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                currentUser.avatar = `<img src="${ev.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                loadProfile();
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    function logout() {
+        localStorage.removeItem('currentUser');
+        location.reload();
+    }
+    
+    // ============ UTILS ============
+    function showToast(msg) {
+        let toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+    }
+    
+    // Load initial data
+    loadPosts();
+    loadChat();
+</script>
+
 </body>
 </html>
