@@ -1,7 +1,7 @@
 {
   "name": "ମୋ_ନହନ୍ତରା",
   "short_name": "MoNahantara",
-  "start_url": "/",
+  "start_url": "/index.html",
   "display": "standalone",
   "icons": [
     {
@@ -71,5 +71,11 @@
     "photo",
     "social",
     "sports"
+  ],
+  "dir": "auto",
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "window-controls-overlay"
   ]
 }
