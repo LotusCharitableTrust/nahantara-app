@@ -2,185 +2,1170 @@
 <html lang="or">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ନହନ୍ତରା - ମୋ ସ୍ବାଭିମାନ</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ନହନ୍ତରା - Professional Community App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #1a8e3c;
+            --primary-dark: #0d5c26;
+            --primary-light: #4caf50;
+            --danger: #dc3545;
+            --danger-dark: #b02a37;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --dark: #212529;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Oriya', sans-serif;
+            background: #000;
+            line-height: 1.5;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo span {
+            font-size: 24px;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: var(--primary);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 65px;
+            background: #f8f9fa;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Post Creation Card */
+        .create-post-card {
+            background: var(--white);
+            margin: 12px;
+            padding: 14px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .create-post-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 30px;
+            font-size: 14px;
+            font-family: inherit;
+            margin-bottom: 12px;
+            transition: border 0.2s;
+        }
+
+        .create-post-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .create-post-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .photo-btn, .post-submit-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .photo-btn {
+            background: var(--gray);
+            color: var(--white);
+        }
+
+        .photo-btn:hover {
+            background: #5a6268;
+        }
+
+        .post-submit-btn {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .post-submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Post Card */
+        .post-card {
+            background: var(--white);
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+        }
+
+        .post-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .post-user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .post-time {
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        .post-menu {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .post-menu:hover {
+            background: var(--gray-light);
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            background: var(--gray-light);
+            cursor: pointer;
+        }
+
+        .post-text {
+            padding: 10px 12px;
+            font-size: 14px;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 24px;
+            padding: 8px 12px;
+            border-top: 1px solid var(--gray-light);
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .post-stats span {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .post-stats span:hover {
+            color: var(--dark);
+        }
+
+        .liked {
+            color: var(--danger) !important;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-top: 1px solid var(--gray-light);
+            display: none;
+        }
+
+        .comments-section.show {
+            display: block;
+        }
+
+        .comment {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .comment-user {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .comment-text {
+            color: var(--dark);
+        }
+
+        .comment-time {
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .add-comment input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 25px;
+            font-size: 13px;
+        }
+
+        .add-comment button {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        /* Posts Grid (Gallery) */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--white);
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            width: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .grid-item:hover {
+            opacity: 0.9;
+        }
+
+        /* Chat */
+        .chat-container {
+            background: var(--white);
+            height: calc(100vh - 130px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+        }
+
+        .message-sent {
+            text-align: right;
+        }
+
+        .message-sent .message-bubble {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .message-received .message-bubble {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .message-bubble {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 20px;
+            max-width: 80%;
+            font-size: 14px;
+        }
+
+        .message-user {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            padding-left: 8px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: var(--gray);
+            margin-top: 4px;
+            padding-left: 8px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            border-top: 1px solid var(--gray-light);
+            background: var(--white);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 30px;
+            font-size: 14px;
+        }
+
+        .chat-input-area button {
+            width: 48px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* SOS */
+        .sos-emergency {
+            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+            color: var(--white);
+            text-align: center;
+            padding: 24px;
+            margin: 16px;
+            border-radius: 60px;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            animation: pulse 1.2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 12px rgba(220,53,69,0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 6px 18px rgba(220,53,69,0.5); }
+            100% { transform: scale(1); box-shadow: 0 4px 12px rgba(220,53,69,0.3); }
+        }
+
+        .help-card {
+            background: var(--white);
+            margin: 12px 16px;
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .help-card textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 12px;
+        }
+
+        .help-card button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .request-item {
+            background: var(--white);
+            margin: 12px 16px;
+            padding: 14px;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Profile */
+        .profile-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .profile-avatar-large {
+            width: 88px;
+            height: 88px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .profile-avatar-large:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-name-large {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        .profile-edit-card {
+            background: var(--white);
+            margin: 16px;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-edit-card input,
+        .profile-edit-card select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 30px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .profile-edit-card button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .save-edit-btn {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: var(--white);
+            margin-top: 12px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 12px;
+            border-top: 1px solid var(--gray-light);
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            background: #e8f5e9;
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            z-index: 200;
+            transition: transform 0.25s;
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
 <body>
 
 <div class="app">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo"><span>🌾</span> ମୋ ନହନ୍ତରା</div>
+        <div>❤️</div>
+    </div>
 
-    <!-- HEADER -->
-    <header class="header">
-        <div class="logo">
-            <span>🌾</span> ମୋ ନହନ୍ତରା
-        </div>
-        <div class="header-action">❤️</div>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <main class="content">
-
-        <!-- ================= HOME ================= -->
-        <section id="homeScreen" class="screen active">
-
-            <!-- Welcome -->
-            <div class="welcome-box">
-                <h3>👋 ନମସ୍କାର, <span id="welcomeName">ସଦସ୍ୟ</span></h3>
-                <p>ଆଜି ଗାଁରେ କଣ ନୂଆ?</p>
-            </div>
-
-            <!-- Post Box -->
-            <div class="post-box">
-                <input type="text" id="postText" class="post-input" placeholder="କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
-                
-                <div class="post-buttons">
+    <div class="content">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="screen active">
+            <div class="create-post-card">
+                <input type="text" id="postText" class="create-post-input" placeholder="ଆଜି କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
+                <div class="create-post-actions">
                     <button class="photo-btn" onclick="document.getElementById('postFile').click()">📷 ଫଟୋ</button>
-                    <button class="submit-btn" onclick="submitPost()">📤 ପୋଷ୍ଟ</button>
+                    <button class="post-submit-btn" onclick="createPost()">📤 ପୋଷ୍ଟ</button>
                 </div>
-
-                <input type="file" id="postFile" accept="image/*" hidden>
+                <input type="file" id="postFile" accept="image/*" style="display:none">
             </div>
+            <div id="postsFeed"></div>
+        </div>
 
-            <!-- Feed -->
-            <div id="postsFeed" class="feed"></div>
+        <!-- Posts Grid Screen -->
+        <div id="postsScreen" class="screen">
+            <div id="postsGridView" class="posts-grid"></div>
+        </div>
 
-        </section>
-
-
-        <!-- ================= POSTS GRID ================= -->
-        <section id="postsScreen" class="screen">
-            <div class="section-title">📸 ସମସ୍ତ ଫଟୋ</div>
-            <div id="allPostsGrid" class="posts-grid"></div>
-        </section>
-
-
-        <!-- ================= CHAT ================= -->
-        <section id="chatScreen" class="screen">
-            <div class="chat-area">
-
-                <div class="chat-header">
-                    💬 ଗାଁ ଚାଟ୍
-                </div>
-
+        <!-- Chat Screen -->
+        <div id="chatScreen" class="screen">
+            <div class="chat-container">
                 <div id="chatMessages" class="chat-messages"></div>
-
-                <div class="chat-input">
+                <div class="chat-input-area">
                     <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ ଲେଖନ୍ତୁ...">
-                    <button onclick="sendMessage()">➤</button>
+                    <button onclick="sendChatMessage()">➤</button>
                 </div>
-
             </div>
-        </section>
+        </div>
 
-
-        <!-- ================= SOS ================= -->
-        <section id="sosScreen" class="screen">
-
-            <div class="section-title">🚨 ଜରୁରୀ ସହାୟତା</div>
-
-            <div class="sos-btn" onclick="sendSOS()">
-                🆘 SOS - ତୁରନ୍ତ ସହାୟତା
+        <!-- SOS Screen -->
+        <div id="sosScreen" class="screen">
+            <div class="sos-emergency" onclick="triggerSOS()">
+                🆘 SOS - ଜରୁରୀ ସହାୟତା
             </div>
-
+            
             <div class="help-card">
-                <h4>⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ</h4>
-                <textarea id="corruptionText" rows="2" placeholder="ବିବରଣୀ ଲେଖନ୍ତୁ..."></textarea>
+                <textarea id="corruptionDesc" rows="3" placeholder="⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ...&#10;କେଉଁଠାରେ? କିଏ? କେତେ ଟଙ୍କା?"></textarea>
                 <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ କରନ୍ତୁ</button>
             </div>
 
             <div class="help-card">
-                <h4>🛠️ ସମସ୍ୟା / ଅନୁରୋଧ</h4>
-                <textarea id="helpText" rows="2" placeholder="ଆପଣଙ୍କ ସମସ୍ୟା..."></textarea>
-                <button onclick="requestHelp()">🙏 ସହାୟତା ଚାହିଁ</button>
+                <textarea id="helpDesc" rows="3" placeholder="🛠️ ସମସ୍ୟା...&#10;ବିଜୁଳି, ପାଣି, ରାସ୍ତା, ବନ୍ୟା, ଚୋରି"></textarea>
+                <button onclick="requestAssistance()">🙏 ସହାୟତା ଚାହିଁ</button>
             </div>
 
-            <div id="requestsList"></div>
+            <div id="helpRequestsList"></div>
+        </div>
 
-        </section>
-
-
-        <!-- ================= PROFILE ================= -->
-        <section id="profileScreen" class="screen">
-
-            <div class="profile-header">
-
-                <div class="profile-avatar" onclick="document.getElementById('avatarFile').click()">
-                    <span id="avatarDisplay">👤</span>
+        <!-- Profile Screen -->
+        <div id="profileScreen" class="screen">
+            <div class="profile-banner">
+                <div class="profile-avatar-large" onclick="document.getElementById('profileAvatarInput').click()">
+                    <span id="profileAvatarDisplay">👤</span>
                 </div>
-
-                <div id="profileNameDisplay" class="profile-name">ଗ୍ରାମୀଣ</div>
-
+                <div class="profile-name-large" id="profileNameDisplay">ଗ୍ରାମୀଣ</div>
                 <div class="profile-stats">
-                    <div>
-                        <div id="postCount">0</div>
-                        <small>ପୋଷ୍ଟ</small>
+                    <div class="stat-item">
+                        <div class="stat-number" id="userPostCount">0</div>
+                        <div class="stat-label">ପୋଷ୍ଟ</div>
                     </div>
-                    <div>
-                        <div id="likeCount">0</div>
-                        <small>ଲାଇକ୍</small>
+                    <div class="stat-item">
+                        <div class="stat-number" id="userLikeCount">0</div>
+                        <div class="stat-label">ଲାଇକ୍</div>
                     </div>
                 </div>
-
-                <input type="file" id="avatarFile" accept="image/*" hidden>
-
+                <input type="file" id="profileAvatarInput" accept="image/*" style="display:none">
             </div>
-
-            <div class="profile-card">
-                <input type="text" id="userName" placeholder="ନାମ">
-                <input type="text" id="userVillage" placeholder="ଗାଁ / ମୋହଲ୍ଲା">
-
-                <select id="userRole">
+            <div class="profile-edit-card">
+                <input type="text" id="editName" placeholder="ଆପଣଙ୍କର ନାମ">
+                <input type="text" id="editVillage" placeholder="ମୋହଲ୍ଲା / ଗାଁ">
+                <select id="editRole">
                     <option value="user">🌾 ସାଧାରଣ ସଦସ୍ୟ</option>
-                    <option value="admin">👑 ପ୍ରଶାସକ</option>
+                    <option value="admin">👑 ପ୍ରଶାସକ (ଆଡମିନ୍)</option>
                 </select>
-
-                <button class="edit-btn" onclick="saveProfile()">💾 ସେଭ୍ କରନ୍ତୁ</button>
+                <button class="save-edit-btn" onclick="saveProfileChanges()">💾 ପରିବର୍ତନ ସେଭ୍ କରନ୍ତୁ</button>
                 <button class="logout-btn" onclick="logout()">🚪 ଲଗ୍ଆଉଟ୍</button>
             </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- ================= BOTTOM NAV ================= -->
-    <nav class="bottom-nav">
-
-        <div class="nav-item active" onclick="changeScreen('home')">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">ହୋମ୍</div>
         </div>
+    </div>
 
-        <div class="nav-item" onclick="changeScreen('posts')">
-            <div class="nav-icon">📸</div>
-            <div class="nav-label">ପୋଷ୍ଟ</div>
-        </div>
-
-        <div class="nav-item" onclick="changeScreen('chat')">
-            <div class="nav-icon">💬</div>
-            <div class="nav-label">ଚାଟ୍</div>
-        </div>
-
-        <div class="nav-item" onclick="changeScreen('sos')">
-            <div class="nav-icon">🆘</div>
-            <div class="nav-label">SOS</div>
-        </div>
-
-        <div class="nav-item" onclick="changeScreen('profile')">
-            <div class="nav-icon">👤</div>
-            <div class="nav-label">ମୋର</div>
-        </div>
-
-    </nav>
-
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-screen="home"><div class="nav-icon">🏠</div><div class="nav-label">ହୋମ୍</div></div>
+        <div class="nav-item" data-screen="posts"><div class="nav-icon">📸</div><div class="nav-label">ପୋଷ୍ଟ</div></div>
+        <div class="nav-item" data-screen="chat"><div class="nav-icon">💬</div><div class="nav-label">ଚାଟ୍</div></div>
+        <div class="nav-item" data-screen="sos"><div class="nav-icon">🆘</div><div class="nav-label">SOS</div></div>
+        <div class="nav-item" data-screen="profile"><div class="nav-icon">👤</div><div class="nav-label">ମୋର</div></div>
+    </div>
 </div>
 
-<!-- Toast -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js"></script>
+<script>
+    // ==================== DATA MODELS ====================
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+        id: 'user_' + Date.now(),
+        name: '',
+        village: '',
+        role: 'user',
+        avatar: '👤',
+        likedPosts: [],
+        createdAt: new Date().toISOString()
+    };
+    
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    let messages = JSON.parse(localStorage.getItem('messages')) || [];
+    let helpRequests = JSON.parse(localStorage.getItem('helpRequests')) || [];
+
+    // Save current user
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // ==================== NAVIGATION ====================
+    function navigateTo(screen) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screen + 'Screen').classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelector(`.nav-item[data-screen="${screen}"]`).classList.add('active');
+        
+        // Load data based on screen
+        if (screen === 'home') renderPosts();
+        if (screen === 'posts') renderPostsGrid();
+        if (screen === 'chat') renderChat();
+        if (screen === 'sos') renderHelpRequests();
+        if (screen === 'profile') renderProfile();
+    }
+
+    // Attach navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => navigateTo(item.dataset.screen));
+    });
+
+    // ==================== POST FUNCTIONS ====================
+    function createPost() {
+        const text = document.getElementById('postText').value.trim();
+        const file = document.getElementById('postFile').files[0];
+        
+        if (!text && !file) {
+            showToast('କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ');
+            return;
+        }
+        
+        const newPost = {
+            id: Date.now(),
+            text: text,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            userAvatar: currentUser.avatar,
+            timestamp: Date.now(),
+            timeFormatted: new Date().toLocaleString(),
+            likes: [],
+            comments: [],
+            image: null
+        };
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                newPost.image = e.target.result;
+                posts.unshift(newPost);
+                saveAllPosts();
+                clearPostInputs();
+                showToast('✅ ପୋଷ୍ଟ ସଫଳ!');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            posts.unshift(newPost);
+            saveAllPosts();
+            clearPostInputs();
+            showToast('✅ ପୋଷ୍ଟ ସଫଳ!');
+        }
+    }
+    
+    function clearPostInputs() {
+        document.getElementById('postText').value = '';
+        document.getElementById('postFile').value = '';
+    }
+    
+    function saveAllPosts() {
+        posts.sort((a, b) => b.timestamp - a.timestamp);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        renderPosts();
+        renderPostsGrid();
+        updateProfileStats();
+    }
+    
+    function renderPosts() {
+        const container = document.getElementById('postsFeed');
+        if (!container) return;
+        
+        if (posts.length === 0) {
+            container.innerHTML = '<div class="empty-state">🌾 କୋଉଠି ପୋଷ୍ଟ ନାହିଁ<br>ପ୍ରଥମ ପୋଷ୍ଟ କରନ୍ତୁ!</div>';
+            return;
+        }
+        
+        container.innerHTML = posts.map(post => `
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <div class="post-avatar">${(post.userName.charAt(0) || 'G').toUpperCase()}</div>
+                        <div>
+                            <div class="post-user-name">${escapeHtml(post.userName)}</div>
+                            <div class="post-time">${post.timeFormatted}</div>
+                        </div>
+                    </div>
+                    ${(currentUser.role === 'admin' || post.userId === currentUser.id) ? 
+                        `<div class="post-menu" onclick="deletePost(${post.id})">⋯</div>` : ''}
+                </div>
+                ${post.image ? `<img src="${post.image}" class="post-image" onclick="viewImage('${post.image}')">` : ''}
+                <div class="post-text">${escapeHtml(post.text || '')}</div>
+                <div class="post-stats">
+                    <span onclick="toggleLike(${post.id})" class="${post.likes.includes(currentUser.id) ? 'liked' : ''}">❤️ ${post.likes.length}</span>
+                    <span onclick="toggleComments(${post.id})">💬 ${post.comments.length}</span>
+                </div>
+                <div id="comments-${post.id}" class="comments-section">
+                    ${renderComments(post.comments)}
+                    <div class="add-comment">
+                        <input type="text" id="comment-input-${post.id}" placeholder="ମନ୍ତବ୍ୟ ଲେଖନ୍ତୁ...">
+                        <button onclick="addComment(${post.id})">ପଠାନ୍ତୁ</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function renderComments(comments) {
+        if (!comments || comments.length === 0) return '<div style="color:#888;font-size:12px;margin-bottom:8px;">କୌଣସି ମନ୍ତବ୍ୟ ନାହିଁ</div>';
+        return comments.map(c => `
+            <div class="comment">
+                <span class="comment-user">${escapeHtml(c.userName)}</span>
+                <span class="comment-text">${escapeHtml(c.text)}</span>
+                <div class="comment-time">${c.time}</div>
+            </div>
+        `).join('');
+    }
+    
+    function toggleComments(postId) {
+        const section = document.getElementById(`comments-${postId}`);
+        if (section) {
+            section.classList.toggle('show');
+        }
+    }
+    
+    function addComment(postId) {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const text = input.value.trim();
+        if (!text) { showToast('ମନ୍ତବ୍ୟ ଲେଖନ୍ତୁ'); return; }
+        
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+            post.comments.push({
+                id: Date.now(),
+                userId: currentUser.id,
+                userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+                text: text,
+                time: new Date().toLocaleTimeString()
+            });
+            saveAllPosts();
+            input.value = '';
+            showToast('💬 ମନ୍ତବ୍ୟ ଯୋଡ଼ାଗଲା');
+        }
+    }
+    
+    function toggleLike(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        
+        if (post.likes.includes(currentUser.id)) {
+            post.likes = post.likes.filter(id => id !== currentUser.id);
+            if (currentUser.likedPosts) {
+                currentUser.likedPosts = currentUser.likedPosts.filter(pid => pid !== postId);
+            }
+        } else {
+            post.likes.push(currentUser.id);
+            if (!currentUser.likedPosts) currentUser.likedPosts = [];
+            currentUser.likedPosts.push(postId);
+        }
+        
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        saveAllPosts();
+    }
+    
+    function deletePost(postId) {
+        if (currentUser.role === 'admin' || posts.find(p => p.id === postId)?.userId === currentUser.id) {
+            posts = posts.filter(p => p.id !== postId);
+            saveAllPosts();
+            showToast('🗑️ ପୋଷ୍ଟ ଲିଭାଗଲା');
+        }
+    }
+    
+    function renderPostsGrid() {
+        const container = document.getElementById('postsGridView');
+        const images = posts.filter(p => p.image);
+        
+        if (images.length === 0) {
+            container.innerHTML = '<div class="empty-state">📸 କୋଉଠି ଫଟୋ ନାହିଁ</div>';
+            return;
+        }
+        
+        container.innerHTML = images.map(p => 
+            `<img src="${p.image}" class="grid-item" onclick="viewImage('${p.image}')">`
+        ).join('');
+    }
+    
+    function viewImage(src) {
+        window.open(src, '_blank');
+    }
+    
+    // ==================== CHAT FUNCTIONS ====================
+    function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        messages.push({
+            id: Date.now(),
+            userId: currentUser.id,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            text: text,
+            timestamp: Date.now(),
+            timeFormatted: new Date().toLocaleTimeString()
+        });
+        
+        localStorage.setItem('messages', JSON.stringify(messages));
+        input.value = '';
+        renderChat();
+    }
+    
+    function renderChat() {
+        const container = document.getElementById('chatMessages');
+        if (!container) return;
+        
+        if (messages.length === 0) {
+            container.innerHTML = '<div class="empty-state">💬 ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ</div>';
+            return;
+        }
+        
+        container.innerHTML = messages.map(m => `
+            <div class="message ${m.userId === currentUser.id ? 'message-sent' : 'message-received'}">
+                <div class="message-user">${escapeHtml(m.userName)}</div>
+                <div class="message-bubble">${escapeHtml(m.text)}</div>
+                <div class="message-time">${m.timeFormatted}</div>
+            </div>
+        `).join('');
+        
+        container.scrollTop = container.scrollHeight;
+    }
+    
+    // ==================== SOS & HELP ====================
+    function triggerSOS() {
+        helpRequests.unshift({
+            id: Date.now(),
+            type: 'SOS',
+            userId: currentUser.id,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            description: '🚨 ଜରୁରୀ ସହାୟତା ଆବଶ୍ୟକ!',
+            timestamp: Date.now(),
+            timeFormatted: new Date().toLocaleString(),
+            status: 'pending'
+        });
+        saveHelpRequests();
+        showToast('🆘 SOS ପଠାଗଲା! ପ୍ରଶାସକଙ୍କୁ ସୂଚନା ଦିଆଗଲା');
+    }
+    
+    function reportCorruption() {
+        const desc = document.getElementById('corruptionDesc').value.trim();
+        if (!desc) { showToast('ବିବରଣୀ ଲେଖନ୍ତୁ'); return; }
+        
+        helpRequests.unshift({
+            id: Date.now(),
+            type: 'CORRUPTION',
+            userId: currentUser.id,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            description: desc,
+            timestamp: Date.now(),
+            timeFormatted: new Date().toLocaleString(),
+            status: 'pending'
+        });
+        saveHelpRequests();
+        document.getElementById('corruptionDesc').value = '';
+        showToast('📢 ଦୁର୍ନୀତି ରିପୋର୍ଟ ଦାଖଲ ହେଲା');
+    }
+    
+    function requestAssistance() {
+        const desc = document.getElementById('helpDesc').value.trim();
+        if (!desc) { showToast('ସମସ୍ୟା ଲେଖନ୍ତୁ'); return; }
+        
+        helpRequests.unshift({
+            id: Date.now(),
+            type: 'HELP',
+            userId: currentUser.id,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            description: desc,
+            timestamp: Date.now(),
+            timeFormatted: new Date().toLocaleString(),
+            status: 'pending'
+        });
+        saveHelpRequests();
+        document.getElementById('helpDesc').value = '';
+        showToast('🙏 ସହାୟତା ଅନୁରୋଧ ପଠାଗଲା');
+    }
+    
+    function saveHelpRequests() {
+        helpRequests.sort((a, b) => b.timestamp - a.timestamp);
+        localStorage.setItem('helpRequests', JSON.stringify(helpRequests));
+        renderHelpRequests();
+    }
+    
+    function renderHelpRequests() {
+        const container = document.getElementById('helpRequestsList');
+        if (!container) return;
+        
+        const visibleRequests = helpRequests.filter(r => 
+            r.userId === currentUser.id || currentUser.role === 'admin'
+        );
+        
+        if (visibleRequests.length === 0) {
+            container.innerHTML = '<div class="empty-state">📋 କୌଣସି ରିପୋର୍ଟ ନାହିଁ</div>';
+            return;
+        }
+        
+        container.innerHTML = visibleRequests.map(r => `
+            <div class="request-item">
+                <div><strong>${r.type === 'SOS' ? '🚨 SOS' : r.type === 'CORRUPTION' ? '⚠️ ଦୁର୍ନୀତି' : '🛠️ ସମସ୍ୟା'}</strong> 🕐 ${r.timeFormatted}</div>
+                <div>👤 ${escapeHtml(r.userName)}</div>
+                <div>📝 ${escapeHtml(r.description)}</div>
+                <div style="margin-top:8px;color:${r.status === 'pending' ? '#ff9800' : '#4caf50'}">
+                    ${r.status === 'pending' ? '⏳ ଅପେକ୍ଷାରେ' : '✅ ସମାଧାନ ହେଲା'}
+                </div>
+                ${currentUser.role === 'admin' && r.status === 'pending' ? 
+                    `<button onclick="resolveHelpRequest(${r.id})" style="margin-top:10px;padding:8px;background:#1a8e3c;color:white;border:none;border-radius:25px;cursor:pointer;">✅ ସମାଧାନ କରନ୍ତୁ</button>` : ''}
+            </div>
+        `).join('');
+    }
+    
+    function resolveHelpRequest(id) {
+        helpRequests = helpRequests.map(r => 
+            r.id === id ? {...r, status: 'resolved'} : r
+        );
+        saveHelpRequests();
+        showToast('✅ ସହାୟତା ଅନୁରୋଧ ସମାଧାନ ହେଲା');
+    }
+    
+    // ==================== PROFILE FUNCTIONS ====================
+    function renderProfile() {
+        document.getElementById('editName').value = currentUser.name || '';
+        document.getElementById('editVillage').value = currentUser.village || '';
+        document.getElementById('editRole').value = currentUser.role;
+        document.getElementById('profileAvatarDisplay').innerHTML = currentUser.avatar || '👤';
+        document.getElementById('profileNameDisplay').innerHTML = currentUser.name || 'ଗ୍ରାମୀଣ';
+        updateProfileStats();
+    }
+    
+    function updateProfileStats() {
+        const userPosts = posts.filter(p => p.userId === currentUser.id).length;
+        const userLikes = currentUser.likedPosts?.length || 0;
+        document.getElementById('userPostCount').innerHTML = userPosts;
+        document.getElementById('userLikeCount').innerHTML = userLikes;
+    }
+    
+    function saveProfileChanges() {
+        const newName = document.getElementById('editName').value.trim();
+        const newVillage = document.getElementById('editVillage').value.trim();
+        const newRole = document.getElementById('editRole').value;
+        
+        if (newName) currentUser.name = newName;
+        if (newVillage) currentUser.village = newVillage;
+        currentUser.role = newRole;
+        
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // Update user name in posts
+        posts = posts.map(post => {
+            if (post.userId === currentUser.id) {
+                return {...post, userName: currentUser.name};
+            }
+            return post;
+        });
+        saveAllPosts();
+        
+        renderProfile();
+        renderPosts();
+        renderChat();
+        showToast('💾 ପ୍ରୋଫାଇଲ୍ ଅପଡେଟ୍ ହେଲା');
+    }
+    
+    // Avatar upload
+    document.getElementById('profileAvatarInput')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                currentUser.avatar = `<img src="${ev.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                renderProfile();
+                showToast('🖼️ ପ୍ରୋଫାଇଲ୍ ଫଟୋ ଅପଡେଟ୍ ହେଲା');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    function logout() {
+        if (confirm('ଆପଣ ନିଶ୍ଚିତ? ସମସ୍ତ ଡାଟା ସେଭ୍ ରହିବ, ପରେ ଲଗ୍ ଇନ୍ କରିପାରିବେ।')) {
+            localStorage.removeItem('currentUser');
+            location.reload();
+        }
+    }
+    
+    // ==================== UTILITIES ====================
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+    
+    // ==================== INITIAL RENDER ====================
+    renderPosts();
+    renderChat();
+</script>
 
 </body>
 </html>
