@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ନହନ୍ତରା - Professional Community App</title>
+    <title>ନହନ୍ତରା - Instagram Style</title>
     <style>
         * {
             margin: 0;
@@ -11,252 +11,188 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #1a8e3c;
-            --primary-dark: #0d5c26;
-            --primary-light: #4caf50;
-            --danger: #dc3545;
-            --danger-dark: #b02a37;
-            --gray: #6c757d;
-            --gray-light: #e9ecef;
-            --dark: #212529;
-            --white: #ffffff;
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
-            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
-            --radius: 16px;
-            --radius-sm: 12px;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Oriya', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #000;
-            line-height: 1.5;
         }
 
         .app {
             max-width: 500px;
             margin: 0 auto;
-            background: var(--white);
-            min-height: 100vh;
+            background: #fff;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            position: relative;
-            box-shadow: var(--shadow-lg);
         }
 
         /* Header */
         .header {
-            background: var(--white);
-            padding: 14px 16px;
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dbdbdb;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--gray-light);
+            align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 10;
         }
 
         .logo {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1a8e3c, #0d5c26);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
-        .logo span {
-            font-size: 24px;
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: var(--primary);
-        }
-
-        /* Content Area */
+        /* Scrollable Content */
         .content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 65px;
-            background: #f8f9fa;
+            background: #fafafa;
         }
 
         /* Screens */
         .screen {
             display: none;
-            animation: fadeIn 0.25s ease;
         }
 
         .screen.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Post Creation Card */
-        .create-post-card {
-            background: var(--white);
-            margin: 12px;
-            padding: 14px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .create-post-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--gray-light);
-            border-radius: 30px;
-            font-size: 14px;
-            font-family: inherit;
-            margin-bottom: 12px;
-            transition: border 0.2s;
-        }
-
-        .create-post-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .create-post-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .photo-btn, .post-submit-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .photo-btn {
-            background: var(--gray);
-            color: var(--white);
-        }
-
-        .photo-btn:hover {
-            background: #5a6268;
-        }
-
-        .post-submit-btn {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .post-submit-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Post Card */
+        /* ========== INSTAGRAM STYLE POST ========== */
         .post-card {
-            background: var(--white);
-            margin-bottom: 8px;
-            border-bottom: 1px solid var(--gray-light);
+            background: white;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #dbdbdb;
         }
 
         .post-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 12px;
+            align-items: center;
+            padding: 10px 12px;
         }
 
-        .post-user-info {
+        .post-user {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .post-avatar {
-            width: 42px;
-            height: 42px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1a8e3c, #0d5c26);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--white);
-            font-weight: 600;
+            color: white;
+            font-weight: bold;
             font-size: 16px;
         }
 
-        .post-user-name {
+        .post-name {
             font-weight: 600;
             font-size: 14px;
-            color: var(--dark);
         }
 
         .post-time {
             font-size: 10px;
-            color: var(--gray);
+            color: #8e8e8e;
         }
 
         .post-menu {
             font-size: 20px;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background 0.2s;
+            padding: 4px 8px;
         }
 
-        .post-menu:hover {
-            background: var(--gray-light);
+        /* Instagram Style Image - FULL WIDTH */
+        .post-image-container {
+            position: relative;
+            background: #000;
         }
 
         .post-image {
             width: 100%;
             max-height: 450px;
-            object-fit: cover;
-            background: var(--gray-light);
+            object-fit: contain;
+            background: #000;
+            display: block;
             cursor: pointer;
         }
 
-        .post-text {
-            padding: 10px 12px;
-            font-size: 14px;
-            color: var(--dark);
-            line-height: 1.4;
+        /* Double Tap Heart Animation */
+        .heart-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 70px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            text-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
 
-        .post-stats {
+        .heart-animation.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            animation: heartPop 0.4s ease-out forwards;
+        }
+
+        @keyframes heartPop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* Post Actions */
+        .post-actions {
             display: flex;
-            gap: 24px;
+            gap: 18px;
             padding: 8px 12px;
-            border-top: 1px solid var(--gray-light);
-            color: var(--gray);
-            font-size: 13px;
         }
 
-        .post-stats span {
+        .action-btn {
+            font-size: 26px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
+            transition: transform 0.1s ease;
         }
 
-        .post-stats span:hover {
-            color: var(--dark);
+        .action-btn:active {
+            transform: scale(0.9);
         }
 
         .liked {
-            color: var(--danger) !important;
+            color: #ed4956;
+        }
+
+        .post-likes {
+            font-weight: 600;
+            font-size: 14px;
+            padding: 0 12px 6px;
+        }
+
+        .post-caption {
+            padding: 0 12px 8px;
+            font-size: 14px;
+        }
+
+        .post-caption strong {
+            margin-right: 6px;
         }
 
         /* Comments Section */
         .comments-section {
-            padding: 10px 12px;
-            background: #f8f9fa;
-            border-top: 1px solid var(--gray-light);
+            padding: 8px 12px;
+            border-top: 1px solid #efefef;
+            background: #fafafa;
             display: none;
         }
 
@@ -265,83 +201,112 @@
         }
 
         .comment {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 13px;
         }
 
         .comment-user {
             font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .comment-text {
-            color: var(--dark);
+            margin-right: 6px;
         }
 
         .comment-time {
             font-size: 10px;
-            color: var(--gray);
+            color: #8e8e8e;
+            margin-left: 8px;
         }
 
         .add-comment {
             display: flex;
             gap: 8px;
             margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #efefef;
         }
 
         .add-comment input {
             flex: 1;
             padding: 8px 12px;
-            border: 1px solid var(--gray-light);
-            border-radius: 25px;
+            border: none;
+            background: transparent;
             font-size: 13px;
         }
 
         .add-comment button {
-            padding: 8px 16px;
-            background: var(--primary);
-            color: var(--white);
+            background: none;
             border: none;
-            border-radius: 25px;
+            color: #1a8e3c;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        /* Posts Grid (Gallery) */
+        /* Create Post Box */
+        .create-post {
+            background: white;
+            padding: 12px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .create-post input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #dbdbdb;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #fafafa;
+        }
+
+        .create-post button {
+            background: #1a8e3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .photo-upload {
+            background: #efefef;
+            padding: 8px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Posts Grid */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            background: var(--white);
         }
 
-        .grid-item {
+        .grid-img {
             aspect-ratio: 1;
             width: 100%;
             object-fit: cover;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .grid-item:hover {
-            opacity: 0.9;
         }
 
         /* Chat */
         .chat-container {
-            background: var(--white);
-            height: calc(100vh - 130px);
+            height: calc(100vh - 120px);
             display: flex;
             flex-direction: column;
+            background: white;
         }
 
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 12px;
         }
 
         .message {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .message-sent {
@@ -349,18 +314,18 @@
         }
 
         .message-sent .message-bubble {
-            background: var(--primary);
-            color: var(--white);
+            background: #1a8e3c;
+            color: white;
         }
 
         .message-received .message-bubble {
-            background: var(--gray-light);
-            color: var(--dark);
+            background: #efefef;
+            color: #262626;
         }
 
         .message-bubble {
             display: inline-block;
-            padding: 10px 14px;
+            padding: 8px 14px;
             border-radius: 20px;
             max-width: 80%;
             font-size: 14px;
@@ -369,223 +334,165 @@
         .message-user {
             font-size: 11px;
             font-weight: 600;
-            margin-bottom: 4px;
-            padding-left: 8px;
-        }
-
-        .message-time {
-            font-size: 10px;
-            color: var(--gray);
-            margin-top: 4px;
+            margin-bottom: 3px;
             padding-left: 8px;
         }
 
         .chat-input-area {
             display: flex;
-            gap: 10px;
-            padding: 12px;
-            border-top: 1px solid var(--gray-light);
-            background: var(--white);
+            gap: 8px;
+            padding: 10px;
+            border-top: 1px solid #dbdbdb;
         }
 
         .chat-input-area input {
             flex: 1;
-            padding: 12px;
-            border: 1px solid var(--gray-light);
-            border-radius: 30px;
-            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 25px;
         }
 
         .chat-input-area button {
-            width: 48px;
-            background: var(--primary);
-            color: var(--white);
+            width: 42px;
+            background: #1a8e3c;
+            color: white;
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 18px;
         }
 
         /* SOS */
-        .sos-emergency {
-            background: linear-gradient(135deg, var(--danger), var(--danger-dark));
-            color: var(--white);
+        .sos-btn {
+            background: linear-gradient(135deg, #dc3545, #b02a37);
+            color: white;
             text-align: center;
-            padding: 24px;
+            padding: 18px;
             margin: 16px;
-            border-radius: 60px;
-            font-size: 22px;
-            font-weight: 700;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            animation: pulse 1.2s infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            animation: pulse 1s infinite;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 4px 12px rgba(220,53,69,0.3); }
-            50% { transform: scale(1.02); box-shadow: 0 6px 18px rgba(220,53,69,0.5); }
-            100% { transform: scale(1); box-shadow: 0 4px 12px rgba(220,53,69,0.3); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
 
         .help-card {
-            background: var(--white);
+            background: white;
             margin: 12px 16px;
-            padding: 16px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            padding: 14px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .help-card textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--gray-light);
-            border-radius: var(--radius-sm);
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 12px;
+            margin-bottom: 8px;
             font-family: inherit;
-            resize: vertical;
-            margin-bottom: 12px;
         }
 
         .help-card button {
             width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: var(--white);
+            padding: 10px;
+            background: #1a8e3c;
+            color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 25px;
             cursor: pointer;
-            font-weight: 600;
         }
 
         .request-item {
-            background: var(--white);
+            background: white;
             margin: 12px 16px;
-            padding: 14px;
-            border-radius: var(--radius);
-            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 4px solid #1a8e3c;
         }
 
         /* Profile */
-        .profile-banner {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 32px 20px;
+        .profile-header {
+            background: linear-gradient(135deg, #1a8e3c, #0d5c26);
+            padding: 30px;
             text-align: center;
-            color: var(--white);
+            color: white;
         }
 
-        .profile-avatar-large {
-            width: 88px;
-            height: 88px;
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
             background: rgba(255,255,255,0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            margin: 0 auto 12px;
+            font-size: 35px;
+            margin: 0 auto 10px;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .profile-avatar-large:hover {
-            transform: scale(1.02);
-        }
-
-        .profile-name-large {
-            font-size: 20px;
-            font-weight: 700;
         }
 
         .profile-stats {
             display: flex;
             justify-content: center;
-            gap: 40px;
-            margin-top: 16px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            opacity: 0.85;
-        }
-
-        .profile-edit-card {
-            background: var(--white);
-            margin: 16px;
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .profile-edit-card input,
-        .profile-edit-card select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid var(--gray-light);
-            border-radius: 30px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        .profile-edit-card button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .save-edit-btn {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .logout-btn {
-            background: var(--danger);
-            color: var(--white);
+            gap: 30px;
             margin-top: 12px;
         }
 
-        /* Bottom Navigation */
+        .profile-card {
+            background: white;
+            margin: 16px;
+            padding: 16px;
+            border-radius: 16px;
+        }
+
+        .profile-card input, .profile-card select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 25px;
+        }
+
+        .profile-card button {
+            width: 100%;
+            padding: 10px;
+            background: #1a8e3c;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #dc3545 !important;
+            margin-top: 8px;
+        }
+
+        /* Bottom Navigation - FIXED */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--white);
+            background: white;
+            border-top: 1px solid #dbdbdb;
             display: flex;
             justify-content: space-around;
             padding: 8px 12px;
-            border-top: 1px solid var(--gray-light);
-            z-index: 100;
         }
 
         .nav-item {
             text-align: center;
             cursor: pointer;
-            padding: 6px 12px;
+            padding: 5px 12px;
             border-radius: 30px;
-            transition: all 0.2s;
         }
 
         .nav-item.active {
             background: #e8f5e9;
-            color: var(--primary);
+            color: #1a8e3c;
         }
 
         .nav-icon {
@@ -594,123 +501,100 @@
 
         .nav-label {
             font-size: 10px;
-            margin-top: 2px;
         }
 
-        /* Empty States */
-        .empty-state {
+        .empty {
             text-align: center;
-            padding: 50px 20px;
-            color: var(--gray);
+            padding: 40px;
+            color: #8e8e8e;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 70px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--dark);
-            color: var(--white);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 13px;
+            transform: translateX(-50%);
+            background: #262626;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            display: none;
             z-index: 200;
-            transition: transform 0.25s;
-            opacity: 0;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
         }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <!-- Header -->
     <div class="header">
-        <div class="logo"><span>🌾</span> ମୋ ନହନ୍ତରା</div>
+        <div class="logo">🌾 ନହନ୍ତରା</div>
         <div>❤️</div>
     </div>
 
     <div class="content">
         <!-- Home Screen -->
         <div id="homeScreen" class="screen active">
-            <div class="create-post-card">
-                <input type="text" id="postText" class="create-post-input" placeholder="ଆଜି କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
-                <div class="create-post-actions">
-                    <button class="photo-btn" onclick="document.getElementById('postFile').click()">📷 ଫଟୋ</button>
-                    <button class="post-submit-btn" onclick="createPost()">📤 ପୋଷ୍ଟ</button>
-                </div>
+            <div class="create-post">
+                <div class="photo-upload" onclick="document.getElementById('postFile').click()">📷</div>
+                <input type="text" id="postText" placeholder="କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
+                <button onclick="createPost()">ପୋଷ୍ଟ</button>
                 <input type="file" id="postFile" accept="image/*" style="display:none">
             </div>
             <div id="postsFeed"></div>
         </div>
 
-        <!-- Posts Grid Screen -->
+        <!-- Posts Grid -->
         <div id="postsScreen" class="screen">
             <div id="postsGridView" class="posts-grid"></div>
         </div>
 
-        <!-- Chat Screen -->
+        <!-- Chat -->
         <div id="chatScreen" class="screen">
             <div class="chat-container">
                 <div id="chatMessages" class="chat-messages"></div>
                 <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ ଲେଖନ୍ତୁ...">
+                    <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ...">
                     <button onclick="sendChatMessage()">➤</button>
                 </div>
             </div>
         </div>
 
-        <!-- SOS Screen -->
+        <!-- SOS -->
         <div id="sosScreen" class="screen">
-            <div class="sos-emergency" onclick="triggerSOS()">
-                🆘 SOS - ଜରୁରୀ ସହାୟତା
-            </div>
-            
+            <div class="sos-btn" onclick="sendSOS()">🆘 SOS - ଜରୁରୀ ସହାୟତା</div>
             <div class="help-card">
-                <textarea id="corruptionDesc" rows="3" placeholder="⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ...&#10;କେଉଁଠାରେ? କିଏ? କେତେ ଟଙ୍କା?"></textarea>
-                <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ କରନ୍ତୁ</button>
+                <textarea id="corruptionDesc" rows="2" placeholder="⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ..."></textarea>
+                <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ</button>
             </div>
-
             <div class="help-card">
-                <textarea id="helpDesc" rows="3" placeholder="🛠️ ସମସ୍ୟା...&#10;ବିଜୁଳି, ପାଣି, ରାସ୍ତା, ବନ୍ୟା, ଚୋରି"></textarea>
-                <button onclick="requestAssistance()">🙏 ସହାୟତା ଚାହିଁ</button>
+                <textarea id="helpDesc" rows="2" placeholder="🛠️ ସମସ୍ୟା..."></textarea>
+                <button onclick="requestHelp()">🙏 ସହାୟତା</button>
             </div>
-
             <div id="helpRequestsList"></div>
         </div>
 
-        <!-- Profile Screen -->
+        <!-- Profile -->
         <div id="profileScreen" class="screen">
-            <div class="profile-banner">
-                <div class="profile-avatar-large" onclick="document.getElementById('profileAvatarInput').click()">
-                    <span id="profileAvatarDisplay">👤</span>
+            <div class="profile-header">
+                <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
+                    <span id="avatarDisplay">👤</span>
                 </div>
-                <div class="profile-name-large" id="profileNameDisplay">ଗ୍ରାମୀଣ</div>
+                <div id="profileNameDisplay" style="font-weight:bold;"></div>
                 <div class="profile-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="userPostCount">0</div>
-                        <div class="stat-label">ପୋଷ୍ଟ</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="userLikeCount">0</div>
-                        <div class="stat-label">ଲାଇକ୍</div>
-                    </div>
+                    <div><div id="userPostCount">0</div><div style="font-size:11px;">ପୋଷ୍ଟ</div></div>
+                    <div><div id="userLikeCount">0</div><div style="font-size:11px;">ଲାଇକ୍</div></div>
                 </div>
-                <input type="file" id="profileAvatarInput" accept="image/*" style="display:none">
+                <input type="file" id="avatarInput" accept="image/*" style="display:none">
             </div>
-            <div class="profile-edit-card">
-                <input type="text" id="editName" placeholder="ଆପଣଙ୍କର ନାମ">
-                <input type="text" id="editVillage" placeholder="ମୋହଲ୍ଲା / ଗାଁ">
+            <div class="profile-card">
+                <input type="text" id="editName" placeholder="ନାମ">
+                <input type="text" id="editVillage" placeholder="ଗାଁ">
                 <select id="editRole">
-                    <option value="user">🌾 ସାଧାରଣ ସଦସ୍ୟ</option>
-                    <option value="admin">👑 ପ୍ରଶାସକ (ଆଡମିନ୍)</option>
+                    <option value="user">🌾 ସାଧାରଣ</option>
+                    <option value="admin">👑 ପ୍ରଶାସକ</option>
                 </select>
-                <button class="save-edit-btn" onclick="saveProfileChanges()">💾 ପରିବର୍ତନ ସେଭ୍ କରନ୍ତୁ</button>
+                <button onclick="saveProfile()">💾 ସେଭ୍</button>
                 <button class="logout-btn" onclick="logout()">🚪 ଲଗ୍ଆଉଟ୍</button>
             </div>
         </div>
@@ -718,44 +602,42 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-screen="home"><div class="nav-icon">🏠</div><div class="nav-label">ହୋମ୍</div></div>
-        <div class="nav-item" data-screen="posts"><div class="nav-icon">📸</div><div class="nav-label">ପୋଷ୍ଟ</div></div>
-        <div class="nav-item" data-screen="chat"><div class="nav-icon">💬</div><div class="nav-label">ଚାଟ୍</div></div>
-        <div class="nav-item" data-screen="sos"><div class="nav-icon">🆘</div><div class="nav-label">SOS</div></div>
-        <div class="nav-item" data-screen="profile"><div class="nav-icon">👤</div><div class="nav-label">ମୋର</div></div>
+        <div class="nav-item active" onclick="navigate('home')"><div class="nav-icon">🏠</div><div class="nav-label">ହୋମ୍</div></div>
+        <div class="nav-item" onclick="navigate('posts')"><div class="nav-icon">📸</div><div class="nav-label">ପୋଷ୍ଟ</div></div>
+        <div class="nav-item" onclick="navigate('chat')"><div class="nav-icon">💬</div><div class="nav-label">ଚାଟ୍</div></div>
+        <div class="nav-item" onclick="navigate('sos')"><div class="nav-icon">🆘</div><div class="nav-label">SOS</div></div>
+        <div class="nav-item" onclick="navigate('profile')"><div class="nav-icon">👤</div><div class="nav-label">ମୋର</div></div>
     </div>
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
-    // ==================== DATA MODELS ====================
+    // ============ DATA ============
     let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-        id: 'user_' + Date.now(),
+        id: 'u_' + Date.now(),
         name: '',
         village: '',
         role: 'user',
         avatar: '👤',
-        likedPosts: [],
-        createdAt: new Date().toISOString()
+        likedPosts: []
     };
     
     let posts = JSON.parse(localStorage.getItem('posts')) || [];
     let messages = JSON.parse(localStorage.getItem('messages')) || [];
     let helpRequests = JSON.parse(localStorage.getItem('helpRequests')) || [];
 
-    // Save current user
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-    // ==================== NAVIGATION ====================
-    function navigateTo(screen) {
+    // ============ NAVIGATION ============
+    function navigate(screen) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screen + 'Screen').classList.add('active');
         
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.querySelector(`.nav-item[data-screen="${screen}"]`).classList.add('active');
+        let index = {home:0, posts:1, chat:2, sos:3, profile:4}[screen];
+        document.querySelectorAll('.nav-item')[index].classList.add('active');
         
-        // Load data based on screen
         if (screen === 'home') renderPosts();
         if (screen === 'posts') renderPostsGrid();
         if (screen === 'chat') renderChat();
@@ -763,27 +645,21 @@
         if (screen === 'profile') renderProfile();
     }
 
-    // Attach navigation
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => navigateTo(item.dataset.screen));
-    });
-
-    // ==================== POST FUNCTIONS ====================
+    // ============ CREATE POST ============
     function createPost() {
-        const text = document.getElementById('postText').value.trim();
-        const file = document.getElementById('postFile').files[0];
+        let text = document.getElementById('postText').value.trim();
+        let file = document.getElementById('postFile').files[0];
         
         if (!text && !file) {
             showToast('କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ');
             return;
         }
         
-        const newPost = {
+        let newPost = {
             id: Date.now(),
             text: text,
             userName: currentUser.name || 'ଗ୍ରାମୀଣ',
             userId: currentUser.id,
-            userAvatar: currentUser.avatar,
             timestamp: Date.now(),
             timeFormatted: new Date().toLocaleString(),
             likes: [],
@@ -792,20 +668,20 @@
         };
         
         if (file) {
-            const reader = new FileReader();
+            let reader = new FileReader();
             reader.onload = (e) => {
                 newPost.image = e.target.result;
                 posts.unshift(newPost);
                 saveAllPosts();
                 clearPostInputs();
-                showToast('✅ ପୋଷ୍ଟ ସଫଳ!');
+                showToast('✅ ପୋଷ୍ଟ ହେଲା');
             };
             reader.readAsDataURL(file);
         } else {
             posts.unshift(newPost);
             saveAllPosts();
             clearPostInputs();
-            showToast('✅ ପୋଷ୍ଟ ସଫଳ!');
+            showToast('✅ ପୋଷ୍ଟ ହେଲା');
         }
     }
     
@@ -822,67 +698,93 @@
         updateProfileStats();
     }
     
+    // ============ RENDER POSTS (Instagram Style) ============
     function renderPosts() {
-        const container = document.getElementById('postsFeed');
+        let container = document.getElementById('postsFeed');
         if (!container) return;
         
         if (posts.length === 0) {
-            container.innerHTML = '<div class="empty-state">🌾 କୋଉଠି ପୋଷ୍ଟ ନାହିଁ<br>ପ୍ରଥମ ପୋଷ୍ଟ କରନ୍ତୁ!</div>';
+            container.innerHTML = '<div class="empty">🌾 କୋଉଠି ପୋଷ୍ଟ ନାହିଁ</div>';
             return;
         }
         
         container.innerHTML = posts.map(post => `
             <div class="post-card">
                 <div class="post-header">
-                    <div class="post-user-info">
+                    <div class="post-user">
                         <div class="post-avatar">${(post.userName.charAt(0) || 'G').toUpperCase()}</div>
                         <div>
-                            <div class="post-user-name">${escapeHtml(post.userName)}</div>
+                            <div class="post-name">${escapeHtml(post.userName)}</div>
                             <div class="post-time">${post.timeFormatted}</div>
                         </div>
                     </div>
                     ${(currentUser.role === 'admin' || post.userId === currentUser.id) ? 
                         `<div class="post-menu" onclick="deletePost(${post.id})">⋯</div>` : ''}
                 </div>
-                ${post.image ? `<img src="${post.image}" class="post-image" onclick="viewImage('${post.image}')">` : ''}
-                <div class="post-text">${escapeHtml(post.text || '')}</div>
-                <div class="post-stats">
-                    <span onclick="toggleLike(${post.id})" class="${post.likes.includes(currentUser.id) ? 'liked' : ''}">❤️ ${post.likes.length}</span>
-                    <span onclick="toggleComments(${post.id})">💬 ${post.comments.length}</span>
+                ${post.image ? `
+                <div class="post-image-container" ondblclick="handleDoubleTap(${post.id})">
+                    <img src="${post.image}" class="post-image" onclick="viewImage('${post.image}')">
+                    <div class="heart-animation" id="heart-${post.id}">❤️</div>
+                </div>` : ''}
+                <div class="post-actions">
+                    <div class="action-btn ${post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div>
+                    <div class="action-btn" onclick="toggleComments(${post.id})">💬</div>
+                    <div class="action-btn">📤</div>
                 </div>
+                <div class="post-likes">${post.likes.length} likes</div>
+                <div class="post-caption"><strong>${escapeHtml(post.userName)}</strong> ${escapeHtml(post.text || '')}</div>
                 <div id="comments-${post.id}" class="comments-section">
                     ${renderComments(post.comments)}
                     <div class="add-comment">
-                        <input type="text" id="comment-input-${post.id}" placeholder="ମନ୍ତବ୍ୟ ଲେଖନ୍ତୁ...">
-                        <button onclick="addComment(${post.id})">ପଠାନ୍ତୁ</button>
+                        <input type="text" id="comment-input-${post.id}" placeholder="Add a comment...">
+                        <button onclick="addComment(${post.id})">Post</button>
                     </div>
                 </div>
             </div>
         `).join('');
     }
     
+    function handleDoubleTap(postId) {
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        
+        // Show heart animation
+        const heart = document.getElementById(`heart-${postId}`);
+        if (heart) {
+            heart.classList.add('show');
+            setTimeout(() => heart.classList.remove('show'), 400);
+        }
+        
+        // Add like if not already liked
+        if (!post.likes.includes(currentUser.id)) {
+            post.likes.push(currentUser.id);
+            if (!currentUser.likedPosts) currentUser.likedPosts = [];
+            currentUser.likedPosts.push(postId);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            saveAllPosts();
+        }
+    }
+    
     function renderComments(comments) {
-        if (!comments || comments.length === 0) return '<div style="color:#888;font-size:12px;margin-bottom:8px;">କୌଣସି ମନ୍ତବ୍ୟ ନାହିଁ</div>';
+        if (!comments || comments.length === 0) return '<div style="color:#8e8e8e;font-size:12px;margin-bottom:8px;">No comments yet</div>';
         return comments.map(c => `
             <div class="comment">
                 <span class="comment-user">${escapeHtml(c.userName)}</span>
-                <span class="comment-text">${escapeHtml(c.text)}</span>
-                <div class="comment-time">${c.time}</div>
+                <span>${escapeHtml(c.text)}</span>
+                <span class="comment-time">${c.time}</span>
             </div>
         `).join('');
     }
     
     function toggleComments(postId) {
         const section = document.getElementById(`comments-${postId}`);
-        if (section) {
-            section.classList.toggle('show');
-        }
+        if (section) section.classList.toggle('show');
     }
     
     function addComment(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input.value.trim();
-        if (!text) { showToast('ମନ୍ତବ୍ୟ ଲେଖନ୍ତୁ'); return; }
+        if (!text) return;
         
         const post = posts.find(p => p.id === postId);
         if (post) {
@@ -895,7 +797,7 @@
             });
             saveAllPosts();
             input.value = '';
-            showToast('💬 ମନ୍ତବ୍ୟ ଯୋଡ଼ାଗଲା');
+            showToast('💬 Comment added');
         }
     }
     
@@ -922,32 +824,26 @@
         if (currentUser.role === 'admin' || posts.find(p => p.id === postId)?.userId === currentUser.id) {
             posts = posts.filter(p => p.id !== postId);
             saveAllPosts();
-            showToast('🗑️ ପୋଷ୍ଟ ଲିଭାଗଲା');
+            showToast('🗑️ Post deleted');
         }
     }
     
     function renderPostsGrid() {
-        const container = document.getElementById('postsGridView');
-        const images = posts.filter(p => p.image);
-        
+        let container = document.getElementById('postsGridView');
+        let images = posts.filter(p => p.image);
         if (images.length === 0) {
-            container.innerHTML = '<div class="empty-state">📸 କୋଉଠି ଫଟୋ ନାହିଁ</div>';
+            container.innerHTML = '<div class="empty">📸 No photos yet</div>';
             return;
         }
-        
-        container.innerHTML = images.map(p => 
-            `<img src="${p.image}" class="grid-item" onclick="viewImage('${p.image}')">`
-        ).join('');
+        container.innerHTML = images.map(p => `<img src="${p.image}" class="grid-img" onclick="viewImage('${p.image}')">`).join('');
     }
     
-    function viewImage(src) {
-        window.open(src, '_blank');
-    }
+    function viewImage(src) { window.open(src, '_blank'); }
     
-    // ==================== CHAT FUNCTIONS ====================
+    // ============ CHAT ============
     function sendChatMessage() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
+        let input = document.getElementById('chatInput');
+        let text = input.value.trim();
         if (!text) return;
         
         messages.push({
@@ -958,193 +854,156 @@
             timestamp: Date.now(),
             timeFormatted: new Date().toLocaleTimeString()
         });
-        
         localStorage.setItem('messages', JSON.stringify(messages));
         input.value = '';
         renderChat();
     }
     
     function renderChat() {
-        const container = document.getElementById('chatMessages');
+        let container = document.getElementById('chatMessages');
         if (!container) return;
-        
         if (messages.length === 0) {
-            container.innerHTML = '<div class="empty-state">💬 ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ</div>';
+            container.innerHTML = '<div class="empty">💬 Start chatting</div>';
             return;
         }
-        
         container.innerHTML = messages.map(m => `
             <div class="message ${m.userId === currentUser.id ? 'message-sent' : 'message-received'}">
                 <div class="message-user">${escapeHtml(m.userName)}</div>
                 <div class="message-bubble">${escapeHtml(m.text)}</div>
-                <div class="message-time">${m.timeFormatted}</div>
             </div>
         `).join('');
-        
         container.scrollTop = container.scrollHeight;
     }
     
-    // ==================== SOS & HELP ====================
-    function triggerSOS() {
+    // ============ SOS ============
+    function sendSOS() {
         helpRequests.unshift({
             id: Date.now(),
             type: 'SOS',
             userId: currentUser.id,
             userName: currentUser.name || 'ଗ୍ରାମୀଣ',
-            description: '🚨 ଜରୁରୀ ସହାୟତା ଆବଶ୍ୟକ!',
-            timestamp: Date.now(),
-            timeFormatted: new Date().toLocaleString(),
+            time: new Date().toLocaleString(),
             status: 'pending'
         });
         saveHelpRequests();
-        showToast('🆘 SOS ପଠାଗଲା! ପ୍ରଶାସକଙ୍କୁ ସୂଚନା ଦିଆଗଲା');
+        showToast('🆘 SOS sent!');
     }
     
     function reportCorruption() {
-        const desc = document.getElementById('corruptionDesc').value.trim();
-        if (!desc) { showToast('ବିବରଣୀ ଲେଖନ୍ତୁ'); return; }
-        
+        let desc = document.getElementById('corruptionDesc').value.trim();
+        if (!desc) { showToast('Write details'); return; }
         helpRequests.unshift({
             id: Date.now(),
             type: 'CORRUPTION',
+            description: desc,
             userId: currentUser.id,
             userName: currentUser.name || 'ଗ୍ରାମୀଣ',
-            description: desc,
-            timestamp: Date.now(),
-            timeFormatted: new Date().toLocaleString(),
+            time: new Date().toLocaleString(),
             status: 'pending'
         });
         saveHelpRequests();
         document.getElementById('corruptionDesc').value = '';
-        showToast('📢 ଦୁର୍ନୀତି ରିପୋର୍ଟ ଦାଖଲ ହେଲା');
+        showToast('📢 Report submitted');
     }
     
-    function requestAssistance() {
-        const desc = document.getElementById('helpDesc').value.trim();
-        if (!desc) { showToast('ସମସ୍ୟା ଲେଖନ୍ତୁ'); return; }
-        
+    function requestHelp() {
+        let desc = document.getElementById('helpDesc').value.trim();
+        if (!desc) { showToast('Write problem'); return; }
         helpRequests.unshift({
             id: Date.now(),
             type: 'HELP',
+            description: desc,
             userId: currentUser.id,
             userName: currentUser.name || 'ଗ୍ରାମୀଣ',
-            description: desc,
-            timestamp: Date.now(),
-            timeFormatted: new Date().toLocaleString(),
+            time: new Date().toLocaleString(),
             status: 'pending'
         });
         saveHelpRequests();
         document.getElementById('helpDesc').value = '';
-        showToast('🙏 ସହାୟତା ଅନୁରୋଧ ପଠାଗଲା');
+        showToast('🙏 Help requested');
     }
     
     function saveHelpRequests() {
-        helpRequests.sort((a, b) => b.timestamp - a.timestamp);
+        helpRequests.sort((a, b) => b.id - a.id);
         localStorage.setItem('helpRequests', JSON.stringify(helpRequests));
         renderHelpRequests();
     }
     
     function renderHelpRequests() {
-        const container = document.getElementById('helpRequestsList');
+        let container = document.getElementById('helpRequestsList');
         if (!container) return;
-        
-        const visibleRequests = helpRequests.filter(r => 
-            r.userId === currentUser.id || currentUser.role === 'admin'
-        );
-        
-        if (visibleRequests.length === 0) {
-            container.innerHTML = '<div class="empty-state">📋 କୌଣସି ରିପୋର୍ଟ ନାହିଁ</div>';
+        let visible = helpRequests.filter(r => r.userId === currentUser.id || currentUser.role === 'admin');
+        if (visible.length === 0) {
+            container.innerHTML = '<div class="empty">📋 No requests</div>';
             return;
         }
-        
-        container.innerHTML = visibleRequests.map(r => `
+        container.innerHTML = visible.map(r => `
             <div class="request-item">
-                <div><strong>${r.type === 'SOS' ? '🚨 SOS' : r.type === 'CORRUPTION' ? '⚠️ ଦୁର୍ନୀତି' : '🛠️ ସମସ୍ୟା'}</strong> 🕐 ${r.timeFormatted}</div>
+                <div><strong>${r.type}</strong> 🕐 ${r.time}</div>
                 <div>👤 ${escapeHtml(r.userName)}</div>
-                <div>📝 ${escapeHtml(r.description)}</div>
-                <div style="margin-top:8px;color:${r.status === 'pending' ? '#ff9800' : '#4caf50'}">
-                    ${r.status === 'pending' ? '⏳ ଅପେକ୍ଷାରେ' : '✅ ସମାଧାନ ହେଲା'}
-                </div>
-                ${currentUser.role === 'admin' && r.status === 'pending' ? 
-                    `<button onclick="resolveHelpRequest(${r.id})" style="margin-top:10px;padding:8px;background:#1a8e3c;color:white;border:none;border-radius:25px;cursor:pointer;">✅ ସମାଧାନ କରନ୍ତୁ</button>` : ''}
+                ${r.description ? `<div>📝 ${escapeHtml(r.description)}</div>` : ''}
+                <div style="color:${r.status === 'pending' ? '#f90' : '#4caf50'}">${r.status === 'pending' ? '⏳ Pending' : '✅ Resolved'}</div>
+                ${currentUser.role === 'admin' && r.status === 'pending' ? `<button onclick="resolveRequest(${r.id})" style="margin-top:8px;">✅ Resolve</button>` : ''}
             </div>
         `).join('');
     }
     
-    function resolveHelpRequest(id) {
-        helpRequests = helpRequests.map(r => 
-            r.id === id ? {...r, status: 'resolved'} : r
-        );
+    function resolveRequest(id) {
+        helpRequests = helpRequests.map(r => r.id === id ? {...r, status: 'resolved'} : r);
         saveHelpRequests();
-        showToast('✅ ସହାୟତା ଅନୁରୋଧ ସମାଧାନ ହେଲା');
+        showToast('✅ Request resolved');
     }
     
-    // ==================== PROFILE FUNCTIONS ====================
+    // ============ PROFILE ============
     function renderProfile() {
         document.getElementById('editName').value = currentUser.name || '';
         document.getElementById('editVillage').value = currentUser.village || '';
         document.getElementById('editRole').value = currentUser.role;
-        document.getElementById('profileAvatarDisplay').innerHTML = currentUser.avatar || '👤';
+        document.getElementById('avatarDisplay').innerHTML = currentUser.avatar || '👤';
         document.getElementById('profileNameDisplay').innerHTML = currentUser.name || 'ଗ୍ରାମୀଣ';
         updateProfileStats();
     }
     
     function updateProfileStats() {
-        const userPosts = posts.filter(p => p.userId === currentUser.id).length;
-        const userLikes = currentUser.likedPosts?.length || 0;
+        let userPosts = posts.filter(p => p.userId === currentUser.id).length;
+        let userLikes = currentUser.likedPosts?.length || 0;
         document.getElementById('userPostCount').innerHTML = userPosts;
         document.getElementById('userLikeCount').innerHTML = userLikes;
     }
     
-    function saveProfileChanges() {
-        const newName = document.getElementById('editName').value.trim();
-        const newVillage = document.getElementById('editVillage').value.trim();
-        const newRole = document.getElementById('editRole').value;
-        
-        if (newName) currentUser.name = newName;
-        if (newVillage) currentUser.village = newVillage;
-        currentUser.role = newRole;
-        
+    function saveProfile() {
+        currentUser.name = document.getElementById('editName').value || 'ଗ୍ରାମୀଣ';
+        currentUser.village = document.getElementById('editVillage').value;
+        currentUser.role = document.getElementById('editRole').value;
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         
-        // Update user name in posts
-        posts = posts.map(post => {
-            if (post.userId === currentUser.id) {
-                return {...post, userName: currentUser.name};
-            }
-            return post;
-        });
+        posts = posts.map(p => p.userId === currentUser.id ? {...p, userName: currentUser.name} : p);
         saveAllPosts();
-        
         renderProfile();
-        renderPosts();
-        renderChat();
-        showToast('💾 ପ୍ରୋଫାଇଲ୍ ଅପଡେଟ୍ ହେଲା');
+        showToast('💾 Profile saved');
     }
     
-    // Avatar upload
-    document.getElementById('profileAvatarInput')?.addEventListener('change', (e) => {
-        const file = e.target.files[0];
+    document.getElementById('avatarInput').onchange = (e) => {
+        let file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
+            let reader = new FileReader();
             reader.onload = (ev) => {
                 currentUser.avatar = `<img src="${ev.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 renderProfile();
-                showToast('🖼️ ପ୍ରୋଫାଇଲ୍ ଫଟୋ ଅପଡେଟ୍ ହେଲା');
             };
             reader.readAsDataURL(file);
         }
-    });
+    };
     
     function logout() {
-        if (confirm('ଆପଣ ନିଶ୍ଚିତ? ସମସ୍ତ ଡାଟା ସେଭ୍ ରହିବ, ପରେ ଲଗ୍ ଇନ୍ କରିପାରିବେ।')) {
+        if (confirm('Logout?')) {
             localStorage.removeItem('currentUser');
             location.reload();
         }
     }
     
-    // ==================== UTILITIES ====================
+    // ============ UTILS ============
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -1155,14 +1014,14 @@
         });
     }
     
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
+    function showToast(msg) {
+        let toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
     }
     
-    // ==================== INITIAL RENDER ====================
+    // Initial load
     renderPosts();
     renderChat();
 </script>
