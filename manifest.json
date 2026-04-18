@@ -1,8 +1,8 @@
 {
   "name": "ମୋ_ନହନ୍ତରା",
-  "short_name": "ମୋ_ନହନ୍ତରା",
+  "short_name": "MoNahantara",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "icons": [
     {
       "sizes": "114x114",
@@ -59,21 +59,17 @@
       "id": "com.github.android"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
-  "id": "bani",
-  "description": "bani is mine",
+  "theme_color": "#cbb6b6",
+  "background_color": "#1b1717",
+  "id": "nahantara",
+  "description": "mo nahantara mo swaviman",
   "categories": [
     "education",
     "finance",
-    "kids",
-    "medical",
+    "health",
     "news",
     "photo",
     "social",
     "sports"
-  ],
-  "edge_side_panel": {
-    "preferred_width": 2
-  }
+  ]
 }
