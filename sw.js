@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gaon-app-v1';
+const CACHE_NAME = 'nahantara-v1';
 const urlsToCache = [
   'index.html',
   'style.css',
