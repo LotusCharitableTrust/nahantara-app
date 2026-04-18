@@ -2,240 +2,161 @@
 <html lang="or">
 <head>
     <meta charset="UTF-8">
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#1a8e3c">
-    <meta name="description" content="ନହନ୍ତରା ଗାଁର ନିଜସ୍ୱ ଆପ୍ - ଖବର, ପର୍ବ, ମଦତ ଏବଂ ଚାଟ୍">
     <title>ନହନ୍ତରା - ମୋ ସ୍ବାଭିମାନ</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Oriya:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Status Bar -->
-    <div class="status-bar">
-        <span id="networkStatus">📶 ଅନଲାଇନ୍</span>
-        <span>🏘️ ନହନ୍ତରା</span>
-        <span id="time">12:00</span>
-    </div>
-
-    <!-- Main Container -->
     <div class="app-container">
-        
         <!-- Header -->
         <div class="header">
-            <div class="logo">
-                <span>🌾</span>
-            </div>
+            <div class="logo">🌾</div>
             <div class="header-text">
                 <h1>ମୋ ନହନ୍ତରା</h1>
                 <p>ମୋ ସ୍ବାଭିମାନ</p>
             </div>
-            <div class="menu-icon" onclick="toggleMenu()">
-                <span>☰</span>
+            <div class="notification-bell" onclick="showNotifications()">
+                <span>🔔</span>
+                <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('home')">
-                <span class="tab-icon">🏠</span>
-                <span class="tab-label">ହୋମ୍</span>
-            </button>
-            <button class="tab-btn" onclick="showTab('gallery')">
-                <span class="tab-icon">📸</span>
-                <span class="tab-label">ଗ୍ୟାଲେରୀ</span>
-            </button>
-            <button class="tab-btn" onclick="showTab('chat')">
-                <span class="tab-icon">💬</span>
-                <span class="tab-label">ଚାଟ୍</span>
-            </button>
-            <button class="tab-btn" onclick="showTab('help')">
-                <span class="tab-icon">🆘</span>
-                <span class="tab-label">ସହାୟତା</span>
-            </button>
-            <button class="tab-btn" onclick="showTab('profile')">
-                <span class="tab-icon">👤</span>
-                <span class="tab-label">ପ୍ରୋଫାଇଲ୍</span>
-            </button>
-        </div>
-
-        <!-- Tab 1: Home -->
-        <div id="home" class="tab-content active">
-            
-            <!-- Announcement Banner -->
-            <div class="announcement-banner" id="announcementBanner">
-                <div class="announcement-icon">📢</div>
-                <div class="announcement-text" id="announcementText">କୌଣସି ଘୋଷଣା ନାହିଁ</div>
-                <button class="close-announcement" onclick="closeAnnouncement()">✕</button>
-            </div>
-
-            <!-- Welcome Card -->
-            <div class="welcome-card">
-                <div class="welcome-icon">🌾🙏🌾</div>
-                <p>ସ୍ଵାଗତମ୍! ଆପଣଙ୍କର ନହନ୍ତରା ଗାଁର ଡିଜିଟାଲ୍ ପରିବାରରେ ସ୍ଵାଗତ।</p>
-            </div>
-
-            <!-- Add Post -->
-            <div class="add-post">
-                <div class="post-input-wrapper">
-                    <div class="post-avatar-small">🌾</div>
-                    <textarea id="postContent" placeholder="ଆଜି କ’ଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର, କାର୍ଯ୍ୟକ୍ରମ)..."></textarea>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Home Tab -->
+            <div id="home" class="tab-page active">
+                <div class="announcement-banner" id="announcementBanner">
+                    <span>📢</span>
+                    <span id="announcementText">ସ୍ଵାଗତମ୍!</span>
+                    <button onclick="closeAnnouncement()">✕</button>
                 </div>
-                <div class="post-actions">
-                    <input type="file" id="postImage" accept="image/*,video/*" style="display:none">
-                    <button class="media-btn" onclick="document.getElementById('postImage').click()">
-                        <span>📷</span> ଫଟୋ/ଭିଡ଼ିଓ
-                    </button>
-                    <button class="post-btn" onclick="addPost()">
-                        <span>📤</span> ପୋଷ୍ଟ କରନ୍ତୁ
-                    </button>
+
+                <div class="add-post-card">
+                    <div class="add-post-header">
+                        <img id="currentUserAvatar" class="small-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a8e3c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E">
+                        <input type="text" id="postInput" placeholder="ଆଜି କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
+                    </div>
+                    <div class="add-post-actions">
+                        <button class="media-btn" onclick="document.getElementById('postImage').click()">📷 ଫଟୋ/ଭିଡିଓ</button>
+                        <input type="file" id="postImage" accept="image/*,video/*" style="display:none">
+                        <button class="post-btn" onclick="createPost()">📤 ପୋଷ୍ଟ କରନ୍ତୁ</button>
+                    </div>
                 </div>
+
+                <div id="postsFeed" class="posts-feed"></div>
             </div>
 
-            <!-- Feed Header -->
-            <div class="feed-header">
-                <h3>📰 ଗାଁର ତାଜା ଖବର</h3>
-                <span class="feed-count" id="postCount">0 ଟି ପୋଷ୍ଟ</span>
+            <!-- Posts Tab (Gallery renamed) -->
+            <div id="posts" class="tab-page">
+                <div class="section-header">
+                    <h3>📸 ସମସ୍ତ ପୋଷ୍ଟ</h3>
+                    <p>ଗାଁର ସବୁ ଫଟୋ ଓ ଭିଡିଓ</p>
+                </div>
+                <div id="allPostsGrid" class="posts-grid"></div>
             </div>
 
-            <!-- Posts Feed -->
-            <div id="postsFeed" class="posts-feed"></div>
-        </div>
-
-        <!-- Tab 2: Gallery -->
-        <div id="gallery" class="tab-content">
-            <div class="section-header">
-                <h3>📸 ଗାଁର ସୁନ୍ଦର ମୁହୂର୍ତ୍ତ</h3>
-                <p>ସମସ୍ତ ଫଟୋ ଓ ଭିଡ଼ିଓ</p>
-            </div>
-            <div class="gallery-grid" id="galleryGrid">
-                <div class="empty-gallery">କୌଣସି ଫଟୋ ନାହିଁ। ପ୍ରଥମେ ପୋଷ୍ଟ କରନ୍ତୁ!</div>
-            </div>
-        </div>
-
-        <!-- Tab 3: Chat -->
-        <div id="chat" class="tab-content">
-            <div class="chat-header">
-                <h3>💬 ଗ୍ରୁପ୍ ଚାଟ୍</h3>
-                <div class="group-selector">
+            <!-- Chat Tab -->
+            <div id="chat" class="tab-page">
+                <div class="chat-header">
+                    <h3>💬 ଗ୍ରୁପ୍ ଚାଟ୍</h3>
                     <select id="groupSelect" onchange="changeGroup()">
                         <option value="gaon">🏘️ ସମସ୍ତ ଗାଁ</option>
                         <option value="yuva">🚶 ଯୁବକ ମଣ୍ଡଳ</option>
                         <option value="mahila">👩 ମହିଳା ସମୂହ</option>
-                        <option value="sabhya">🤝 ଗ୍ରାମ ସଭ୍ୟ</option>
                     </select>
                 </div>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="chat-placeholder">💬 ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ...</div>
-            </div>
-            <div class="chat-input">
-                <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ ଲେଖନ୍ତୁ...">
-                <button onclick="sendMessage()">
-                    <span>➤</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab 4: Help -->
-        <div id="help" class="tab-content">
-            <div class="section-header">
-                <h3>🆘 ସହାୟତା କେନ୍ଦ୍ର</h3>
-                <p>ଆପଣଙ୍କ ସମସ୍ୟା ଜଣାନ୍ତୁ, ଆମେ ସାହାଯ୍ୟ କରିବୁ</p>
-            </div>
-            
-            <div class="help-category sos-box">
-                <div class="help-icon">🚨</div>
-                <h4>ଜରୁରୀକାଳୀନ ସହାୟତା</h4>
-                <div class="sos-button" onclick="sendSOS()">
-                    <span>🆘</span> SOS - ତୁରନ୍ତ ସହାୟତା
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ ଲେଖନ୍ତୁ...">
+                    <button onclick="sendMessage()">➤</button>
                 </div>
-                <p class="help-note">ଡାକ୍ତର, ଅଗ୍ନିଶମ, ପୋଲିସ ତୁରନ୍ତ ସୂଚନା ପାଇବେ</p>
             </div>
 
-            <div class="help-category">
-                <div class="help-icon">⚠️</div>
-                <h4>ଦୁର୍ନୀତି ରିପୋର୍ଟ</h4>
-                <textarea id="corruptionDesc" placeholder="କେଉଁଠାରେ? କିଏ? କେତେ ଟଙ୍କା? (ସବୁ ଗୁପ୍ତ ରହିବ)"></textarea>
-                <button onclick="reportCorruption()">
-                    <span>📢</span> ରିପୋର୍ଟ କରନ୍ତୁ
-                </button>
-            </div>
+            <!-- SOS Tab -->
+            <div id="sos" class="tab-page">
+                <div class="sos-container">
+                    <div class="sos-button-main" onclick="sendSOS()">
+                        <span>🆘</span>
+                        <span>SOS - ଜରୁରୀ ସହାୟତା</span>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h4>⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ</h4>
+                        <textarea id="corruptionDesc" placeholder="କେଉଁଠାରେ? କିଏ? ବିବରଣୀ..."></textarea>
+                        <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ କରନ୍ତୁ</button>
+                    </div>
 
-            <div class="help-category">
-                <div class="help-icon">🛠️</div>
-                <h4>ସମସ୍ୟା / ବିପତ୍ତି</h4>
-                <textarea id="helpDesc" placeholder="ବିଜୁଳି, ପାଣି, ରାସ୍ତା, ବନ୍ୟା, ଖରା, ଚୋରି..."></textarea>
-                <button onclick="requestHelp()">
-                    <span>🙏</span> ସହାୟତା ଆବଶ୍ୟକ
-                </button>
-            </div>
+                    <div class="help-section">
+                        <h4>🛠️ ସମସ୍ୟା / ବିପତ୍ତି</h4>
+                        <textarea id="helpDesc" placeholder="ବିଜୁଳି, ପାଣି, ରାସ୍ତା, ବନ୍ୟା..."></textarea>
+                        <button onclick="requestHelp()">🙏 ସହାୟତା ଆବଶ୍ୟକ</button>
+                    </div>
 
-            <div class="help-requests" id="helpRequests">
-                <h4>📋 ସହାୟତା ଅନୁରୋଧ</h4>
-                <div class="empty-state">କୌଣସି ଅନୁରୋଧ ନାହିଁ</div>
-            </div>
-        </div>
-
-        <!-- Tab 5: Profile -->
-        <div id="profile" class="tab-content">
-            <div class="section-header">
-                <h3>👤 ମୋର ପ୍ରୋଫାଇଲ୍</h3>
-                <p>ଆପଣଙ୍କର ବିବରଣୀ</p>
-            </div>
-            
-            <div class="profile-card">
-                <div class="profile-avatar">
-                    <span>🌾</span>
+                    <div id="helpRequestsList" class="help-requests-list"></div>
                 </div>
-                <div class="profile-input-group">
-                    <label>ନାମ</label>
-                    <input type="text" id="userName" placeholder="ଆପଣଙ୍କର ନାମ ଲେଖନ୍ତୁ">
-                </div>
-                <div class="profile-input-group">
-                    <label>ମୋହଲ୍ଲା / ଗ୍ରାମ</label>
-                    <input type="text" id="userVillage" placeholder="ମୋହଲ୍ଲାର ନାମ">
-                </div>
-                <div class="profile-input-group">
-                    <label>ଭୂମିକା</label>
-                    <select id="userRole">
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-page">
+                <div class="profile-container">
+                    <div class="profile-avatar-container" onclick="document.getElementById('profilePicInput').click()">
+                        <img id="profileAvatar" class="profile-avatar-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a8e3c'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E">
+                        <div class="camera-icon">📷</div>
+                    </div>
+                    <input type="file" id="profilePicInput" accept="image/*" style="display:none" onchange="updateProfilePicture(event)">
+                    
+                    <input type="text" id="profileName" placeholder="ଆପଣଙ୍କର ନାମ" class="profile-input">
+                    <input type="text" id="profileVillage" placeholder="ମୋହଲ୍ଲା / ଗାଁ" class="profile-input">
+                    <select id="profileRole" class="profile-input">
                         <option value="user">🌾 ସାଧାରଣ ସଦସ୍ୟ</option>
-                        <option value="admin">👑 ପ୍ରଶାସକ (ଆଡମିନ୍)</option>
+                        <option value="admin">👑 ପ୍ରଶାସକ</option>
                     </select>
+                    <button class="profile-save-btn" onclick="saveProfile()">💾 ସେଭ୍ କରନ୍ତୁ</button>
+                    
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <span id="postCount">0</span>
+                            <span>ପୋଷ୍ଟ</span>
+                        </div>
+                        <div class="stat">
+                            <span id="likesGivenCount">0</span>
+                            <span>ଲାଇକ୍</span>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="logout()">🚪 ଲଗ୍ଆଉଟ୍</button>
                 </div>
-                <button class="save-btn" onclick="saveProfile()">
-                    <span>💾</span> ସେଭ୍ କରନ୍ତୁ
-                </button>
             </div>
+        </div>
 
-            <div class="app-info-card">
-                <div class="app-info-item">
-                    <span>📱</span>
-                    <span>ଭର୍ସନ୍ ୧.୦</span>
-                </div>
-                <div class="app-info-item">
-                    <span>🏘️</span>
-                    <span>ନହନ୍ତରା ଗାଁ</span>
-                </div>
-                <button class="share-btn" onclick="shareApp()">
-                    <span>📤</span> ଆପ୍ ସେୟାର କରନ୍ତୁ
-                </button>
-                <button class="clear-btn" onclick="clearData()">
-                    <span>🗑️</span> ଡାଟା ସାଫ୍ କରନ୍ତୁ
-                </button>
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-tab="home">
+                <span>🏠</span>
+                <span>ହୋମ୍</span>
+            </div>
+            <div class="nav-item" data-tab="posts">
+                <span>📸</span>
+                <span>ପୋଷ୍ଟ</span>
+            </div>
+            <div class="nav-item" data-tab="chat">
+                <span>💬</span>
+                <span>ଚାଟ୍</span>
+            </div>
+            <div class="nav-item" data-tab="sos">
+                <span>🆘</span>
+                <span>SOS</span>
+            </div>
+            <div class="nav-item" data-tab="profile">
+                <span>👤</span>
+                <span>ପ୍ରୋଫାଇଲ୍</span>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
-
     <script src="script.js"></script>
 </body>
 </html>

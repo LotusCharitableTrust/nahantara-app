@@ -1,55 +1,113 @@
-// ============ DATA STORAGE ============
+// ============ CURRENT USER ============
+let currentUser = null;
+let users = JSON.parse(localStorage.getItem('users') || '{}');
 let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-let messages = JSON.parse(localStorage.getItem('messages') || '{}');
-let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{"name":"ନହନ୍ତରା ବାସୀ","village":"","role":"user"}');
-let currentGroup = 'gaon';
+let messages = JSON.parse(localStorage.getItem('messages') || '{"gaon":[],"yuva":[],"mahila":[]}');
 let helpRequests = JSON.parse(localStorage.getItem('helpRequests') || '[]');
 
-// Initialize messages for groups
-if (!messages['gaon']) messages['gaon'] = [];
-if (!messages['yuva']) messages['yuva'] = [];
-if (!messages['mahila']) messages['mahila'] = [];
-if (!messages['sabhya']) messages['sabhya'] = [];
-
-// ============ TOAST FUNCTION ============
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 2000);
-}
-
-// ============ TAB NAVIGATION ============
-function showTab(tabName) {
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.getElementById(tabName).classList.add('active');
+// ============ INITIALIZATION ============
+function init() {
+    // Check if user is logged in
+    const savedUserId = localStorage.getItem('currentUserId');
+    if (savedUserId && users[savedUserId]) {
+        currentUser = users[savedUserId];
+    } else {
+        // Create new user
+        const userId = 'user_' + Date.now();
+        currentUser = {
+            id: userId,
+            name: 'ନହନ୍ତରା ବାସୀ',
+            village: '',
+            role: 'user',
+            avatar: null,
+            likedPosts: []
+        };
+        users[userId] = currentUser;
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUserId', userId);
+    }
     
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
+    loadProfile();
+    loadPosts();
+    loadChat();
+    loadHelpRequests();
+    setupNavigation();
+    updateStats();
+}
+
+// ============ NAVIGATION ============
+function setupNavigation() {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const tab = item.dataset.tab;
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+        });
     });
-    event.target.closest('.tab-btn').classList.add('active');
+}
+
+// ============ PROFILE ============
+function updateProfilePicture(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            currentUser.avatar = e.target.result;
+            users[currentUser.id] = currentUser;
+            localStorage.setItem('users', JSON.stringify(users));
+            loadProfile();
+            showToast('✅ ପ୍ରୋଫାଇଲ୍ ଫଟୋ ଅପଡେଟ୍ ହେଲା');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function saveProfile() {
+    const name = document.getElementById('profileName').value;
+    const village = document.getElementById('profileVillage').value;
+    const role = document.getElementById('profileRole').value;
     
-    if (tabName === 'gallery') loadGallery();
-    if (tabName === 'chat') loadChat();
-    if (tabName === 'help') loadHelpRequests();
-    updatePostCount();
+    if (name) currentUser.name = name;
+    if (village) currentUser.village = village;
+    currentUser.role = role;
+    
+    users[currentUser.id] = currentUser;
+    localStorage.setItem('users', JSON.stringify(users));
+    loadProfile();
+    loadPosts();
+    showToast('💾 ପ୍ରୋଫାଇଲ୍ ସେଭ୍ ହେଲା');
 }
 
-function toggleMenu() {
-    showToast("🌾 ନହନ୍ତରା ଗାଁ ଆପ୍ - ମୋ ସ୍ବାଭିମାନ");
+function loadProfile() {
+    document.getElementById('profileName').value = currentUser.name || '';
+    document.getElementById('profileVillage').value = currentUser.village || '';
+    document.getElementById('profileRole').value = currentUser.role || 'user';
+    
+    const avatarImg = document.getElementById('profileAvatar');
+    if (currentUser.avatar) {
+        avatarImg.src = currentUser.avatar;
+    }
+    
+    const smallAvatar = document.getElementById('currentUserAvatar');
+    if (smallAvatar && currentUser.avatar) {
+        smallAvatar.src = currentUser.avatar;
+    }
 }
 
-// ============ POSTS / NEWS FEED ============
-function addPost() {
-    const content = document.getElementById('postContent').value;
+function logout() {
+    localStorage.removeItem('currentUserId');
+    location.reload();
+}
+
+// ============ POSTS (with unique likes) ============
+function createPost() {
+    const content = document.getElementById('postInput').value;
     const imageFile = document.getElementById('postImage').files[0];
     
     if (!content && !imageFile) {
-        showToast("⚠️ ଦୟାକରି କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ");
+        showToast('⚠️ କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ');
         return;
     }
     
@@ -57,9 +115,10 @@ function addPost() {
         id: Date.now(),
         content: content,
         userName: currentUser.name,
-        userRole: currentUser.role,
+        userId: currentUser.id,
+        userAvatar: currentUser.avatar,
         timestamp: new Date().toLocaleString('or-IN'),
-        likes: 0,
+        likes: [],
         comments: []
     };
     
@@ -70,104 +129,112 @@ function addPost() {
             post.mediaType = imageFile.type.startsWith('video') ? 'video' : 'image';
             posts.unshift(post);
             savePosts();
-            loadPosts();
-            showToast("✅ ପୋଷ୍ଟ ସଫଳତାର ସହ ସେୟାର ହେଲା");
         };
         reader.readAsDataURL(imageFile);
     } else {
         posts.unshift(post);
         savePosts();
-        loadPosts();
-        showToast("✅ ପୋଷ୍ଟ ସଫଳତାର ସହ ସେୟାର ହେଲା");
     }
     
-    document.getElementById('postContent').value = '';
+    document.getElementById('postInput').value = '';
     document.getElementById('postImage').value = '';
+    showToast('✅ ପୋଷ୍ଟ ହେଲା');
+}
+
+function toggleLike(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
+    
+    const hasLiked = post.likes.includes(currentUser.id);
+    
+    if (hasLiked) {
+        post.likes = post.likes.filter(id => id !== currentUser.id);
+        showToast('❤️ ଲାଇକ୍ ହଟାଗଲା');
+    } else {
+        post.likes.push(currentUser.id);
+        showToast('👍 ଲାଇକ୍ କଲେ');
+        
+        // Update user's liked posts count
+        if (!currentUser.likedPosts) currentUser.likedPosts = [];
+        currentUser.likedPosts.push(postId);
+        users[currentUser.id] = currentUser;
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    
+    savePosts();
+    loadPosts();
+    updateStats();
 }
 
 function savePosts() {
     localStorage.setItem('posts', JSON.stringify(posts));
-    const galleryItems = posts.filter(p => p.media).map(p => p.media);
-    localStorage.setItem('gallery', JSON.stringify(galleryItems));
-    updatePostCount();
-}
-
-function updatePostCount() {
-    const countSpan = document.getElementById('postCount');
-    if (countSpan) {
-        countSpan.textContent = posts.length + " ଟି ପୋଷ୍ଟ";
-    }
+    updateStats();
 }
 
 function loadPosts() {
     const feed = document.getElementById('postsFeed');
+    const grid = document.getElementById('allPostsGrid');
+    
     if (posts.length === 0) {
-        feed.innerHTML = '<div class="empty-state">🌾 କୌଣସି ପୋଷ୍ଟ ନାହିଁ। ପ୍ରଥମେ ପୋଷ୍ଟ କରନ୍ତୁ!</div>';
+        feed.innerHTML = '<div class="empty-state">🌾 କୌଣସି ପୋଷ୍ଟ ନାହିଁ</div>';
+        if (grid) grid.innerHTML = '<div class="empty-state">🌾 କୌଣସି ପୋଷ୍ଟ ନାହିଁ</div>';
         return;
     }
     
+    // Feed
     feed.innerHTML = posts.map(post => `
         <div class="post-card">
             <div class="post-header">
-                <div class="post-avatar">${post.userName.charAt(0)}</div>
+                <img class="post-avatar" src="${post.userAvatar || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%231a8e3c%27%3E%3Cpath d=%27M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z%27/%3E%3C/svg%3E'}">
                 <div>
-                    <div class="post-name">${post.userName} ${post.userRole === 'admin' ? '👑' : ''}</div>
+                    <div class="post-name">${post.userName} ${post.userId === currentUser.id ? '(ଆପଣ)' : ''}</div>
                     <div class="post-time">${post.timestamp}</div>
                 </div>
             </div>
             <div class="post-content">${post.content || ''}</div>
             ${post.media ? (post.mediaType === 'video' ? 
                 `<video src="${post.media}" controls class="post-media"></video>` : 
-                `<img src="${post.media}" class="post-media" onclick="viewMedia('${post.media}')">`) : ''}
-            <div class="post-actions-feed">
-                <span onclick="likePost(${post.id})">❤️ ${post.likes}</span>
+                `<img src="${post.media}" class="post-media">`) : ''}
+            <div class="post-actions">
+                <span onclick="toggleLike(${post.id})" class="${post.likes.includes(currentUser.id) ? 'active' : ''}">
+                    ❤️ ${post.likes.length}
+                </span>
                 <span>💬 ${post.comments.length}</span>
-                ${currentUser.role === 'admin' ? `<span onclick="deletePost(${post.id})">🗑️ ଲିଭାନ୍ତୁ</span>` : ''}
+                ${currentUser.role === 'admin' || post.userId === currentUser.id ? 
+                    `<span onclick="deletePost(${post.id})">🗑️</span>` : ''}
             </div>
         </div>
     `).join('');
-}
-
-function likePost(postId) {
-    posts = posts.map(p => {
-        if (p.id === postId) {
-            p.likes++;
+    
+    // Grid view
+    const mediaPosts = posts.filter(p => p.media);
+    if (grid) {
+        if (mediaPosts.length === 0) {
+            grid.innerHTML = '<div class="empty-state">📸 କୌଣସି ଫଟୋ/ଭିଡିଓ ନାହିଁ</div>';
+        } else {
+            grid.innerHTML = mediaPosts.map(post => `
+                <img src="${post.media}" class="post-grid-item" onclick="viewMedia('${post.media}')">
+            `).join('');
         }
-        return p;
-    });
-    savePosts();
-    loadPosts();
+    }
 }
 
 function deletePost(postId) {
-    if (currentUser.role === 'admin') {
+    if (currentUser.role === 'admin' || posts.find(p => p.id === postId)?.userId === currentUser.id) {
         posts = posts.filter(p => p.id !== postId);
         savePosts();
         loadPosts();
-        showToast("🗑️ ପୋଷ୍ଟ ଲିଭାଗଲା");
+        showToast('🗑️ ପୋଷ୍ଟ ଲିଭାଗଲା');
     }
-}
-
-// ============ GALLERY ============
-function loadGallery() {
-    const galleryGrid = document.getElementById('galleryGrid');
-    const galleryItems = JSON.parse(localStorage.getItem('gallery') || '[]');
-    
-    if (galleryItems.length === 0) {
-        galleryGrid.innerHTML = '<div class="empty-gallery">📸 କୌଣସି ଫଟୋ ନାହିଁ। ପ୍ରଥମେ ପୋଷ୍ଟ କରନ୍ତୁ!</div>';
-        return;
-    }
-    
-    galleryGrid.innerHTML = galleryItems.map(item => `
-        <img src="${item}" class="gallery-item" onclick="viewMedia('${item}')">
-    `).join('');
 }
 
 function viewMedia(src) {
     window.open(src, '_blank');
 }
 
-// ============ CHAT SYSTEM ============
+// ============ CHAT ============
+let currentGroup = 'gaon';
+
 function changeGroup() {
     currentGroup = document.getElementById('groupSelect').value;
     loadChat();
@@ -181,16 +248,15 @@ function sendMessage() {
     const message = {
         id: Date.now(),
         user: currentUser.name,
+        userId: currentUser.id,
         text: text,
-        time: new Date().toLocaleTimeString('or-IN'),
-        isAdmin: currentUser.role === 'admin'
+        time: new Date().toLocaleTimeString('or-IN')
     };
     
     messages[currentGroup].push(message);
     localStorage.setItem('messages', JSON.stringify(messages));
     input.value = '';
     loadChat();
-    showToast("💬 ସନ୍ଦେଶ ପଠାଗଲା");
 }
 
 function loadChat() {
@@ -198,13 +264,13 @@ function loadChat() {
     const groupMessages = messages[currentGroup] || [];
     
     if (groupMessages.length === 0) {
-        chatDiv.innerHTML = '<div class="chat-placeholder">💬 ଏଠାରେ ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ...</div>';
+        chatDiv.innerHTML = '<div class="empty-state">💬 ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ</div>';
         return;
     }
     
     chatDiv.innerHTML = groupMessages.map(msg => `
-        <div class="message ${msg.user === currentUser.name ? 'message-self' : ''}">
-            <div class="message-user">${msg.user} ${msg.isAdmin ? '👑' : ''}</div>
+        <div class="message ${msg.userId === currentUser.id ? 'message-self' : ''}">
+            <div class="message-user">${msg.user}</div>
             <div class="message-text">${msg.text}</div>
             <div style="font-size:10px;color:#888;">${msg.time}</div>
         </div>
@@ -213,199 +279,113 @@ function loadChat() {
     chatDiv.scrollTop = chatDiv.scrollHeight;
 }
 
-// ============ HELP / SOS ============
+// ============ SOS & HELP ============
 function sendSOS() {
-    const sosMessage = {
+    const sos = {
         id: Date.now(),
         type: 'SOS',
-        description: '🚨 SOS - ଜରୁରୀକାଳୀନ ସହାୟତା ଆବଶ୍ୟକ!',
         user: currentUser.name,
+        userId: currentUser.id,
         timestamp: new Date().toLocaleString('or-IN'),
         status: 'pending'
     };
-    helpRequests.unshift(sosMessage);
+    helpRequests.unshift(sos);
     saveHelpRequests();
-    showToast("🚨 SOS ପଠାଗଲା! ପ୍ରଶାସକଙ୍କୁ ସୂଚନା ଦିଆଗଲା");
-    if (currentUser.role === 'admin') {
-        loadHelpRequests();
-    }
+    showToast('🚨 SOS ପଠାଗଲା! ପ୍ରଶାସକଙ୍କୁ ସୂଚନା ଦିଆଗଲା');
 }
 
 function reportCorruption() {
     const desc = document.getElementById('corruptionDesc').value;
-    if (!desc) {
-        showToast("⚠️ ଦୟାକରି ଦୁର୍ନୀତି ବିଷୟରେ ଲେଖନ୍ତୁ");
-        return;
-    }
+    if (!desc) { showToast('⚠️ ବିବରଣୀ ଲେଖନ୍ତୁ'); return; }
     
-    const report = {
+    helpRequests.unshift({
         id: Date.now(),
         type: 'ଦୁର୍ନୀତି',
         description: desc,
         user: currentUser.name,
+        userId: currentUser.id,
         timestamp: new Date().toLocaleString('or-IN'),
         status: 'pending'
-    };
-    helpRequests.unshift(report);
+    });
     saveHelpRequests();
     document.getElementById('corruptionDesc').value = '';
-    showToast("📢 ରିପୋର୍ଟ ଦାଖଲ ହେଲା। ପ୍ରଶାସକ କାର୍ଯ୍ୟାନୁଷ୍ଠାନ ନେବେ");
-    loadHelpRequests();
+    showToast('📢 ରିପୋର୍ଟ ଦାଖଲ ହେଲା');
 }
 
 function requestHelp() {
     const desc = document.getElementById('helpDesc').value;
-    if (!desc) {
-        showToast("⚠️ ଦୟାକରି ସମସ୍ୟା ବିଷୟରେ ଲେଖନ୍ତୁ");
-        return;
-    }
+    if (!desc) { showToast('⚠️ ସମସ୍ୟା ଲେଖନ୍ତୁ'); return; }
     
-    const request = {
+    helpRequests.unshift({
         id: Date.now(),
         type: 'ସହାୟତା',
         description: desc,
         user: currentUser.name,
+        userId: currentUser.id,
         timestamp: new Date().toLocaleString('or-IN'),
         status: 'pending'
-    };
-    helpRequests.unshift(request);
+    });
     saveHelpRequests();
     document.getElementById('helpDesc').value = '';
-    showToast("🙏 ସହାୟତା ଅନୁରୋଧ ପଠାଗଲା");
-    loadHelpRequests();
+    showToast('🙏 ସହାୟତା ଅନୁରୋଧ ପଠାଗଲା');
 }
 
 function saveHelpRequests() {
     localStorage.setItem('helpRequests', JSON.stringify(helpRequests));
+    loadHelpRequests();
 }
 
 function loadHelpRequests() {
-    const container = document.getElementById('helpRequests');
+    const container = document.getElementById('helpRequestsList');
     if (!container) return;
     
-    if (helpRequests.length === 0) {
-        container.innerHTML = '<h4>📋 ସହାୟତା ଅନୁରୋଧ</h4><div class="empty-state">କୌଣସି ଅନୁରୋଧ ନାହିଁ</div>';
+    const userRequests = helpRequests.filter(r => r.userId === currentUser.id || currentUser.role === 'admin');
+    
+    if (userRequests.length === 0) {
+        container.innerHTML = '<div class="empty-state">📋 କୌଣସି ଅନୁରୋଧ ନାହିଁ</div>';
         return;
     }
     
-    container.innerHTML = `
-        <h4>📋 ସହାୟତା ଅନୁରୋଧ</h4>
-        ${helpRequests.map(req => `
-            <div style="background:white;border:1px solid var(--border);padding:14px;margin-bottom:10px;border-radius:12px;">
-                <div><strong>${req.type}</strong> <span style="font-size:11px;color:gray;">🕐 ${req.timestamp}</span></div>
-                <div style="font-size:13px;color:var(--primary-dark);">👤 ${req.user}</div>
-                <div style="margin:8px 0;font-size:13px;">📝 ${req.description}</div>
-                <div style="color:${req.status === 'resolved' ? 'green' : 'orange'};font-size:12px;">
-                    ${req.status === 'pending' ? '⏳ ଅପେକ୍ଷାରେ' : '✅ ସମାଧାନ ହେଲା'}
-                </div>
-                ${currentUser.role === 'admin' && req.status === 'pending' ? `
-                    <button onclick="resolveHelp(${req.id})" style="margin-top:10px;background:green;color:white;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;">✅ ସମାଧାନ କରନ୍ତୁ</button>
-                ` : ''}
+    container.innerHTML = userRequests.map(req => `
+        <div class="help-section" style="margin-bottom:10px;">
+            <div><strong>${req.type}</strong> 🕐 ${req.timestamp}</div>
+            <div>👤 ${req.user}</div>
+            ${req.description ? `<div>📝 ${req.description}</div>` : ''}
+            <div style="color:${req.status === 'resolved' ? 'green' : 'orange'}">
+                ${req.status === 'pending' ? '⏳ ଅପେକ୍ଷାରେ' : '✅ ସମାଧାନ'}
             </div>
-        `).join('')}
-    `;
+            ${currentUser.role === 'admin' && req.status === 'pending' ? 
+                `<button onclick="resolveHelp(${req.id})" style="margin-top:8px;">✅ ସମାଧାନ</button>` : ''}
+        </div>
+    `).join('');
 }
 
-function resolveHelp(requestId) {
-    if (currentUser.role === 'admin') {
-        helpRequests = helpRequests.map(req => 
-            req.id === requestId ? {...req, status: 'resolved'} : req
-        );
-        saveHelpRequests();
-        loadHelpRequests();
-        showToast("✅ ସହାୟତା ଅନୁରୋଧ ସମାଧାନ ହେଲା");
-    }
+function resolveHelp(id) {
+    helpRequests = helpRequests.map(r => r.id === id ? {...r, status: 'resolved'} : r);
+    saveHelpRequests();
+    showToast('✅ ସମାଧାନ ହେଲା');
 }
 
-// ============ PROFILE ============
-function saveProfile() {
-    const name = document.getElementById('userName').value;
-    const village = document.getElementById('userVillage').value;
-    const role = document.getElementById('userRole').value;
-    
-    if (name) currentUser.name = name;
-    if (village) currentUser.village = village;
-    currentUser.role = role;
-    
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    loadProfile();
-    showToast("💾 ପ୍ରୋଫାଇଲ୍ ସେଭ୍ ହେଲା");
+// ============ UTILITIES ============
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-function loadProfile() {
-    const nameInput = document.getElementById('userName');
-    const villageInput = document.getElementById('userVillage');
-    const roleSelect = document.getElementById('userRole');
-    
-    if (nameInput) nameInput.value = currentUser.name;
-    if (villageInput) villageInput.value = currentUser.village || '';
-    if (roleSelect) roleSelect.value = currentUser.role;
-}
-
-function shareApp() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'ନହନ୍ତରା ଗାଁ',
-            text: 'ମୋ ନହନ୍ତରା - ମୋ ସ୍ବାଭିମାନ ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ',
-            url: window.location.href
-        });
-    } else {
-        showToast("📤 ଏହି ପେଜ୍ ର ଲିଙ୍କ୍ କପି କରି ସେୟାର କରନ୍ତୁ");
-    }
-}
-
-function clearData() {
-    if (confirm("ସମସ୍ତ ଡାଟା ଲିଭିଯିବ! ଆପଣ ନିଶ୍ଚିତ?")) {
-        localStorage.clear();
-        location.reload();
-    }
-}
-
-// ============ ANNOUNCEMENT ============
-let currentAnnouncement = localStorage.getItem('announcement') || "🌾 ନହନ୍ତରା ଗାଁ ଆପ୍ ରେ ସ୍ଵାଗତମ୍";
-
-function loadAnnouncement() {
-    const textDiv = document.getElementById('announcementText');
-    if (textDiv) {
-        textDiv.innerHTML = currentAnnouncement;
-    }
+function updateStats() {
+    document.getElementById('postCount').textContent = posts.filter(p => p.userId === currentUser.id).length;
+    document.getElementById('likesGivenCount').textContent = currentUser.likedPosts?.length || 0;
 }
 
 function closeAnnouncement() {
     document.getElementById('announcementBanner').style.display = 'none';
 }
 
-// ============ INITIALIZATION ============
-function init() {
-    loadPosts();
-    loadProfile();
-    loadAnnouncement();
-    loadHelpRequests();
-    updatePostCount();
-    
-    // Update time
-    setInterval(() => {
-        const timeSpan = document.getElementById('time');
-        if (timeSpan) {
-            timeSpan.innerText = new Date().toLocaleTimeString('or-IN');
-        }
-    }, 1000);
-    
-    // Network status
-    window.addEventListener('online', () => {
-        const statusSpan = document.getElementById('networkStatus');
-        if (statusSpan) {
-            statusSpan.innerHTML = "📶 ଅନଲାଇନ୍";
-            statusSpan.style.color = "#4caf50";
-        }
-    });
-    window.addEventListener('offline', () => {
-        const statusSpan = document.getElementById('networkStatus');
-        if (statusSpan) {
-            statusSpan.innerHTML = "⚠️ ଅଫଲାଇନ୍";
-            statusSpan.style.color = "#ff9800";
-        }
-    });
+function showNotifications() {
+    showToast('🔔 ନୋଟିଫିକେସନ୍: ଏବେ କୌଣସି ନୂଆ ନାହିଁ');
 }
 
+// Start the app
 init();
