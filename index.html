@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ନହନ୍ତରା - ମୋ ସ୍ବାଭିମାନ</title>
+    <title>ନହନ୍ତରା - Easy Upload</title>
     <style>
         * {
             margin: 0;
@@ -54,7 +54,7 @@
             display: block;
         }
 
-        /* Hero Section */
+        /* Hero */
         .hero-banner {
             background: linear-gradient(135deg, #1a8e3c, #0d5c26);
             padding: 28px 20px;
@@ -76,8 +76,8 @@
             margin: -20px 16px 20px 16px;
             padding: 18px;
             border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .quick-actions {
@@ -93,8 +93,8 @@
             padding: 14px 8px;
             border-radius: 16px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .quick-icon {
@@ -106,7 +106,7 @@
             font-weight: 500;
         }
 
-        /* Create Post */
+        /* Create Post - Easy Upload */
         .create-post {
             background: white;
             padding: 12px 16px;
@@ -114,6 +114,7 @@
             gap: 12px;
             align-items: center;
             border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
         }
 
         .create-avatar {
@@ -135,12 +136,49 @@
             padding: 12px 16px;
             border-radius: 30px;
             font-size: 14px;
+            min-width: 150px;
         }
 
-        .photo-icon {
-            font-size: 28px;
+        .upload-btn {
+            background: #1a8e3c;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: 600;
             cursor: pointer;
-            padding: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .photo-preview {
+            width: 100%;
+            margin-top: 10px;
+            position: relative;
+            display: none;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 16px;
         }
 
         /* Post Card */
@@ -223,7 +261,6 @@
             padding: 0 12px 6px;
         }
 
-        /* Comments */
         .comments-section {
             padding: 8px 12px;
             background: #fafafa;
@@ -269,7 +306,6 @@
             cursor: pointer;
         }
 
-        /* Posts Grid */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -555,9 +591,12 @@
             <div class="create-post">
                 <div class="create-avatar" id="homeAvatar">👤</div>
                 <input type="text" id="postText" class="create-input" placeholder="କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
-                <div class="photo-icon" onclick="document.getElementById('postFile').click()">📷</div>
+                <button class="upload-btn" onclick="document.getElementById('postFile').click()">
+                    📷 ଫଟୋ
+                </button>
                 <input type="file" id="postFile" accept="image/*" style="display:none">
             </div>
+            <div id="photoPreview" class="photo-preview"></div>
             <div id="allPostsList"></div>
         </div>
 
@@ -632,8 +671,8 @@
 <script>
     // ============ DATA ============
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    let pendingImage = null; // Store selected image before posting
     
-    // Agar user nahi hai toh naya banao
     if (!currentUser) {
         currentUser = {
             id: 'user_' + Date.now(),
@@ -650,12 +689,76 @@
     let messages = JSON.parse(localStorage.getItem('messages')) || [];
     let helpRequests = JSON.parse(localStorage.getItem('helpRequests')) || [];
 
-    // ============ SAVE FUNCTIONS ============
     function saveAllData() {
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         localStorage.setItem('posts', JSON.stringify(posts));
         localStorage.setItem('messages', JSON.stringify(messages));
         localStorage.setItem('helpRequests', JSON.stringify(helpRequests));
+    }
+
+    // ============ EASY PHOTO UPLOAD ============
+    document.getElementById('postFile').onchange = function(e) {
+        let file = e.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                pendingImage = ev.target.result;
+                // Show preview
+                let previewDiv = document.getElementById('photoPreview');
+                previewDiv.innerHTML = `
+                    <img src="${pendingImage}">
+                    <button class="remove-photo" onclick="removePendingPhoto()">✕</button>
+                `;
+                previewDiv.style.display = 'block';
+                showToast('📷 Photo selected! Click post to upload');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    function removePendingPhoto() {
+        pendingImage = null;
+        document.getElementById('photoPreview').innerHTML = '';
+        document.getElementById('photoPreview').style.display = 'none';
+        document.getElementById('postFile').value = '';
+        showToast('Photo removed');
+    }
+    
+    function createPost() {
+        let text = document.getElementById('postText').value.trim();
+        
+        if (!text && !pendingImage) {
+            showToast('କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ');
+            return;
+        }
+        
+        let newPost = {
+            id: Date.now(),
+            text: text,
+            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
+            userId: currentUser.id,
+            timestamp: Date.now(),
+            timeFormatted: new Date().toLocaleString(),
+            likes: [],
+            comments: [],
+            image: pendingImage
+        };
+        
+        posts.unshift(newPost);
+        saveAllData();
+        
+        // Clear form
+        document.getElementById('postText').value = '';
+        pendingImage = null;
+        document.getElementById('photoPreview').innerHTML = '';
+        document.getElementById('photoPreview').style.display = 'none';
+        document.getElementById('postFile').value = '';
+        
+        loadPosts();
+        loadRecentPosts();
+        loadGrid();
+        updateProfileStats();
+        showToast('✅ ପୋଷ୍ଟ ହେଲା');
     }
 
     // ============ NAVIGATION ============
@@ -674,56 +777,6 @@
         if (screen === 'chat') loadChat();
         if (screen === 'sos') loadHelpRequests();
         if (screen === 'profile') loadProfile();
-    }
-
-    // ============ CREATE POST WITH PHOTO ============
-    function createPost() {
-        let text = document.getElementById('postText').value.trim();
-        let file = document.getElementById('postFile').files[0];
-        
-        if (!text && !file) {
-            showToast('କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ');
-            return;
-        }
-        
-        let newPost = {
-            id: Date.now(),
-            text: text,
-            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
-            userId: currentUser.id,
-            timestamp: Date.now(),
-            timeFormatted: new Date().toLocaleString(),
-            likes: [],
-            comments: [],
-            image: null
-        };
-        
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                newPost.image = e.target.result;
-                posts.unshift(newPost);
-                saveAllData();
-                loadPosts();
-                loadRecentPosts();
-                loadGrid();
-                updateProfileStats();
-                showToast('✅ ପୋଷ୍ଟ ହେଲା');
-                // Clear inputs
-                document.getElementById('postText').value = '';
-                document.getElementById('postFile').value = '';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            posts.unshift(newPost);
-            saveAllData();
-            loadPosts();
-            loadRecentPosts();
-            loadGrid();
-            updateProfileStats();
-            showToast('✅ ପୋଷ୍ଟ ହେଲା');
-            document.getElementById('postText').value = '';
-        }
     }
 
     // ============ LOAD POSTS ============
@@ -840,15 +893,9 @@
         
         if (post.likes.includes(currentUser.id)) {
             post.likes = post.likes.filter(id => id !== currentUser.id);
-            if (currentUser.likedPosts) {
-                currentUser.likedPosts = currentUser.likedPosts.filter(pid => pid !== postId);
-            }
         } else {
             post.likes.push(currentUser.id);
-            if (!currentUser.likedPosts) currentUser.likedPosts = [];
-            currentUser.likedPosts.push(postId);
         }
-        
         saveAllData();
         loadPosts();
         loadRecentPosts();
@@ -867,9 +914,7 @@
         }
     }
     
-    function viewImage(src) {
-        window.open(src, '_blank');
-    }
+    function viewImage(src) { window.open(src, '_blank'); }
 
     // ============ CHAT ============
     function sendChatMsg() {
@@ -893,12 +938,10 @@
     function loadChat() {
         let container = document.getElementById('chatMessages');
         if (!container) return;
-        
         if (messages.length === 0) {
             container.innerHTML = '<div class="empty">💬 Start chatting</div>';
             return;
         }
-        
         container.innerHTML = messages.map(m => `
             <div class="message ${m.userId === currentUser.id ? 'message-sent' : 'message-received'}">
                 <div class="msg-user">${escapeHtml(m.userName)}</div>
@@ -926,7 +969,6 @@
     function reportCorruption() {
         let desc = document.getElementById('corruptText').value.trim();
         if (!desc) { showToast('Write details'); return; }
-        
         helpRequests.unshift({
             id: Date.now(),
             type: '⚠️ Corruption',
@@ -945,7 +987,6 @@
     function requestAssistance() {
         let desc = document.getElementById('problemText').value.trim();
         if (!desc) { showToast('Write problem'); return; }
-        
         helpRequests.unshift({
             id: Date.now(),
             type: '🛠️ Problem',
@@ -964,13 +1005,11 @@
     function loadHelpRequests() {
         let container = document.getElementById('helpRequestsList');
         if (!container) return;
-        
         let visible = helpRequests.filter(r => r.userId === currentUser.id || currentUser.role === 'admin');
         if (visible.length === 0) {
             container.innerHTML = '<div class="empty">📋 No requests</div>';
             return;
         }
-        
         container.innerHTML = visible.map(r => `
             <div class="request-item">
                 <div><strong>${r.type}</strong> 🕐 ${r.time}</div>
@@ -998,14 +1037,12 @@
         document.getElementById('profileNameDisplay').innerHTML = currentUser.name || 'ଗ୍ରାମୀଣ';
         document.getElementById('homeAvatar').innerHTML = currentUser.avatar ? '<img src="' + currentUser.avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">' : '👤';
         
-        // Profile avatar display
         let avatarContainer = document.getElementById('avatarDisplay');
         if (currentUser.avatar) {
             avatarContainer.innerHTML = '<img src="' + currentUser.avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
         } else {
             avatarContainer.innerHTML = '👤';
         }
-        
         updateProfileStats();
     }
     
@@ -1025,7 +1062,6 @@
         if (newVillage) currentUser.village = newVillage;
         currentUser.role = newRole;
         
-        // Update user name in posts
         posts = posts.map(post => {
             if (post.userId === currentUser.id) {
                 return {...post, userName: currentUser.name};
@@ -1040,7 +1076,6 @@
         showToast('💾 Profile saved');
     }
     
-    // Profile picture upload
     document.getElementById('avatarInput').onchange = function(e) {
         let file = e.target.files[0];
         if (file) {
@@ -1052,15 +1087,6 @@
                 showToast('🖼️ Profile picture updated');
             };
             reader.readAsDataURL(file);
-        }
-    };
-    
-    // Post photo upload handler
-    document.getElementById('postFile').onchange = function(e) {
-        let file = e.target.files[0];
-        if (file) {
-            // Just show that file is selected, actual upload happens in createPost
-            showToast('📷 Photo selected. Click post to upload.');
         }
     };
     
@@ -1088,9 +1114,6 @@
         toast.style.display = 'block';
         setTimeout(() => toast.style.display = 'none', 2000);
     }
-    
-    // Attach create post function to button
-    document.querySelector('.submit-btn')?.addEventListener('click', createPost);
     
     // Initial load
     loadPosts();
