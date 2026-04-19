@@ -76,8 +76,18 @@
         .story-avatar { width: 66px; height: 66px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
         /* Story Viewer */
-        .story-viewer { position: fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .story-img { max-width: 100%; max-height: 80%; border-radius: 12px; }
+        .story-viewer {
+            position: fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:2000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .story-img { max-width: 100%; max-height: 80%; border-radius: 12px; pointer-events: none; }
+        .story-delete-btn {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.9); color: #ed4956; border: none;
+            padding: 10px 24px; border-radius: 30px; font-weight: bold; font-size: 14px;
+            cursor: pointer; z-index: 2002;
+        }
         /* Post Card */
         .post-card { margin-bottom: 12px; background: #fff; border-bottom: 0.5px solid #efefef; }
         .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -129,6 +139,7 @@
         .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 8px 20px; border-radius: 30px; font-size: 13px; z-index: 1100; }
         button, .action-click { cursor: pointer; }
         .likes-modal { max-height: 300px; overflow-y: auto; }
+        input, textarea { font-family: inherit; }
     </style>
 </head>
 <body>
@@ -170,6 +181,25 @@
     let groupMessages = JSON.parse(localStorage.getItem('nahantara_group')) || [];
     let notifications = JSON.parse(localStorage.getItem('nahantara_notifications')) || [];
     
+    // Auto-delete stories older than 24 hours
+    function cleanExpiredStories() {
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000;
+        let changed = false;
+        storiesData = storiesData.filter(story => {
+            if(now - story.timestamp > oneDay) {
+                changed = true;
+                return false;
+            }
+            return true;
+        });
+        if(changed) {
+            saveAll();
+            renderStories();
+            renderProfile();
+        }
+    }
+    
     function saveAll() {
         localStorage.setItem('nahantara_users', JSON.stringify(allUsers));
         localStorage.setItem('nahantara_posts', JSON.stringify(allPosts));
@@ -183,9 +213,8 @@
     function showToast(msg) { let t=document.getElementById('toastMsg'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
     function addNotification(msg, targetUserId=null) { notifications.unshift({msg, time:Date.now(), targetUserId}); if(notifications.length>40) notifications.pop(); saveAll(); if(!targetUserId || targetUserId===currentUser.id) showToast(msg); }
     
-    // ========== STORIES with red ring ==========
+    // ========== STORIES with red ring, delete, auto-expire, click to close ==========
     function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
-    function getUserLatestStory(userId) { return storiesData.filter(s=>s.userId===userId).sort((a,b)=>b.timestamp-a.timestamp)[0]; }
     function renderStories() {
         let container = document.getElementById('storiesList');
         if(!container) return;
@@ -213,7 +242,7 @@
                     saveAll();
                     renderStories();
                     renderProfile();
-                    showToast("📸 ଷ୍ଟୋରୀ ଅପଲୋଡ୍ ହେଲା!");
+                    showToast("📸 ଷ୍ଟୋରୀ ଅପଲୋଡ୍ ହେଲା! (24hr auto-delete)");
                     addNotification(`${currentUser.username} ନୂଆ ଷ୍ଟୋରୀ ଅପଲୋଡ୍ କଲେ |`);
                 };
                 reader.readAsDataURL(file);
@@ -225,19 +254,56 @@
     function viewStory(userId) {
         let userStories = storiesData.filter(s=>s.userId===userId).sort((a,b)=>a.timestamp-b.timestamp);
         if(!userStories.length) { showToast("କୋଉଠି ଷ୍ଟୋରୀ ନାହିଁ"); return; }
-        let idx=0, modal=document.createElement('div'); modal.className='story-viewer';
-        let img=document.createElement('img'); img.className='story-img';
-        let close=document.createElement('div'); close.innerText='✕'; close.style.cssText='position:absolute;top:20px;right:20px;color:white;font-size:32px;cursor:pointer;z-index:2001;'; close.onclick=()=>modal.remove();
-        let prev=document.createElement('div'); prev.innerText='‹'; prev.style.cssText='position:absolute;left:10px;top:50%;color:white;font-size:48px;cursor:pointer;background:rgba(0,0,0,0.5);width:40px;text-align:center;border-radius:50%;';
-        let next=document.createElement('div'); next.innerText='›'; next.style.cssText='position:absolute;right:10px;top:50%;color:white;font-size:48px;cursor:pointer;background:rgba(0,0,0,0.5);width:40px;text-align:center;border-radius:50%;';
-        function update(){ img.src=userStories[idx].image; }
+        let idx=0;
+        let modal = document.createElement('div');
+        modal.className = 'story-viewer';
+        modal.onclick = (e) => { if(e.target === modal) modal.remove(); }; // click background to close
+        
+        let img = document.createElement('img');
+        img.className = 'story-img';
+        
+        let deleteBtn = null;
+        if(userId === currentUser.id) {
+            deleteBtn = document.createElement('button');
+            deleteBtn.innerText = '🗑️ Delete Story';
+            deleteBtn.className = 'story-delete-btn';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                if(confirm("Delete this story?")) {
+                    storiesData = storiesData.filter(s => s.id !== userStories[idx].id);
+                    saveAll();
+                    modal.remove();
+                    renderStories();
+                    renderProfile();
+                    showToast("Story deleted");
+                }
+            };
+            modal.appendChild(deleteBtn);
+        }
+        
+        let closeBtn = document.createElement('div');
+        closeBtn.innerText = '✕';
+        closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;';
+        closeBtn.onclick = (e) => { e.stopPropagation(); modal.remove(); };
+        
+        let prev = document.createElement('div');
+        prev.innerText = '‹';
+        prev.style.cssText = 'position:absolute; left:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
+        let next = document.createElement('div');
+        next.innerText = '›';
+        next.style.cssText = 'position:absolute; right:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
+        
+        function update() { img.src = userStories[idx].image; }
         update();
-        prev.onclick=()=>{ if(idx>0){ idx--; update(); } else showToast("ପ୍ରଥମ ଷ୍ଟୋରୀ"); };
-        next.onclick=()=>{ if(idx<userStories.length-1){ idx++; update(); } else modal.remove(); };
-        modal.append(img, close, prev, next); document.body.appendChild(modal);
+        
+        prev.onclick = (e) => { e.stopPropagation(); if(idx>0) { idx--; update(); } else showToast("First story"); };
+        next.onclick = (e) => { e.stopPropagation(); if(idx<userStories.length-1) { idx++; update(); } else { modal.remove(); } };
+        
+        modal.append(img, closeBtn, prev, next);
+        document.body.appendChild(modal);
     }
     
-    // ========== POSTS (like, comment, likes modal) ==========
+    // ========== POSTS ==========
     function openCreatePost() {
         let caption = prompt("📝 କ୍ୟାପ୍ସନ୍ (ବିକଳ୍ପ):");
         let fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
@@ -329,7 +395,7 @@
         showToast("ଘୋଷଣା ପ୍ରକାଶିତ | ସମସ୍ତଙ୍କୁ notification");
     };
     
-    // ========== PROFILE with DP upload, story ring, edit ==========
+    // ========== PROFILE with Role Selection (Admin Code "7") ==========
     function renderProfile() {
         let container = document.getElementById('profileArea');
         if(!container) return;
@@ -342,14 +408,63 @@
                 </div>
                 <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div>ପୋଷ୍ଟ</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div>ଫଲୋଅର୍</div></div><div><div class="stat-num">${currentUser.following.length}</div><div>ଫଲୋଇଙ୍ଗ୍</div></div></div>
             </div>
-            <div class="edit-btn" onclick="editProfile()">✏️ ପ୍ରୋଫାଇଲ୍ ଏଡିଟ୍</div>
-            <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑' : '🌾'}<br>${escapeHtml(currentUser.bio)}</div>
+            <div class="edit-btn" onclick="openEditProfileModal()">✏️ Edit Profile & Role</div>
+            <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br>${escapeHtml(currentUser.bio)}</div>
             <div class="profile-grid" id="userPostGrid"></div>
         `;
         let gridSmall = document.getElementById('userPostGrid');
         let userImages = userPosts.filter(p=>p.image);
         if(gridSmall) gridSmall.innerHTML = userImages.length ? userImages.map(p=>`<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('') : '<div style="grid-column:span3; text-align:center;padding:20px;">No posts</div>';
     }
+    
+    window.openEditProfileModal = () => {
+        let modal = document.createElement('div'); modal.className='modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-card">
+                <h3>Edit Profile</h3>
+                <input type="text" id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;">
+                <input type="text" id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;">
+                <select id="editRoleSelect" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;">
+                    <option value="user" ${currentUser.role==='user'?'selected':''}>🌾 Normal User</option>
+                    <option value="admin" ${currentUser.role==='admin'?'selected':''}>👑 Admin</option>
+                </select>
+                <div id="adminCodeDiv" style="display:${currentUser.role==='admin' ? 'block' : 'none'}; margin-bottom:10px;">
+                    <input type="password" id="adminCode" placeholder="Admin Code (required for admin)" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px;">
+                    <small style="color:gray;">Enter code "7" to become admin</small>
+                </div>
+                <button onclick="saveProfileWithRole()" style="width:100%; padding:10px; background:#0095f6; color:white; border:none; border-radius:10px;">Save</button>
+                <button onclick="this.parentElement.parentElement.remove()" style="width:100%; margin-top:8px; padding:10px; background:#ddd; border:none; border-radius:10px;">Cancel</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        let roleSelect = document.getElementById('editRoleSelect');
+        let codeDiv = document.getElementById('adminCodeDiv');
+        roleSelect.onchange = () => {
+            codeDiv.style.display = roleSelect.value === 'admin' ? 'block' : 'none';
+        };
+    };
+    
+    window.saveProfileWithRole = () => {
+        let newName = document.getElementById('editName').value.trim();
+        let newBio = document.getElementById('editBio').value.trim();
+        let newRole = document.getElementById('editRoleSelect').value;
+        let adminCode = document.getElementById('adminCode')?.value;
+        
+        if(newRole === 'admin' && adminCode !== '7') {
+            showToast("Invalid admin code! Use '7' to become admin.");
+            return;
+        }
+        if(newName) currentUser.username = newName;
+        if(newBio) currentUser.bio = newBio;
+        currentUser.role = newRole;
+        let idx = allUsers.findIndex(u=>u.id===currentUser.id);
+        if(idx!==-1) allUsers[idx]=currentUser;
+        saveAll();
+        document.querySelector('.modal-overlay')?.remove();
+        renderProfile(); renderHomeFeed(); renderStories(); renderAnnouncements();
+        showToast(`Profile updated! Role: ${newRole === 'admin' ? 'Admin' : 'User'}`);
+    };
+    
     window.uploadProfilePicture = () => {
         let inp = document.createElement('input'); inp.type='file'; inp.accept='image/*';
         inp.onchange = (e) => {
@@ -370,16 +485,7 @@
         inp.click();
     };
     window.viewOwnStory = () => { if(hasStory(currentUser.id)) viewStory(currentUser.id); else showToast("No story uploaded"); };
-    window.editProfile = () => {
-        let newName = prompt('New username:', currentUser.username);
-        let newBio = prompt('Bio:', currentUser.bio);
-        if(newName) currentUser.username = newName;
-        if(newBio) currentUser.bio = newBio;
-        let idx = allUsers.findIndex(u=>u.id===currentUser.id);
-        if(idx!==-1) allUsers[idx]=currentUser;
-        saveAll(); renderProfile(); renderHomeFeed(); renderStories(); showToast("Updated");
-    };
-    window.viewUserProfile = (userId) => { /* follow can be added later */ };
+    window.viewUserProfile = (userId) => {};
     
     // ========== CHAT ==========
     function renderDM() { let d=document.getElementById('dmMessages'); if(d) d.innerHTML=dmMessages.map(m=>`<div class="message-bubble ${m.senderId===currentUser.id?'message-right':'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0,d.scrollHeight); }
@@ -393,7 +499,7 @@
     function updateSwipe() {
         if(trackDiv) trackDiv.style.transform = `translateX(-${currentIndex*100}%)`;
         navItems.forEach((item,i)=>{ if(i===currentIndex) item.classList.add('active'); else item.classList.remove('active'); });
-        if(currentIndex===0){ renderHomeFeed(); renderStories(); }
+        if(currentIndex===0){ renderHomeFeed(); renderStories(); cleanExpiredStories(); }
         if(currentIndex===1) renderAnnouncements();
         if(currentIndex===2){ renderDM(); renderGroup(); initChatTabs(); if(document.getElementById('dmPanel')?.style.display!=='none') renderDM(); else renderGroup(); }
         if(currentIndex===3) renderProfile();
@@ -404,8 +510,11 @@
     function addFloatingPlus() { let fab=document.createElement('div'); fab.innerHTML='✚'; fab.style.cssText='position:fixed; bottom:80px; right:16px; background:#0095f6; color:white; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow:0 4px 12px rgba(0,0,0,0.2); cursor:pointer; z-index:200;'; fab.onclick=openCreatePost; document.querySelector('.app').appendChild(fab); }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
     
-    // Final Render
+    // Initial render
+    cleanExpiredStories();
     renderHomeFeed(); renderStories(); renderExploreGrid(); renderProfile(); renderAnnouncements(); renderDM(); renderGroup(); initChatTabs(); addFloatingPlus(); updateSwipe();
+    // Auto clean every hour
+    setInterval(cleanExpiredStories, 60*60*1000);
 </script>
 </body>
 </html>
