@@ -1,15 +1,71 @@
 <!DOCTYPE html>
-<html lang="or">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="theme-color" content="#1a8e3c">
-    <title>ନହନ୍ତରା — ମୋ ସ୍ବାଭିମାନ</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+Oriya:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>Nahantara — Social Village</title>
     <style>
-        /* additional layout refinements – no functional changes, only visual polish */
-        .swipe-horizon {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Instagram-like mobile container */
+        .app-container {
+            max-width: 450px;
+            width: 100%;
+            background: #fff;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Sticky header */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+            padding: 12px 16px;
+            border-bottom: 0.5px solid #dbdbdb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .header-icons {
+            display: flex;
+            gap: 22px;
+        }
+        .header-icons span {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main swipe container */
+        .main-swipe {
             flex: 1;
             overflow-x: hidden;
             position: relative;
@@ -18,502 +74,662 @@
             display: flex;
             width: 100%;
             height: 100%;
-            transition: transform 0.2s ease-out;
+            transition: transform 0.25s ease-out;
         }
-        .screen-page {
+        .page {
             width: 100%;
             flex-shrink: 0;
             overflow-y: auto;
             scrollbar-width: thin;
+            padding-bottom: 70px;
         }
-        .screen-page::-webkit-scrollbar {
-            width: 4px;
+        .page::-webkit-scrollbar {
+            display: none;
         }
-        .hero-sub {
-            font-size: 13px;
-            opacity: 0.85;
-            letter-spacing: 0.3px;
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            border-top: 0.5px solid #dbdbdb;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 12px 14px;
+            z-index: 99;
         }
-        .welcome-card h3 {
-            font-weight: 600;
-            letter-spacing: -0.2px;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #8e8e8e;
+            transition: all 0.1s;
+            cursor: pointer;
         }
-        .quick-card {
-            transition: transform 0.1s ease, background 0.2s;
+        .nav-item.active {
+            color: #0095f6;
         }
-        .quick-card:active {
-            transform: scale(0.96);
+        .nav-icon {
+            font-size: 24px;
         }
-        .create-post {
-            backdrop-filter: blur(0px);
+
+        /* Stories row */
+        .stories-row {
+            padding: 12px 0 12px 12px;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-bottom: 0.5px solid #efefef;
         }
+        .stories-row::-webkit-scrollbar { display: none; }
+        .story-circle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+        .story-avatar {
+            width: 68px;
+            height: 68px;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .story-avatar img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+            background: #fff;
+        }
+        .story-avatar span {
+            font-size: 32px;
+        }
+
+        /* Post card */
         .post-card {
-            transition: box-shadow 0.2s;
+            margin-bottom: 12px;
+            background: #fff;
+            border-bottom: 0.5px solid #efefef;
         }
-        .stat-number {
-            font-weight: 700;
+        .post-header {
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .edit-profile-btn {
-            transition: opacity 0.2s;
+        .post-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .edit-profile-btn:active {
-            opacity: 0.7;
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            background: #e4e6eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-transform: uppercase;
         }
-        .bottom-nav .nav-item {
-            transition: all 0.2s ease;
+        .post-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .post-time {
+            font-size: 10px;
+            color: #8e8e8e;
+        }
+        .post-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            background: #fafafa;
+        }
+        .post-actions {
+            padding: 8px 12px;
+            display: flex;
+            gap: 18px;
+        }
+        .action-btn {
+            font-size: 26px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .liked { color: #ed4956; }
+        .post-likes { padding: 0 12px 6px; font-weight: 600; font-size: 13px; }
+        .post-caption { padding: 0 12px 8px; font-size: 14px; }
+        .comments-section { padding: 8px 12px 12px; background: #fafafa; border-top: 0.5px solid #efefef; }
+
+        /* Grid (Explore) */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: #fff;
+        }
+        .grid-item {
+            aspect-ratio: 1 / 1;
+            background: #efefef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .full-view-modal {
+            position: fixed;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .full-view-modal img { max-width: 90%; max-height: 80%; }
+
+        /* Profile */
+        .profile-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            border-bottom: 0.5px solid #efefef;
+        }
+        .profile-avatar-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+        }
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+            text-align: center;
+        }
+        .stat-num { font-weight: 700; font-size: 18px; }
+        .edit-btn {
+            margin: 12px 16px;
+            background: #efefef;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-top: 4px;
+        }
+
+        /* Chat UI */
+        .chat-messages {
+            flex:1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            height: calc(100vh - 180px);
+        }
+        .message-bubble {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 22px;
+            font-size: 14px;
+        }
+        .message-left { background: #efefef; align-self: flex-start; }
+        .message-right { background: #0095f6; color: white; align-self: flex-end; }
+        .chat-input-area {
+            display: flex;
+            padding: 12px;
+            gap: 8px;
+            border-top: 0.5px solid #dbdbdb;
+            background: white;
+        }
+        .chat-input-area input { flex:1; padding: 10px; border-radius: 25px; border: 0.5px solid #dbdbdb; }
+
+        /* SOS */
+        .sos-btn {
+            background: #ed4956;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            margin: 16px;
+            border-radius: 14px;
+            font-weight: bold;
+        }
+        .help-card {
+            background: #fafafa;
+            margin: 12px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        button, .action-click {
+            cursor: pointer;
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            z-index: 1100;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-<div class="app">
-
-    <!-- header – premium minimal -->
-    <header class="header">
-        <div class="logo"><span>🌾</span> ନହନ୍ତରା</div>
+<div class="app-container">
+    <div class="sticky-header">
+        <div class="logo">📸 Nahantara</div>
         <div class="header-icons">
             <span>❤️</span>
             <span>💬</span>
         </div>
-    </header>
+    </div>
 
-    <!-- swipe container (structural only – ready for future horizontal swipe) -->
-    <div class="swipe-horizon" id="swipeContainer">
+    <div class="main-swipe" id="swipeContainer">
         <div class="swipe-track" id="swipeTrack">
-
-            <!-- *************** HOME SCREEN *************** -->
-            <section class="screen-page" id="homeScreen">
-                <div class="hero-banner">
-                    <div class="hero-icon">🌾🙏🌾</div>
-                    <div class="hero-title">ମୋ ନହନ୍ତରା</div>
-                    <div class="hero-sub">ମୋ ସ୍ବାଭିମାନ</div>
+            <!-- HOME PAGE -->
+            <div class="page" id="homePage">
+                <div class="stories-row" id="storiesContainer"></div>
+                <div id="homeFeed"></div>
+            </div>
+            <!-- EXPLORE / REELS PAGE (Grid) -->
+            <div class="page" id="explorePage">
+                <div class="grid-3" id="exploreGrid"></div>
+            </div>
+            <!-- CHAT PAGE (Group + DM) -->
+            <div class="page" id="chatPage">
+                <div style="padding:12px; display:flex; gap:12px; border-bottom:0.5px solid #dbdbdb;">
+                    <button id="dmTabBtn" style="flex:1; background:none; border:none; font-weight:600;">💬 DM</button>
+                    <button id="groupTabBtn" style="flex:1; background:none; border:none; font-weight:600;">👥 Group</button>
                 </div>
-
-                <div class="welcome-card" id="welcomeUserCard">
-                    <h3>✨ ସ୍ଵାଗତମ୍, <span id="greetingName">ଗ୍ରାମୀଣ</span> ✨</h3>
-                    <p>ନହନ୍ତରା ଗାଁର ଡିଜିଟାଲ୍ ପରିବାରରେ ଆପଣଙ୍କୁ ସ୍ଵାଗତ। ଏଠାରେ ଆପଣ ଗାଁର ଖବର, ଫଟୋ, ଚାଟ୍ ଏବଂ ସହାୟତା ପାଇପାରିବେ।</p>
+                <div id="dmChatView">
+                    <div class="chat-messages" id="dmMessages"></div>
+                    <div class="chat-input-area"><input type="text" id="dmInput" placeholder="Message..."><button onclick="sendDMMessage()">➤</button></div>
                 </div>
-
-                <div class="quick-actions">
-                    <div class="quick-card" data-nav="posts">
-                        <div class="quick-icon">📸</div>
-                        <div class="quick-name">ପୋଷ୍ଟ</div>
-                    </div>
-                    <div class="quick-card" data-nav="chat">
-                        <div class="quick-icon">💬</div>
-                        <div class="quick-name">ଚାଟ୍</div>
-                    </div>
-                    <div class="quick-card" data-nav="sos">
-                        <div class="quick-icon">🆘</div>
-                        <div class="quick-name">SOS</div>
-                    </div>
-                    <div class="quick-card" data-nav="profile">
-                        <div class="quick-icon">👤</div>
-                        <div class="quick-name">ମୋର</div>
-                    </div>
+                <div id="groupChatView" style="display:none;">
+                    <div class="chat-messages" id="groupMessages"></div>
+                    <div class="chat-input-area"><input type="text" id="groupInput" placeholder="Group message..."><button onclick="sendGroupMessage()">➤</button></div>
                 </div>
-
-                <div class="section-title">
-                    <h4>🔥 ତାଜା ପୋଷ୍ଟ</h4>
-                    <span class="view-all" data-nav="posts">ସବୁ ଦେଖ →</span>
-                </div>
-                <div id="homeRecentPosts"></div>
-            </section>
-
-            <!-- *************** POSTS SCREEN (create + feed) *************** -->
-            <section class="screen-page" id="postsScreen">
-                <div class="create-post">
-                    <div class="create-avatar" id="homeAvatar">👤</div>
-                    <input type="text" id="postText" class="create-input" placeholder="କଣ ନୂଆ? (ପର୍ବ, ଖୁସି, ଖବର)...">
-                    <div class="photo-icon" onclick="document.getElementById('postFile').click()">📷</div>
-                    <input type="file" id="postFile" accept="image/*" style="display:none">
-                </div>
-                <div id="photoPreview" class="photo-preview"></div>
-                <div id="allPostsList"></div>
-            </section>
-
-            <!-- *************** CHAT SCREEN *************** -->
-            <section class="screen-page" id="chatScreen">
-                <div class="chat-header-modern">
-                    <div class="chat-header-left">
-                        <span class="chat-back">💬</span>
-                        <h3>ଗ୍ରୁପ୍ ଚାଟ୍</h3>
-                    </div>
-                    <div class="chat-header-right">📌</div>
-                </div>
-                <div class="chat-container">
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="ସନ୍ଦେଶ...">
-                        <button onclick="sendChatMsg()">➤</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- *************** SOS SCREEN *************** -->
-            <section class="screen-page" id="sosScreen">
-                <div class="sos-emergency" onclick="triggerSOS()">
-                    <span>🆘</span> SOS - ଜରୁରୀ ସହାୟତା
-                </div>
-                <div class="help-card">
-                    <textarea id="corruptText" rows="2" placeholder="⚠️ ଦୁର୍ନୀତି ରିପୋର୍ଟ..."></textarea>
-                    <button onclick="reportCorruption()">📢 ରିପୋର୍ଟ</button>
-                </div>
-                <div class="help-card">
-                    <textarea id="problemText" rows="2" placeholder="🛠️ ସମସ୍ୟା..."></textarea>
-                    <button onclick="requestAssistance()">🙏 ସହାୟତା</button>
-                </div>
-                <div id="helpRequestsList"></div>
-            </section>
-
-            <!-- *************** PROFILE SCREEN (instagram style) *************** -->
-            <section class="screen-page" id="profileScreen">
-                <div class="profile-header">
-                    <div class="profile-banner"></div>
-                    <div class="profile-info">
-                        <div class="profile-avatar-large" onclick="document.getElementById('avatarInput').click()">
-                            <span id="avatarDisplay">👤</span>
-                        </div>
-                        <div class="profile-name-section">
-                            <div class="profile-name" id="profileNameDisplay"></div>
-                            <div class="profile-bio" id="profileBioDisplay">🌾 ନହନ୍ତରା ଗାଁ | ମୋ ସ୍ବାଭିମାନ</div>
-                        </div>
-                        <div class="profile-stats">
-                            <div class="stat-item"><div class="stat-number" id="userPostCount">0</div><div class="stat-label">ପୋଷ୍ଟ</div></div>
-                            <div class="stat-item"><div class="stat-number" id="followerCount">411</div><div class="stat-label">ଫଲୋଅର୍</div></div>
-                            <div class="stat-item"><div class="stat-number" id="followingCount">36</div><div class="stat-label">ଫଲୋଇଙ୍ଗ୍</div></div>
-                        </div>
-                        <button class="edit-profile-btn" onclick="enableEditProfile()">✏️ ଏଡିଟ୍ ପ୍ରୋଫାଇଲ୍</button>
-                        <button class="edit-profile-btn logout-btn" onclick="logout()">🚪 ଲଗ୍ଆଉଟ୍</button>
-                    </div>
-                </div>
-
-                <!-- edit modal (same structure, untouched) -->
-                <div id="editModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;padding:20px;">
-                    <div style="background:white;border-radius:20px;padding:20px;margin-top:100px;">
-                        <h3>Edit Profile</h3>
-                        <input type="text" id="editName" placeholder="Name" style="width:100%;padding:10px;margin:10px 0;border:1px solid #ddd;border-radius:10px;">
-                        <input type="text" id="editBio" placeholder="Bio" style="width:100%;padding:10px;margin:10px 0;border:1px solid #ddd;border-radius:10px;">
-                        <select id="editRole" style="width:100%;padding:10px;margin:10px 0;border:1px solid #ddd;border-radius:10px;">
-                            <option value="user">🌾 User</option>
-                            <option value="admin">👑 Admin</option>
-                        </select>
-                        <button onclick="saveProfile()" style="width:100%;padding:10px;background:#1a8e3c;color:white;border:none;border-radius:10px;">Save</button>
-                        <button onclick="closeEditModal()" style="width:100%;padding:10px;margin-top:10px;background:#ddd;border:none;border-radius:10px;">Cancel</button>
-                    </div>
-                </div>
-                <input type="file" id="avatarInput" accept="image/*" style="display:none">
-            </section>
+            </div>
+            <!-- PROFILE PAGE -->
+            <div class="page" id="profilePage">
+                <div id="profileContainer"></div>
+            </div>
         </div>
     </div>
 
-    <!-- bottom navigation (modern, fixed, swipe-ready) -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" data-nav-index="0">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">ହୋମ୍</div>
-        </div>
-        <div class="nav-item" data-nav-index="1">
-            <div class="nav-icon">📸</div>
-            <div class="nav-label">ପୋଷ୍ଟ</div>
-        </div>
-        <div class="nav-item" data-nav-index="2">
-            <div class="nav-icon">💬</div>
-            <div class="nav-label">ଚାଟ୍</div>
-        </div>
-        <div class="nav-item" data-nav-index="3">
-            <div class="nav-icon">🆘</div>
-            <div class="nav-label">SOS</div>
-        </div>
-        <div class="nav-item" data-nav-index="4">
-            <div class="nav-icon">👤</div>
-            <div class="nav-label">ମୋର</div>
-        </div>
-    </nav>
+    <div class="bottom-nav">
+        <div class="nav-item active" data-index="0"><div class="nav-icon">🏠</div><div>Home</div></div>
+        <div class="nav-item" data-index="1"><div class="nav-icon">🔍</div><div>Explore</div></div>
+        <div class="nav-item" data-index="2"><div class="nav-icon">💬</div><div>Chat</div></div>
+        <div class="nav-item" data-index="3"><div class="nav-icon">👤</div><div>Profile</div></div>
+    </div>
 </div>
-
-<div id="toast" class="toast"></div>
+<div id="toastMsg" class="toast" style="display:none;"></div>
 
 <script>
-    // ============ DATA (fully preserved) ============
-    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
-        id: 'user_' + Date.now(),
-        name: '',
-        village: '',
-        role: 'user',
-        avatar: null,
-        likedPosts: [],
-        bio: '🌾 ନହନ୍ତରା ଗାଁ | ମୋ ସ୍ବାଭିମାନ'
-    };
-    
-    let posts = JSON.parse(localStorage.getItem('posts')) || [];
-    let messages = JSON.parse(localStorage.getItem('messages')) || [];
-    let helpRequests = JSON.parse(localStorage.getItem('helpRequests')) || [];
-    let pendingImage = null;
+    // ---------- DATA MODELS ----------
+    let currentUser = JSON.parse(localStorage.getItem('nahantara_user')) || { id: 'user1', username: 'NahantaraUser', avatar: null, bio: 'Village heart 🌾', followers: 124, following: 86 };
+    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts')) || [];
+    let stories = [{ id: 1, username: 'gram_dev', img: null }, { id: 2, username: 'nayak_parbati', img: null }, { id: 3, username: 'sahu_village', img: null }, { id: 4, username: 'nahantara_team', img: null }];
+    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm')) || [];
+    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group')) || [];
+    let notifications = JSON.parse(localStorage.getItem('nahantara_notifications')) || [];
 
-    function saveAllData() {
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        localStorage.setItem('posts', JSON.stringify(posts));
-        localStorage.setItem('messages', JSON.stringify(messages));
-        localStorage.setItem('helpRequests', JSON.stringify(helpRequests));
+    function saveAll() {
+        localStorage.setItem('nahantara_user', JSON.stringify(currentUser));
+        localStorage.setItem('nahantara_posts', JSON.stringify(allPosts));
+        localStorage.setItem('nahantara_dm', JSON.stringify(dmMessages));
+        localStorage.setItem('nahantara_group', JSON.stringify(groupMessages));
+        localStorage.setItem('nahantara_notifications', JSON.stringify(notifications));
     }
 
-    // ============ SWIPE + NAVIGATION (structure, no break) ============
-    let currentSwipeIndex = 0;
-    const totalScreens = 5;
-    const track = document.getElementById('swipeTrack');
-    const navItems = document.querySelectorAll('.nav-item');
-    let startX = 0, endX = 0;
-
-    function updateSwipePosition() {
-        if (track) track.style.transform = `translateX(-${currentSwipeIndex * 100}%)`;
-        navItems.forEach((item, idx) => {
-            if (idx === currentSwipeIndex) item.classList.add('active');
-            else item.classList.remove('active');
-        });
-        if (currentSwipeIndex === 0 && typeof loadRecentPosts === 'function') loadRecentPosts();
-        if (currentSwipeIndex === 1 && typeof loadPosts === 'function') loadPosts();
-        if (currentSwipeIndex === 2 && typeof loadChat === 'function') loadChat();
-        if (currentSwipeIndex === 3 && typeof loadHelpRequests === 'function') loadHelpRequests();
-        if (currentSwipeIndex === 4 && typeof loadProfile === 'function') loadProfile();
+    // Helper
+    function showToast(msg) {
+        let toast = document.getElementById('toastMsg');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
     }
 
-    function goToPage(index) {
-        if (index >= 0 && index < totalScreens) {
-            currentSwipeIndex = index;
-            updateSwipePosition();
+    // ------ AUTH (simple) ------
+    function initAuth() {
+        if (!localStorage.getItem('nahantara_user')) {
+            let name = prompt('Welcome! Enter your username:', 'Villager');
+            if(name) currentUser.username = name;
+            saveAll();
         }
+        renderAll();
     }
 
-    // touch events (pure UI, no logic change)
-    const container = document.getElementById('swipeContainer');
-    if (container) {
-        container.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
-        container.addEventListener('touchend', (e) => {
-            endX = e.changedTouches[0].clientX;
-            const diff = endX - startX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0 && currentSwipeIndex > 0) currentSwipeIndex--;
-                else if (diff < 0 && currentSwipeIndex < totalScreens-1) currentSwipeIndex++;
-                updateSwipePosition();
-            }
-        });
-        // mouse fallback
-        container.addEventListener('mousedown', (e) => { startX = e.clientX; });
-        container.addEventListener('mouseup', (e) => {
-            endX = e.clientX;
-            const diff = endX - startX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0 && currentSwipeIndex > 0) currentSwipeIndex--;
-                else if (diff < 0 && currentSwipeIndex < totalScreens-1) currentSwipeIndex++;
-                updateSwipePosition();
-            }
-        });
-    }
-
-    navItems.forEach((item, idx) => {
-        item.addEventListener('click', () => goToPage(idx));
-    });
-
-    // quick actions inside home
-    document.querySelectorAll('.quick-card, .view-all').forEach(el => {
-        el.addEventListener('click', (e) => {
-            const target = el.getAttribute('data-nav');
-            if (target === 'posts') goToPage(1);
-            else if (target === 'chat') goToPage(2);
-            else if (target === 'sos') goToPage(3);
-            else if (target === 'profile') goToPage(4);
-        });
-    });
-
-    // ============ ALL ORIGINAL FUNCTIONS (unchanged, only UI hooks added) ============
-    function updateGreeting() {
-        const greetSpan = document.getElementById('greetingName');
-        if (greetSpan) greetSpan.innerText = currentUser.name || 'ଗ୍ରାମୀଣ';
-    }
-
-    // photo upload
-    document.getElementById('postFile').onchange = function(e) {
-        let file = e.target.files[0];
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function(ev) {
-                pendingImage = ev.target.result;
-                let previewDiv = document.getElementById('photoPreview');
-                if (previewDiv) {
-                    previewDiv.innerHTML = `<img src="${pendingImage}"><button class="remove-photo" onclick="removePendingPhoto()">✕</button>`;
-                    previewDiv.style.display = 'block';
-                }
-                showToast('📷 Photo selected! Click post to upload');
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-    
-    function removePendingPhoto() {
-        pendingImage = null;
-        let previewDiv = document.getElementById('photoPreview');
-        if (previewDiv) { previewDiv.innerHTML = ''; previewDiv.style.display = 'none'; }
-        document.getElementById('postFile').value = '';
-        showToast('Photo removed');
-    }
-    
-    function createPost() {
-        let text = document.getElementById('postText').value.trim();
-        if (!text && !pendingImage) { showToast('କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ'); return; }
+    // ------ POST creation ------
+    function createPost(text, imageData) {
+        if(!text && !imageData) return showToast('Write something or add image');
         let newPost = {
             id: Date.now(),
-            text: text,
-            userName: currentUser.name || 'ଗ୍ରାମୀଣ',
             userId: currentUser.id,
-            timestamp: Date.now(),
-            timeFormatted: new Date().toLocaleString(),
+            username: currentUser.username,
+            userAvatar: currentUser.avatar,
+            text: text,
+            image: imageData || null,
             likes: [],
             comments: [],
-            image: pendingImage
+            timestamp: Date.now(),
+            timeAgo: new Date().toLocaleString()
         };
-        posts.unshift(newPost);
-        saveAllData();
-        document.getElementById('postText').value = '';
-        pendingImage = null;
-        let previewDiv = document.getElementById('photoPreview');
-        if (previewDiv) { previewDiv.innerHTML = ''; previewDiv.style.display = 'none'; }
-        document.getElementById('postFile').value = '';
-        loadPosts(); loadRecentPosts(); updateProfileStats();
-        showToast('✅ ପୋଷ୍ଟ ହେଲା');
+        allPosts.unshift(newPost);
+        saveAll();
+        addNotification(`${currentUser.username} created a new post.`);
+        renderHomeFeed();
+        renderProfile();
+        renderExplore();
     }
 
-    function loadPosts() {
-        let container = document.getElementById('allPostsList');
-        if (!container) return;
-        if (posts.length === 0) { container.innerHTML = '<div class="empty">🌾 କୋଉଠି ପୋଷ୍ଟ ନାହିଁ</div>'; return; }
-        container.innerHTML = posts.map(post => `
+    function toggleLike(postId) {
+        let post = allPosts.find(p => p.id == postId);
+        if(post) {
+            if(post.likes.includes(currentUser.id)) {
+                post.likes = post.likes.filter(id => id !== currentUser.id);
+            } else {
+                post.likes.push(currentUser.id);
+                addNotification(`${currentUser.username} liked your post.`);
+            }
+            saveAll();
+            renderHomeFeed();
+            renderProfile();
+        }
+    }
+
+    function addComment(postId, text) {
+        if(!text.trim()) return;
+        let post = allPosts.find(p => p.id == postId);
+        if(post) {
+            post.comments.push({ userId: currentUser.id, username: currentUser.username, text: text, time: Date.now() });
+            saveAll();
+            addNotification(`${currentUser.username} commented: "${text.slice(0,20)}"`);
+            renderHomeFeed();
+        }
+    }
+
+    function addNotification(msg) {
+        notifications.unshift({ msg, time: Date.now() });
+        if(notifications.length > 20) notifications.pop();
+        saveAll();
+    }
+
+    // ------ Stories UI ------
+    function renderStories() {
+        let container = document.getElementById('storiesContainer');
+        if(!container) return;
+        container.innerHTML = stories.map(s => `
+            <div class="story-circle">
+                <div class="story-avatar"><span>📷</span></div>
+                <span>${s.username.slice(0,10)}</span>
+            </div>
+        `).join('');
+    }
+
+    // ------ Home Feed ------
+    function renderHomeFeed() {
+        let feedDiv = document.getElementById('homeFeed');
+        if(!feedDiv) return;
+        if(allPosts.length === 0) { feedDiv.innerHTML = '<div style="padding:40px;text-align:center">🌾 No posts yet, create one!</div>'; return; }
+        feedDiv.innerHTML = allPosts.map(post => `
             <div class="post-card">
                 <div class="post-header">
-                    <div class="post-user">
-                        <div class="post-avatar">${(post.userName.charAt(0) || 'G').toUpperCase()}</div>
-                        <div><div class="post-name">${escapeHtml(post.userName)}</div><div class="post-time">${post.timeFormatted}</div></div>
+                    <div class="post-user-info">
+                        <div class="post-avatar">${post.username.charAt(0).toUpperCase()}</div>
+                        <div><div class="post-name">${escapeHtml(post.username)}</div><div class="post-time">${post.timeAgo}</div></div>
                     </div>
-                    ${(currentUser.role === 'admin' || post.userId === currentUser.id) ? `<div style="font-size:20px;cursor:pointer;" onclick="deletePost(${post.id})">⋯</div>` : ''}
+                    <div>⋯</div>
                 </div>
-                ${post.image ? `<div class="post-photo"><img src="${post.image}" onclick="viewImage('${post.image}')"></div>` : ''}
-                <div class="post-text">${escapeHtml(post.text || '')}</div>
+                ${post.image ? `<img src="${post.image}" class="post-image" onclick="openFullImage('${post.image}')">` : ''}
                 <div class="post-actions">
                     <div class="action-btn ${post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div>
-                    <div class="action-btn" onclick="toggleComments(${post.id})">💬</div>
+                    <div class="action-btn" onclick="toggleCommentBox(${post.id})">💬</div>
                 </div>
                 <div class="post-likes">${post.likes.length} likes</div>
-                <div id="comments-${post.id}" class="comments-section" style="display:none;">
-                    ${renderComments(post.comments)}
-                    <div class="add-comment"><input type="text" id="comment-${post.id}" placeholder="Add comment..."><button onclick="addComment(${post.id})">Post</button></div>
+                <div class="post-caption"><strong>${escapeHtml(post.username)}</strong> ${escapeHtml(post.text || '')}</div>
+                <div id="commentBox-${post.id}" style="display:none; padding:8px 12px;">
+                    <div>${post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong> ${escapeHtml(c.text)}</div>`).join('')}</div>
+                    <div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:8px; border-radius:20px; border:0.5px solid #ccc;"><button onclick="submitComment(${post.id})">Post</button></div>
                 </div>
             </div>
         `).join('');
     }
 
-    function loadRecentPosts() {
-        let container = document.getElementById('homeRecentPosts');
-        if (!container) return;
-        let recent = posts.slice(0, 3);
-        if (recent.length === 0) { container.innerHTML = '<div class="empty">🌾 No recent posts</div>'; return; }
-        container.innerHTML = recent.map(post => `
-            <div class="post-card">
-                <div class="post-header"><div class="post-user"><div class="post-avatar">${(post.userName.charAt(0) || 'G').toUpperCase()}</div><div><div class="post-name">${escapeHtml(post.userName)}</div><div class="post-time">${post.timeFormatted}</div></div></div></div>
-                ${post.image ? `<div class="post-photo"><img src="${post.image}" style="max-height:200px;"></div>` : ''}
-                <div class="post-text">${escapeHtml(post.text || '')}</div>
-                <div class="post-likes">❤️ ${post.likes.length} likes</div>
-            </div>
-        `).join('');
+    window.toggleCommentBox = (postId) => {
+        let box = document.getElementById(`commentBox-${postId}`);
+        if(box) box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    };
+    window.submitComment = (postId) => {
+        let input = document.getElementById(`commentInput-${postId}`);
+        if(input) { addComment(postId, input.value); input.value = ''; renderHomeFeed(); }
+    };
+    window.openFullImage = (src) => {
+        let modal = document.createElement('div'); modal.className = 'full-view-modal'; modal.innerHTML = `<img src="${src}"><div style="position:absolute;top:20px;right:30px;color:white;font-size:30px;cursor:pointer" onclick="this.parentElement.remove()">✕</div>`;
+        document.body.appendChild(modal);
+    };
+
+    // ------ Explore Grid (Reels style) ------
+    function renderExplore() {
+        let gridDiv = document.getElementById('exploreGrid');
+        if(!gridDiv) return;
+        let imagesOnly = allPosts.filter(p => p.image);
+        if(imagesOnly.length === 0) { gridDiv.innerHTML = '<div style="grid-column:span 3; text-align:center; padding:40px;">No media yet</div>'; return; }
+        gridDiv.innerHTML = imagesOnly.map(post => `<div class="grid-item" onclick="openFullImage('${post.image}')"><img src="${post.image}"></div>`).join('');
     }
 
-    function renderComments(comments) {
-        if (!comments || comments.length === 0) return '<div style="color:#888;font-size:12px;">No comments yet</div>';
-        return comments.map(c => `<div class="comment"><span class="comment-user">${escapeHtml(c.userName)}</span> ${escapeHtml(c.text)}</div>`).join('');
-    }
-    
-    function toggleComments(postId) { let sec = document.getElementById(`comments-${postId}`); if(sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none'; }
-    function addComment(postId) {
-        let input = document.getElementById(`comment-${postId}`), text = input.value.trim();
-        if (!text) return;
-        let post = posts.find(p => p.id === postId);
-        if(post){ post.comments.push({id:Date.now(), userId:currentUser.id, userName:currentUser.name||'ଗ୍ରାମୀଣ', text:text, time:new Date().toLocaleTimeString()}); saveAllData(); loadPosts(); showToast('💬 Comment added'); }
-        input.value = '';
-    }
-    function toggleLike(postId) {
-        let post = posts.find(p => p.id === postId);
-        if(post.likes.includes(currentUser.id)) post.likes = post.likes.filter(id => id !== currentUser.id);
-        else post.likes.push(currentUser.id);
-        saveAllData(); loadPosts(); loadRecentPosts(); updateProfileStats();
-    }
-    function deletePost(postId) {
-        if(currentUser.role === 'admin' || posts.find(p=>p.id===postId)?.userId === currentUser.id){
-            posts = posts.filter(p=>p.id!==postId); saveAllData(); loadPosts(); loadRecentPosts(); updateProfileStats(); showToast('🗑️ Post deleted');
+    // ------ Profile Page (Instagram style)-----
+    function renderProfile() {
+        let container = document.getElementById('profileContainer');
+        let userPosts = allPosts.filter(p => p.userId === currentUser.id);
+        container.innerHTML = `
+            <div class="profile-header">
+                <div class="profile-avatar-lg"><span>${currentUser.avatar ? `<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover">` : currentUser.username.charAt(0).toUpperCase()}</span></div>
+                <div class="profile-stats">
+                    <div><div class="stat-num">${userPosts.length}</div><div>posts</div></div>
+                    <div><div class="stat-num">${currentUser.followers}</div><div>followers</div></div>
+                    <div><div class="stat-num">${currentUser.following}</div><div>following</div></div>
+                </div>
+            </div>
+            <div class="edit-btn" onclick="editProfile()">Edit Profile</div>
+            <div style="padding:0 16px 8px;"><strong>${escapeHtml(currentUser.username)}</strong><br>${escapeHtml(currentUser.bio)}</div>
+            <div class="profile-grid" id="userPostGrid"></div>
+        `;
+        let gridSmall = document.getElementById('userPostGrid');
+        if(gridSmall) {
+            let userImages = userPosts.filter(p => p.image);
+            gridSmall.innerHTML = userImages.map(p => `<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('');
+            if(userImages.length === 0) gridSmall.innerHTML = '<div style="grid-column:span 3; text-align:center; padding:20px;">No posts</div>';
         }
     }
-    function viewImage(src) { window.open(src, '_blank'); }
 
-    function sendChatMsg() {
-        let input = document.getElementById('chatInput'), text = input.value.trim();
-        if(!text) return;
-        messages.push({id:Date.now(), userId:currentUser.id, userName:currentUser.name||'ଗ୍ରାମୀଣ', text:text, timestamp:Date.now()});
-        saveAllData(); input.value=''; loadChat();
-    }
-    function loadChat() {
-        let container = document.getElementById('chatMessages');
-        if(!container) return;
-        if(messages.length===0){ container.innerHTML='<div class="empty">💬 Start chatting</div>'; return; }
-        container.innerHTML = messages.map(m => `<div class="message ${m.userId === currentUser.id ? 'message-sent' : 'message-received'}"><div class="msg-user">${escapeHtml(m.userName)}</div><div class="msg-bubble">${escapeHtml(m.text)}</div></div>`).join('');
-        container.scrollTop = container.scrollHeight;
-    }
+    window.editProfile = () => {
+        let newName = prompt('New username:', currentUser.username);
+        let newBio = prompt('Bio:', currentUser.bio);
+        if(newName) currentUser.username = newName;
+        if(newBio) currentUser.bio = newBio;
+        saveAll();
+        renderProfile();
+        renderHomeFeed();
+        showToast('Profile updated');
+    };
 
-    function triggerSOS() { helpRequests.unshift({id:Date.now(), type:'🚨 SOS', userId:currentUser.id, userName:currentUser.name||'ଗ୍ରାମୀଣ', time:new Date().toLocaleString(), status:'pending'}); saveAllData(); loadHelpRequests(); showToast('🆘 SOS sent!'); }
-    function reportCorruption() { let desc = document.getElementById('corruptText').value.trim(); if(!desc){ showToast('Write details'); return; } helpRequests.unshift({id:Date.now(), type:'⚠️ Corruption', description:desc, userId:currentUser.id, userName:currentUser.name||'ଗ୍ରାମୀଣ', time:new Date().toLocaleString(), status:'pending'}); saveAllData(); document.getElementById('corruptText').value=''; loadHelpRequests(); showToast('📢 Report submitted'); }
-    function requestAssistance() { let desc = document.getElementById('problemText').value.trim(); if(!desc){ showToast('Write problem'); return; } helpRequests.unshift({id:Date.now(), type:'🛠️ Problem', description:desc, userId:currentUser.id, userName:currentUser.name||'ଗ୍ରାମୀଣ', time:new Date().toLocaleString(), status:'pending'}); saveAllData(); document.getElementById('problemText').value=''; loadHelpRequests(); showToast('🙏 Help requested'); }
-    function loadHelpRequests() {
-        let container = document.getElementById('helpRequestsList');
-        if(!container) return;
-        let visible = helpRequests.filter(r=> r.userId === currentUser.id || currentUser.role === 'admin');
-        if(visible.length===0){ container.innerHTML='<div class="empty">📋 No requests</div>'; return; }
-        container.innerHTML = visible.map(r => `<div class="request-item"><div><strong>${r.type}</strong> 🕐 ${r.time}</div><div>👤 ${escapeHtml(r.userName)}</div>${r.description ? `<div>📝 ${escapeHtml(r.description)}</div>` : ''}<div style="color:${r.status === 'pending' ? '#f90' : 'green'}">${r.status === 'pending' ? '⏳ Pending' : '✅ Resolved'}</div>${currentUser.role === 'admin' && r.status === 'pending' ? `<button onclick="resolveRequest(${r.id})" style="margin-top:8px;">✅ Resolve</button>` : ''}</div>`).join('');
+    // ----- CHAT SYSTEM (DM + Group) -----
+    function renderDM() {
+        let dmDiv = document.getElementById('dmMessages');
+        if(!dmDiv) return;
+        dmDiv.innerHTML = dmMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px; opacity:0.7">${m.time || ''}</div></div>`).join('');
+        dmDiv.scrollTop = dmDiv.scrollHeight;
     }
-    function resolveRequest(id) { helpRequests = helpRequests.map(r=> r.id===id ? {...r, status:'resolved'} : r); saveAllData(); loadHelpRequests(); showToast('✅ Request resolved'); }
-
-    function loadProfile() {
-        document.getElementById('editName').value = currentUser.name || '';
-        document.getElementById('editBio').value = currentUser.bio || '';
-        document.getElementById('editRole').value = currentUser.role;
-        document.getElementById('profileNameDisplay').innerHTML = currentUser.name || 'ଗ୍ରାମୀଣ';
-        document.getElementById('profileBioDisplay').innerHTML = currentUser.bio || '🌾 ନହନ୍ତରା ଗାଁ | ମୋ ସ୍ବାଭିମାନ';
-        let avatarContainer = document.getElementById('avatarDisplay');
-        if (currentUser.avatar) avatarContainer.innerHTML = `<img src="${currentUser.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-        else avatarContainer.innerHTML = '👤';
-        let homeAvatar = document.getElementById('homeAvatar');
-        if (homeAvatar) homeAvatar.innerHTML = currentUser.avatar ? `<img src="${currentUser.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : '👤';
-        updateProfileStats(); updateGreeting();
+    function renderGroup() {
+        let groupDiv = document.getElementById('groupMessages');
+        if(!groupDiv) return;
+        groupDiv.innerHTML = groupMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}"><strong>${escapeHtml(m.senderName)}</strong> ${escapeHtml(m.text)}<div style="font-size:9px;">${m.time}</div></div>`).join('');
+        groupDiv.scrollTop = groupDiv.scrollHeight;
     }
-    function updateProfileStats() { let userPosts = posts.filter(p=>p.userId===currentUser.id).length; document.getElementById('userPostCount').innerHTML = userPosts; }
-    function enableEditProfile() { document.getElementById('editModal').style.display = 'block'; document.getElementById('editName').value = currentUser.name || ''; document.getElementById('editBio').value = currentUser.bio || ''; document.getElementById('editRole').value = currentUser.role; }
-    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
-    function saveProfile() {
-        currentUser.name = document.getElementById('editName').value || 'ଗ୍ରାମୀଣ';
-        currentUser.bio = document.getElementById('editBio').value || '🌾 ନହନ୍ତରା ଗାଁ | ମୋ ସ୍ବାଭିମାନ';
-        currentUser.role = document.getElementById('editRole').value;
-        posts = posts.map(p => p.userId === currentUser.id ? {...p, userName: currentUser.name} : p);
-        saveAllData(); loadProfile(); loadPosts(); loadRecentPosts(); closeEditModal(); showToast('💾 Profile saved');
-    }
-    document.getElementById('avatarInput').onchange = function(e) {
-        let file = e.target.files[0];
-        if(file){
-            let reader = new FileReader();
-            reader.onload = function(ev) { currentUser.avatar = ev.target.result; saveAllData(); loadProfile(); showToast('🖼️ Profile picture updated'); };
-            reader.readAsDataURL(file);
+    window.sendDMMessage = () => {
+        let input = document.getElementById('dmInput');
+        if(input.value.trim()) {
+            dmMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: input.value, time: new Date().toLocaleTimeString() });
+            saveAll();
+            renderDM();
+            input.value = '';
         }
     };
-    function logout() { if(confirm('Logout?')){ localStorage.removeItem('currentUser'); location.reload(); } }
+    window.sendGroupMessage = () => {
+        let input = document.getElementById('groupInput');
+        if(input.value.trim()) {
+            groupMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: input.value, time: new Date().toLocaleTimeString() });
+            saveAll();
+            renderGroup();
+            input.value = '';
+        }
+    };
 
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
-    function showToast(msg) { let toast = document.getElementById('toast'); toast.textContent = msg; toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', 2000); }
+    // tab switching chat
+    function initChatTabs() {
+        let dmBtn = document.getElementById('dmTabBtn');
+        let groupBtn = document.getElementById('groupTabBtn');
+        if(dmBtn && groupBtn) {
+            dmBtn.onclick = () => { document.getElementById('dmChatView').style.display = 'block'; document.getElementById('groupChatView').style.display = 'none'; renderDM(); };
+            groupBtn.onclick = () => { document.getElementById('dmChatView').style.display = 'none'; document.getElementById('groupChatView').style.display = 'block'; renderGroup(); };
+        }
+    }
 
-    loadPosts(); loadRecentPosts(); loadChat(); loadProfile(); updateSwipePosition();
+    // ------ SOS / Emergency helper ----
+    function createSOSSection() {
+        // optional but we inject emergency button on profile bottom?
+        let profileContainer = document.getElementById('profileContainer');
+        if(profileContainer && !document.getElementById('sosExtra')) {
+            let sosDiv = document.createElement('div');
+            sosDiv.id = 'sosExtra';
+            sosDiv.innerHTML = `<div class="sos-btn" onclick="triggerSOS()">🆘 EMERGENCY SOS</div><div class="help-card"><textarea id="reportText" rows="2" placeholder="Report corruption / issue..."></textarea><button onclick="reportIssue()" style="margin-top:8px; background:#0095f6; border:none; padding:8px; border-radius:12px; width:100%;">📢 Submit Report</button></div>`;
+            profileContainer.appendChild(sosDiv);
+        }
+    }
+    window.triggerSOS = () => { alert('🚨 SOS Alert! Village admin notified. Stay safe.'); addNotification('SOS triggered by ' + currentUser.username); };
+    window.reportIssue = () => {
+        let txt = document.getElementById('reportText')?.value;
+        if(txt) { alert('Report sent to village council.'); addNotification(`New report: ${txt.slice(0,40)}`); document.getElementById('reportText').value = ''; }
+        else showToast('Write report');
+    };
+
+    // ------ Swipe + Bottom Navigation (instagram style) ------
+    let currentIndex = 0;
+    const trackDiv = document.getElementById('swipeTrack');
+    const pages = document.querySelectorAll('.page');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    function updateSwipe() {
+        if(trackDiv) trackDiv.style.transform = `translateX(-${currentIndex * 100}%)`;
+        navItems.forEach((item, i) => {
+            if(i === currentIndex) item.classList.add('active');
+            else item.classList.remove('active');
+        });
+        if(currentIndex === 0) { renderHomeFeed(); renderStories(); }
+        if(currentIndex === 1) renderExplore();
+        if(currentIndex === 2) { renderDM(); renderGroup(); initChatTabs(); if(document.getElementById('dmChatView').style.display !== 'none') renderDM(); else renderGroup(); }
+        if(currentIndex === 3) { renderProfile(); createSOSSection(); }
+    }
+
+    navItems.forEach((item, idx) => { item.addEventListener('click', () => { currentIndex = idx; updateSwipe(); }); });
+    let startX = 0;
+    document.getElementById('swipeContainer')?.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+    document.getElementById('swipeContainer')?.addEventListener('touchend', (e) => {
+        let endX = e.changedTouches[0].clientX;
+        let diff = endX - startX;
+        if(Math.abs(diff) > 40) {
+            if(diff > 0 && currentIndex > 0) currentIndex--;
+            else if(diff < 0 && currentIndex < pages.length-1) currentIndex++;
+            updateSwipe();
+        }
+    });
+
+    // create floating post button + plus create modal (instagram-like)
+    function addFloatingCreate() {
+        let fab = document.createElement('div');
+        fab.innerHTML = '✚';
+        fab.style.position = 'fixed';
+        fab.style.bottom = '80px';
+        fab.style.right = '20px';
+        fab.style.background = '#0095f6';
+        fab.style.color = 'white';
+        fab.style.width = '50px';
+        fab.style.height = '50px';
+        fab.style.borderRadius = '50%';
+        fab.style.display = 'flex';
+        fab.style.alignItems = 'center';
+        fab.style.justifyContent = 'center';
+        fab.style.fontSize = '28px';
+        fab.style.fontWeight = 'bold';
+        fab.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
+        fab.style.cursor = 'pointer';
+        fab.style.zIndex = '200';
+        fab.onclick = () => {
+            let text = prompt('Write caption:');
+            let fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.onchange = (e) => {
+                let file = e.target.files[0];
+                if(file) {
+                    let reader = new FileReader();
+                    reader.onload = (ev) => { createPost(text || '', ev.target.result); };
+                    reader.readAsDataURL(file);
+                } else createPost(text || '', null);
+            };
+            fileInput.click();
+        };
+        document.querySelector('.app-container').appendChild(fab);
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    function renderAll() {
+        renderHomeFeed();
+        renderStories();
+        renderExplore();
+        renderProfile();
+        renderDM();
+        renderGroup();
+        createSOSSection();
+    }
+
+    initAuth();
+    addFloatingCreate();
+    updateSwipe();
 </script>
 </body>
 </html>
