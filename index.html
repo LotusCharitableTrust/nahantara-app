@@ -191,7 +191,7 @@
         if(!container) return;
         let storyUsers = allUsers.filter(u => u.id !== currentUser.id);
         let ownStoryExist = hasStory(currentUser.id);
-        let addStoryHtml = `<div class="story" onclick="uploadStory()"><div class="story-ring ${ownStoryExist ? 'has-story' : ''}"><div class="story-avatar">✚</div></div><span>ତୁମର</span></div>`;
+        let addStoryHtml = `<div class="story ${ownStoryExist ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring ${ownStoryExist ? 'has-story' : ''}"><div class="story-avatar">✚</div></div><span>ତୁମର</span></div>`;
         let othersHtml = storyUsers.map(u => {
             let has = hasStory(u.id);
             return `<div class="story ${has ? 'has-story' : ''}" onclick="viewStory('${u.id}')"><div class="story-ring ${has ? 'has-story' : ''}"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><span>${u.username.slice(0,10)}</span></div>`;
@@ -303,7 +303,13 @@
     window.submitComment = (postId)=>{ let input=document.getElementById(`commentInput-${postId}`); if(input){ addComment(postId, input.value); input.value=''; } };
     window.openFullImage = (src)=>{ let modal=document.createElement('div'); modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:2000;display:flex;align-items:center;justify-content:center'; modal.innerHTML=`<img src="${src}" style="max-width:90%;max-height:80%;"><div style="position:absolute;top:30px;right:30px;color:white;font-size:40px;cursor:pointer" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
     
-    function renderExploreGrid() { let gridDiv=document.getElementById('exploreGrid'); if(gridDiv){ let imgPosts=allPosts.filter(p=>p.image); gridDiv.innerHTML=imgPosts.length? imgPosts.map(p=>`<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('') : '<div style="grid-column:span3; text-align:center;padding:40px;">📸 No media</div>'; } }
+    function renderExploreGrid() { 
+        let gridDiv=document.getElementById('exploreGrid'); 
+        if(gridDiv){ 
+            let imgPosts=allPosts.filter(p=>p.image); 
+            gridDiv.innerHTML=imgPosts.length? imgPosts.map(p=>`<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('') : '<div style="grid-column:span3; text-align:center;padding:40px;">📸 No media</div>'; 
+        } 
+    }
     
     // ========== ANNOUNCEMENTS (admin only) ==========
     function renderAnnouncements() {
