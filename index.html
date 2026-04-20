@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <meta name="theme-color" content="#121212">
-    <title>Nahantara — Premium Social Village</title>
+    <title>Nahantara — Professional Social Village</title>
     <style>
         * {
             margin: 0;
@@ -21,7 +20,6 @@
             --border-color: #dbdbdb;
             --accent-color: #0095f6;
             --like-color: #ed4956;
-            --card-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         [data-theme="dark"] {
@@ -30,7 +28,6 @@
             --text-primary: #ffffff;
             --text-secondary: #a8a8a8;
             --border-color: #2c2c2c;
-            --card-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         body {
@@ -49,11 +46,9 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            position: relative;
-            transition: background 0.3s ease;
+            transition: background 0.3s;
         }
 
-        /* Header */
         .header {
             background: var(--bg-primary);
             padding: 12px 16px;
@@ -61,10 +56,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
         }
 
         .logo {
@@ -74,27 +65,12 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
 
-        .logo span { font-size: 24px; margin-right: 4px; }
+        .logo span { font-size: 24px; }
 
-        .header-actions {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .header-icon {
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            color: var(--text-primary);
-        }
-
-        .header-icon:active { transform: scale(0.92); }
-
-        /* Theme Toggle */
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .header-icon { font-size: 24px; cursor: pointer; color: var(--text-primary); }
         .theme-toggle {
             width: 40px;
             height: 40px;
@@ -107,38 +83,16 @@
             font-size: 20px;
         }
 
-        /* Swipe Area */
-        .swipe-container {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-        }
+        .swipe-container { flex: 1; overflow: hidden; position: relative; }
+        .swipe-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-out; }
+        .page { width: 100%; flex-shrink: 0; overflow-y: auto; padding-bottom: 70px; }
 
-        .swipe-track {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-
-        .page {
-            width: 100%;
-            flex-shrink: 0;
-            overflow-y: auto;
-            padding-bottom: 70px;
-            scrollbar-width: thin;
-        }
-
-        .page::-webkit-scrollbar { display: none; }
-
-        /* Bottom Navigation */
         .bottom-nav {
             background: var(--bg-primary);
             border-top: 0.5px solid var(--border-color);
             display: flex;
             justify-content: space-around;
             padding: 8px 12px 14px;
-            backdrop-filter: blur(10px);
         }
 
         .nav-item {
@@ -149,28 +103,17 @@
             font-size: 11px;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s;
-            padding: 4px 12px;
-            border-radius: 30px;
         }
-
-        .nav-item.active {
-            color: var(--accent-color);
-        }
-
-        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { color: var(--accent-color); }
         .nav-icon { font-size: 24px; }
 
-        /* Stories Row */
         .stories-row {
             padding: 16px 0 16px 16px;
             display: flex;
             gap: 16px;
             overflow-x: auto;
-            scrollbar-width: none;
             border-bottom: 0.5px solid var(--border-color);
         }
-
         .stories-row::-webkit-scrollbar { display: none; }
 
         .story {
@@ -180,265 +123,58 @@
             gap: 6px;
             font-size: 11px;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-
-        .story:active { transform: scale(0.95); }
-
-        .story-ring {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--border-color);
-        }
-
-        .story.has-story .story-ring {
-            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #0095f6);
-            padding: 2px;
-        }
-
-        .story-avatar {
-            width: 68px;
-            height: 68px;
-            background: var(--bg-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            overflow: hidden;
-        }
-
+        .story-ring { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--border-color); }
+        .story.has-story .story-ring { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); padding: 2px; }
+        .story-avatar { width: 68px; height: 68px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .story-name { color: var(--text-secondary); font-size: 11px; max-width: 68px; text-align: center; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Skeleton Loader */
-        .skeleton {
-            background: linear-gradient(90deg, var(--border-color) 25%, var(--bg-secondary) 50%, var(--border-color) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* Post Card */
         .post-card {
             margin-bottom: 12px;
             background: var(--bg-primary);
             border-bottom: 0.5px solid var(--border-color);
-            transition: transform 0.2s;
         }
-
-        .post-header {
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .post-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .post-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #833ab4, #fd1d1d);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-        }
-
+        .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .post-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .post-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #833ab4, #fd1d1d); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
         .post-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
         .post-time { font-size: 10px; color: var(--text-secondary); }
+        .post-image { width: 100%; max-height: 450px; object-fit: cover; cursor: pointer; }
+        .post-actions { padding: 8px 12px; display: flex; gap: 20px; }
+        .action-btn { font-size: 26px; cursor: pointer; color: var(--text-primary); }
+        .action-btn.liked { color: var(--like-color); }
+        .post-likes { padding: 0 12px 4px; font-weight: 600; font-size: 13px; cursor: pointer; color: var(--text-primary); }
+        .post-caption { padding: 0 12px 12px; font-size: 14px; color: var(--text-primary); }
 
-        .post-image {
-            width: 100%;
-            max-height: 450px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .post-actions {
-            padding: 8px 12px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .action-btn {
-            font-size: 26px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            color: var(--text-primary);
-        }
-
-        .action-btn:active { transform: scale(0.9); }
-        .action-btn.liked { color: var(--like-color); animation: heartBeat 0.3s; }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
-
-        .post-likes {
-            padding: 0 12px 4px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            color: var(--text-primary);
-        }
-
-        .post-caption {
-            padding: 0 12px 12px;
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        /* Announcement */
         .announce-header { padding: 16px; border-bottom: 0.5px solid var(--border-color); }
-        .announce-header h3 { color: var(--text-primary); font-size: 18px; }
-        .announce-header p { color: var(--text-secondary); font-size: 12px; }
+        .announce-header h3 { color: var(--text-primary); }
+        .announcement-card { background: rgba(0,149,246,0.1); margin: 12px; padding: 14px; border-radius: 16px; border-left: 4px solid var(--accent-color); }
+        .admin-badge { background: var(--accent-color); color: white; font-size: 10px; padding: 2px 8px; border-radius: 30px; display: inline-block; }
 
-        .announcement-card {
-            background: linear-gradient(135deg, rgba(0,149,246,0.1), rgba(0,0,0,0.05));
-            margin: 12px;
-            padding: 14px;
-            border-radius: 16px;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .admin-badge {
-            background: var(--accent-color);
-            color: white;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 6px;
-        }
-
-        /* Chat */
         .chat-tabs { display: flex; gap: 12px; padding: 12px; border-bottom: 0.5px solid var(--border-color); }
-        .chat-tab {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 10px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 30px;
-            transition: all 0.2s;
-        }
+        .chat-tab { flex: 1; background: none; border: none; padding: 10px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-radius: 30px; }
         .chat-tab.active { background: var(--accent-color); color: white; }
-
         .chat-panel { display: flex; flex-direction: column; height: calc(100vh - 130px); }
         .chat-messages { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-
-        .message-bubble {
-            max-width: 75%;
-            padding: 10px 14px;
-            border-radius: 22px;
-            font-size: 14px;
-            animation: fadeInUp 0.3s;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 22px; font-size: 14px; }
         .message-left { background: var(--bg-secondary); color: var(--text-primary); align-self: flex-start; }
         .message-right { background: var(--accent-color); color: white; align-self: flex-end; }
+        .chat-input-area { display: flex; padding: 12px; gap: 8px; border-top: 0.5px solid var(--border-color); background: var(--bg-primary); }
+        .chat-input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 0.5px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); }
+        .chat-input-area button { background: var(--accent-color); color: white; border: none; width: 44px; border-radius: 25px; cursor: pointer; }
 
-        .chat-input-area {
-            display: flex;
-            padding: 12px;
-            gap: 8px;
-            border-top: 0.5px solid var(--border-color);
-            background: var(--bg-primary);
-        }
-        .chat-input-area input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 25px;
-            border: 0.5px solid var(--border-color);
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        .chat-input-area button {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            width: 44px;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-
-        /* Profile */
-        .profile-header {
-            padding: 20px 16px;
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            border-bottom: 0.5px solid var(--border-color);
-        }
-        .profile-avatar-lg {
-            width: 84px;
-            height: 84px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #833ab4, #fd1d1d);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            overflow: hidden;
-            cursor: pointer;
-        }
+        .profile-header { padding: 20px 16px; display: flex; align-items: center; gap: 24px; border-bottom: 0.5px solid var(--border-color); }
+        .profile-avatar-lg { width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, #833ab4, #fd1d1d); display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .profile-avatar-lg.has-story-ring { padding: 2px; background: linear-gradient(45deg, #f09433, #d62976, #962fbf); }
-        .profile-avatar-lg .inner-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .profile-avatar-lg .inner-avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; font-size: 48px; }
         .profile-stats { display: flex; gap: 28px; text-align: center; }
         .stat-num { font-weight: 700; font-size: 18px; color: var(--text-primary); }
         .stat-label { font-size: 12px; color: var(--text-secondary); }
-        .edit-btn {
-            margin: 16px;
-            background: var(--bg-secondary);
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-primary);
-            transition: all 0.2s;
-        }
-        .edit-btn:active { transform: scale(0.98); }
+        .edit-btn { margin: 16px; background: var(--bg-secondary); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; cursor: pointer; color: var(--text-primary); }
         .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4px; }
         .grid-item { aspect-ratio: 1; background: var(--bg-secondary); cursor: pointer; overflow: hidden; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-        .grid-item:hover img { transform: scale(1.05); }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -451,11 +187,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.2s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         .modal-card {
             background: var(--bg-primary);
@@ -463,11 +194,6 @@
             width: 90%;
             max-width: 340px;
             padding: 24px;
-            animation: slideUp 0.3s;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
         .modal-card input, .modal-card select, .modal-card textarea {
             width: 100%;
@@ -486,11 +212,8 @@
             cursor: pointer;
             margin-top: 8px;
             font-weight: 600;
-            transition: opacity 0.2s;
         }
-        .modal-card button:active { opacity: 0.8; }
 
-        /* Story Viewer */
         .story-viewer {
             position: fixed;
             top: 0;
@@ -506,7 +229,6 @@
         }
         .story-img { max-width: 90%; max-height: 80%; border-radius: 16px; }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -520,10 +242,8 @@
             font-size: 13px;
             z-index: 1100;
             display: none;
-            animation: fadeInUp 0.3s;
         }
 
-        /* FAB */
         .fab {
             position: fixed;
             bottom: 80px;
@@ -540,29 +260,11 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             cursor: pointer;
             z-index: 200;
-            transition: all 0.2s;
         }
         .fab:active { transform: scale(0.92); }
 
-        /* Menu Dots */
-        .menu-dots {
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            padding: 0 8px;
-            color: var(--text-primary);
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 20px auto;
-        }
+        .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; color: var(--text-primary); }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -579,45 +281,10 @@
 
     <div class="swipe-container" id="swipeContainer">
         <div class="swipe-track" id="swipeTrack">
-            <!-- Page 1 - Home -->
-            <div class="page">
-                <div class="stories-row" id="storiesList"></div>
-                <div id="feedContainer"><div class="spinner"></div></div>
-            </div>
-            <!-- Page 2 - Announcements -->
-            <div class="page">
-                <div class="announce-header"><h3>📢 Announcements</h3><p>From village admin</p></div>
-                <div id="announcementsList"></div>
-                <div id="adminPanel" style="display:none;">
-                    <textarea id="announceText" rows="2" placeholder="Write announcement..."></textarea>
-                    <button onclick="postAnnouncement()" style="background:var(--accent-color); color:white;">➕ Post Announcement</button>
-                </div>
-            </div>
-            <!-- Page 3 - Chat -->
-            <div class="page">
-                <div class="chat-tabs">
-                    <button id="dmTab" class="chat-tab active">💬 DM</button>
-                    <button id="groupTab" class="chat-tab">👥 Group</button>
-                </div>
-                <div id="dmPanel" class="chat-panel">
-                    <div class="chat-messages" id="dmMessages"></div>
-                    <div class="chat-input-area">
-                        <input id="dmInput" placeholder="Message...">
-                        <button onclick="sendDM()">➤</button>
-                    </div>
-                </div>
-                <div id="groupPanel" class="chat-panel" style="display:none;">
-                    <div class="chat-messages" id="groupMessages"></div>
-                    <div class="chat-input-area">
-                        <input id="groupInput" placeholder="Group message...">
-                        <button onclick="sendGroupMsg()">➤</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Page 4 - Profile -->
-            <div class="page">
-                <div id="profileArea"></div>
-            </div>
+            <div class="page"><div class="stories-row" id="storiesList"></div><div id="feedContainer"></div></div>
+            <div class="page"><div class="announce-header"><h3>📢 Announcements</h3><p>From village admin</p></div><div id="announcementsList"></div><div id="adminPanel" style="display:none;"><textarea id="announceText" rows="2" placeholder="Write announcement..."></textarea><button onclick="postAnnouncement()" style="background:var(--accent-color); color:white;">➕ Post</button></div></div>
+            <div class="page"><div class="chat-tabs"><button id="dmTab" class="chat-tab active">💬 DM</button><button id="groupTab" class="chat-tab">👥 Group</button></div><div id="dmPanel" class="chat-panel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" class="chat-panel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
+            <div class="page"><div id="profileArea"></div></div>
         </div>
     </div>
 
@@ -631,7 +298,7 @@
 <div id="toastMsg" class="toast"></div>
 
 <script>
-    // ========== THEME SYSTEM ==========
+    // ========== THEME ==========
     let isDark = localStorage.getItem('theme') === 'dark';
     function applyTheme() {
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
@@ -641,46 +308,105 @@
     document.getElementById('themeToggle').onclick = () => { isDark = !isDark; applyTheme(); };
     applyTheme();
 
-    // ========== DATA ==========
-    let allUsers = JSON.parse(localStorage.getItem('nahantara_users')) || [];
-    let currentUserId = localStorage.getItem('nahantara_currentId');
+    // ========== DATA - PERSISTENT STORAGE ==========
+    // Load users
+    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_pro')) || [];
+    let currentUserId = localStorage.getItem('nahantara_currentId_pro');
     
     if (!allUsers.length || !currentUserId) {
-        let defaultUser = { id: 'user_' + Date.now(), username: 'Villager', bio: '🌾 Living my best life', avatar: null, followers: [], following: [], role: 'user' };
+        let defaultUser = { 
+            id: 'user_' + Date.now(), 
+            username: 'Villager', 
+            bio: '🌾 Living my best life', 
+            avatar: null, 
+            followers: [], 
+            following: [], 
+            role: 'user',
+            createdAt: Date.now()
+        };
         allUsers = [defaultUser];
         currentUserId = defaultUser.id;
-        localStorage.setItem('nahantara_users', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_currentId', currentUserId);
+        localStorage.setItem('nahantara_users_pro', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_currentId_pro', currentUserId);
     }
     
     let currentUser = allUsers.find(u => u.id === currentUserId) || allUsers[0];
     if (!currentUser.role) currentUser.role = 'user';
+    if (!currentUser.followers) currentUser.followers = [];
+    if (!currentUser.following) currentUser.following = [];
     
-    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts')) || [];
-    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories')) || [];
-    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements')) || [];
-    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm')) || [];
-    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group')) || [];
+    // Load posts - CRITICAL FIX: Ensure posts load correctly
+    let allPosts = [];
+    try {
+        const storedPosts = localStorage.getItem('nahantara_posts_pro');
+        if (storedPosts && storedPosts !== 'undefined') {
+            allPosts = JSON.parse(storedPosts);
+        }
+        if (!Array.isArray(allPosts)) allPosts = [];
+    } catch(e) { allPosts = []; }
+    
+    let storiesData = [];
+    try {
+        const stored = localStorage.getItem('nahantara_stories_pro');
+        if (stored) storiesData = JSON.parse(stored) || [];
+    } catch(e) { storiesData = []; }
+    
+    let announcements = [];
+    try {
+        const stored = localStorage.getItem('nahantara_announcements_pro');
+        if (stored) announcements = JSON.parse(stored) || [];
+    } catch(e) { announcements = []; }
+    
+    let dmMessages = [];
+    try {
+        const stored = localStorage.getItem('nahantara_dm_pro');
+        if (stored) dmMessages = JSON.parse(stored) || [];
+    } catch(e) { dmMessages = []; }
+    
+    let groupMessages = [];
+    try {
+        const stored = localStorage.getItem('nahantara_group_pro');
+        if (stored) groupMessages = JSON.parse(stored) || [];
+    } catch(e) { groupMessages = []; }
     
     function saveAll() {
-        localStorage.setItem('nahantara_users', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_posts', JSON.stringify(allPosts));
-        localStorage.setItem('nahantara_stories', JSON.stringify(storiesData));
-        localStorage.setItem('nahantara_announcements', JSON.stringify(announcements));
-        localStorage.setItem('nahantara_dm', JSON.stringify(dmMessages));
-        localStorage.setItem('nahantara_group', JSON.stringify(groupMessages));
-        localStorage.setItem('nahantara_currentId', currentUserId);
+        localStorage.setItem('nahantara_users_pro', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_posts_pro', JSON.stringify(allPosts));
+        localStorage.setItem('nahantara_stories_pro', JSON.stringify(storiesData));
+        localStorage.setItem('nahantara_announcements_pro', JSON.stringify(announcements));
+        localStorage.setItem('nahantara_dm_pro', JSON.stringify(dmMessages));
+        localStorage.setItem('nahantara_group_pro', JSON.stringify(groupMessages));
+        localStorage.setItem('nahantara_currentId_pro', currentUserId);
+        
+        // Debug log
+        console.log('Saved posts count:', allPosts.length);
     }
     
-    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
-    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-    function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
+    function showToast(msg) { 
+        let t = document.getElementById('toastMsg'); 
+        t.innerText = msg; 
+        t.style.display = 'block'; 
+        setTimeout(() => t.style.display = 'none', 2000); 
+    }
     
+    function escapeHtml(str) { 
+        if (!str) return ''; 
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); 
+    }
+    
+    function hasStory(userId) { 
+        return storiesData.some(s => s.userId === userId); 
+    }
+    
+    // Clean expired stories
     function cleanExpiredStories() {
         const now = Date.now();
         const oneDay = 24 * 60 * 60 * 1000;
         let changed = false;
-        storiesData = storiesData.filter(story => { if (now - story.timestamp > oneDay) { changed = true; return false; } return true; });
+        storiesData = storiesData.filter(story => {
+            if (now - story.timestamp > oneDay) { changed = true; return false; }
+            return true;
+        });
         if (changed) { saveAll(); renderStories(); renderProfile(); }
     }
     setInterval(cleanExpiredStories, 60 * 60 * 1000);
@@ -692,10 +418,10 @@
         if (!container) return;
         let users = allUsers.filter(u => u.id !== currentUser.id);
         let ownStory = hasStory(currentUser.id);
-        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><div class="story-name">Your Story</div></div>`;
+        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><span>Your Story</span></div>`;
         users.slice(0, 15).forEach(u => {
             let has = hasStory(u.id);
-            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><div class="story-name">${u.username.slice(0, 12)}</div></div>`;
+            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><span>${u.username.slice(0, 12)}</span></div>`;
         });
         container.innerHTML = html;
     }
@@ -724,7 +450,7 @@
         if (!stories.length) { showToast("No stories"); return; }
         let idx = 0, modal = document.createElement('div'); modal.className = 'story-viewer';
         let img = document.createElement('img'); img.className = 'story-img';
-        let close = document.createElement('div'); close.innerText = '✕'; close.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;';
+        let close = document.createElement('div'); close.innerText = '✕'; close.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer;';
         close.onclick = () => modal.remove();
         let update = () => img.src = stories[idx].image;
         update();
@@ -736,8 +462,11 @@
     function toggleLike(postId) {
         let post = allPosts.find(p => p.id == postId);
         if (post) {
-            if (post.likes.includes(currentUser.id)) post.likes = post.likes.filter(id => id !== currentUser.id);
-            else post.likes.push(currentUser.id);
+            if (post.likes.includes(currentUser.id)) {
+                post.likes = post.likes.filter(id => id !== currentUser.id);
+            } else {
+                post.likes.push(currentUser.id);
+            }
             saveAll();
             renderHomeFeed();
         }
@@ -758,7 +487,7 @@
         if (!post || !post.likes.length) { showToast("No likes yet"); return; }
         let likers = post.likes.map(uid => allUsers.find(u => u.id === uid)).filter(u => u);
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><h3>❤️ Likes (${post.likes.length})</h3>${likers.map(u => `<div style="padding:8px; display:flex; align-items:center; gap:10px;"><div style="width:32px;height:32px;background:#ddd;border-radius:50%;display:flex;align-items:center;justify-content:center;">${u.avatar ? `<img src="${u.avatar}" style="width:100%;border-radius:50%;">` : u.username.charAt(0)}</div><span>${escapeHtml(u.username)}</span></div>`).join('')}<button onclick="this.parentElement.parentElement.remove()" style="margin-top:12px;">Close</button></div>`;
+        modal.innerHTML = `<div class="modal-card"><h3>❤️ Likes (${post.likes.length})</h3>${likers.map(u => `<div style="padding:8px;">${escapeHtml(u.username)}</div>`).join('')}<button onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
         document.body.appendChild(modal);
     }
     
@@ -780,53 +509,44 @@
         }
     }
     
-    function sharePost(postId) {
-        let post = allPosts.find(p => p.id == postId);
-        if (post) {
-            navigator.clipboard.writeText(`${post.username}: ${post.text || 'Check out this post!'}`);
-            showToast("Link copied to clipboard!");
-        }
-    }
-    
     function showPostMenu(postId, event) {
         event.stopPropagation();
         let post = allPosts.find(p => p.id == postId);
-        if (!post) return;
+        if (!post || post.userId !== currentUser.id) return;
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        let options = `<div class="modal-card"><h3>Post Options</h3>`;
-        if (post.userId === currentUser.id) {
-            options += `<button onclick="editPost(${postId}); this.parentElement.parentElement.remove();">✏️ Edit</button>
-                        <button onclick="deletePost(${postId}); this.parentElement.parentElement.remove();" style="color:#ed4956;">🗑️ Delete</button>`;
-        }
-        options += `<button onclick="sharePost(${postId}); this.parentElement.parentElement.remove();">🔗 Share</button>
-                    <button onclick="this.parentElement.parentElement.remove()">Cancel</button></div>`;
-        modal.innerHTML = options;
+        modal.innerHTML = `<div class="modal-card"><h3>Post Options</h3><button onclick="editPost(${postId}); this.parentElement.parentElement.remove();">✏️ Edit</button><button onclick="deletePost(${postId}); this.parentElement.parentElement.remove();" style="color:#ed4956;">🗑️ Delete</button><button onclick="this.parentElement.parentElement.remove()">Cancel</button></div>`;
         document.body.appendChild(modal);
     }
     
     function renderHomeFeed() {
         let feedDiv = document.getElementById('feedContainer');
         if (!feedDiv) return;
-        if (!allPosts.length) { feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Create your first post!</p></div>'; return; }
+        
+        console.log('Rendering posts, count:', allPosts.length);
+        
+        if (!allPosts.length) {
+            feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Create your first post!</p></div>';
+            return;
+        }
+        
         feedDiv.innerHTML = allPosts.map(post => `
-            <div class="post-card" style="animation: fadeInUp 0.3s;">
+            <div class="post-card">
                 <div class="post-header">
                     <div class="post-user" onclick="viewUserProfile('${post.userId}')">
                         <div class="post-avatar">${post.username.charAt(0).toUpperCase()}</div>
                         <div><div class="post-name">${escapeHtml(post.username)}${post.userId === currentUser.id ? ' • you' : ''}</div><div class="post-time">${post.timeAgo || new Date(post.timestamp).toLocaleString()}</div></div>
                     </div>
-                    <div class="menu-dots" onclick="showPostMenu(${post.id}, event)">⋯</div>
+                    ${post.userId === currentUser.id ? `<div class="menu-dots" onclick="showPostMenu(${post.id}, event)">⋯</div>` : ''}
                 </div>
                 ${post.image ? `<img src="${post.image}" class="post-image" onclick="openFullImage('${post.image}')">` : ''}
                 <div class="post-actions">
-                    <div class="action-btn ${post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div>
+                    <div class="action-btn ${post.likes && post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div>
                     <div class="action-btn" onclick="toggleCommentBox(${post.id})">💬</div>
-                    <div class="action-btn" onclick="sharePost(${post.id})">🔗</div>
                 </div>
-                <div class="post-likes" onclick="showLikesModal(${post.id})">❤️ ${post.likes.length} likes</div>
+                <div class="post-likes" onclick="showLikesModal(${post.id})">❤️ ${post.likes ? post.likes.length : 0} likes</div>
                 <div class="post-caption"><strong>${escapeHtml(post.username)}</strong> ${escapeHtml(post.text || '')}</div>
                 <div id="commentBox-${post.id}" style="display:none; padding:8px 12px;">
-                    <div>${post.comments.map(c => `<div style="margin-bottom:8px;"><strong>${escapeHtml(c.username)}</strong> ${escapeHtml(c.text)}</div>`).join('')}</div>
+                    <div>${post.comments && post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong> ${escapeHtml(c.text)}</div>`).join('') || ''}</div>
                     <div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:10px; border-radius:25px; border:0.5px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"><button onclick="submitComment(${post.id})" style="padding:8px 16px; background:var(--accent-color); color:white; border:none; border-radius:25px;">Post</button></div>
                 </div>
             </div>
@@ -835,7 +555,7 @@
     
     window.submitComment = (postId) => { let inp = document.getElementById(`commentInput-${postId}`); if (inp && inp.value.trim()) { addComment(postId, inp.value); inp.value = ''; } };
     window.toggleCommentBox = (id) => { let box = document.getElementById(`commentBox-${id}`); if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none'; };
-    window.openFullImage = (src) => { let modal = document.createElement('div'); modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center;'; modal.innerHTML = `<img src="${src}" style="max-width:90%; max-height:80%; border-radius:16px;"><div style="position:absolute; top:30px; right:30px; color:white; font-size:40px; cursor:pointer;" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
+    window.openFullImage = (src) => { let modal = document.createElement('div'); modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center;'; modal.innerHTML = `<img src="${src}" style="max-width:90%;"><div style="position:absolute; top:30px; right:30px; color:white; font-size:40px; cursor:pointer;" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
     
     // ========== ANNOUNCEMENTS ==========
     function renderAnnouncements() {
@@ -846,10 +566,10 @@
         let panel = document.getElementById('adminPanel');
         if (panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
     }
-    window.postAnnouncement = () => { if (currentUser.role !== 'admin') { showToast("Only admin can post announcements"); return; } let text = document.getElementById('announceText')?.value.trim(); if (!text) { showToast("Write announcement first"); return; } announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() }); saveAll(); renderAnnouncements(); document.getElementById('announceText').value = ''; showToast("📢 Announcement posted!"); };
+    window.postAnnouncement = () => { if (currentUser.role !== 'admin') { showToast("Only admin can post"); return; } let text = document.getElementById('announceText')?.value.trim(); if (!text) { showToast("Write announcement"); return; } announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() }); saveAll(); renderAnnouncements(); document.getElementById('announceText').value = ''; showToast("📢 Posted!"); };
     
     // ========== CHAT ==========
-    function renderDM() { let d = document.getElementById('dmMessages'); if (d) d.innerHTML = dmMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px; opacity:0.7;">${m.time}</div></div>`).join(''); d?.scrollTo(0, d.scrollHeight); }
+    function renderDM() { let d = document.getElementById('dmMessages'); if (d) d.innerHTML = dmMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0, d.scrollHeight); }
     function renderGroup() { let g = document.getElementById('groupMessages'); if (g) g.innerHTML = groupMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}"><strong>${escapeHtml(m.senderName)}</strong> ${escapeHtml(m.text)}<div style="font-size:9px;">${m.time}</div></div>`).join(''); g?.scrollTo(0, g.scrollHeight); }
     window.sendDM = () => { let inp = document.getElementById('dmInput'); if (inp && inp.value.trim()) { dmMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: inp.value, time: new Date().toLocaleTimeString() }); saveAll(); renderDM(); inp.value = ''; } };
     window.sendGroupMsg = () => { let inp = document.getElementById('groupInput'); if (inp && inp.value.trim()) { groupMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: inp.value, time: new Date().toLocaleTimeString() }); saveAll(); renderGroup(); inp.value = ''; } };
@@ -882,7 +602,7 @@
     
     window.openEditModal = () => {
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><h3 style="color:var(--text-primary);">Edit Profile</h3><input id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}"><input id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}"><select id="editRole"><option value="user" ${currentUser.role === 'user' ? 'selected' : ''}>🌾 Normal User</option><option value="admin" ${currentUser.role === 'admin' ? 'selected' : ''}>👑 Admin</option></select><div id="codeDiv" style="display:${currentUser.role === 'admin' ? 'block' : 'none'};"><input id="adminCode" type="password" placeholder="Admin Code (7)"><small style="color:var(--text-secondary);">Enter "7" to become admin</small></div><button onclick="saveProfileEdit()" style="background:var(--accent-color); color:white;">Save</button><button onclick="this.parentElement.parentElement.remove()" style="background:var(--bg-secondary); color:var(--text-primary);">Cancel</button></div>`;
+        modal.innerHTML = `<div class="modal-card"><h3>Edit Profile</h3><input id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}"><input id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}"><select id="editRole"><option value="user" ${currentUser.role === 'user' ? 'selected' : ''}>🌾 User</option><option value="admin" ${currentUser.role === 'admin' ? 'selected' : ''}>👑 Admin</option></select><div id="codeDiv" style="display:${currentUser.role === 'admin' ? 'block' : 'none'};"><input id="adminCode" type="password" placeholder="Admin Code (7)"><small>Enter "7" to become admin</small></div><button onclick="saveProfileEdit()" style="background:var(--accent-color); color:white;">Save</button><button onclick="this.parentElement.parentElement.remove()">Cancel</button></div>`;
         document.body.appendChild(modal);
         let roleSelect = document.getElementById('editRole');
         let codeDiv = document.getElementById('codeDiv');
@@ -903,7 +623,7 @@
         saveAll();
         document.querySelector('.modal-overlay')?.remove();
         renderProfile(); renderHomeFeed(); renderStories(); renderAnnouncements();
-        showToast(`Profile updated! Role: ${newRole === 'admin' ? 'Admin' : 'User'}`);
+        showToast(`Profile updated!`);
     };
     
     window.uploadProfilePicture = () => {
@@ -933,7 +653,7 @@
         let isFollowing = currentUser.following.includes(targetUser.id);
         let hasUserStory = hasStory(targetUser.id);
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><div style="text-align:center; margin-bottom:16px;"><div class="story-avatar" style="width:80px; height:80px; margin:0 auto 12px; font-size:48px; background:linear-gradient(135deg,#833ab4,#fd1d1d);">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%; border-radius:50%;">` : targetUser.username.charAt(0).toUpperCase()}</div><h3 style="color:var(--text-primary);">${escapeHtml(targetUser.username)}</h3><p style="color:var(--text-secondary); font-size:12px;">${targetUser.followers.length} followers • ${targetUser.following.length} following</p><p style="margin:8px 0; color:var(--text-primary);">${escapeHtml(targetUser.bio)}</p></div><button onclick="followUser('${targetUser.id}'); this.parentElement.parentElement.remove();" style="background:${isFollowing ? 'var(--bg-secondary)' : 'var(--accent-color)'}; color:${isFollowing ? 'var(--text-primary)' : 'white'};">${isFollowing ? 'Unfollow' : 'Follow'}</button><button onclick="if(${hasUserStory}) { this.parentElement.parentElement.remove(); viewStory('${targetUser.id}'); } else { showToast('No story'); }" style="margin-top:8px;">📸 View Story</button><button onclick="this.parentElement.parentElement.remove()" style="margin-top:8px; background:var(--bg-secondary); color:var(--text-primary);">Close</button></div>`;
+        modal.innerHTML = `<div class="modal-card"><div style="text-align:center;"><div class="story-avatar" style="width:80px; height:80px; margin:0 auto 12px;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;border-radius:50%;">` : targetUser.username.charAt(0).toUpperCase()}</div><h3>${escapeHtml(targetUser.username)}</h3><p>${targetUser.followers.length} followers</p><p>${escapeHtml(targetUser.bio)}</p></div><button onclick="followUser('${targetUser.id}'); this.parentElement.parentElement.remove();" style="background:${isFollowing ? '#efefef' : 'var(--accent-color)'}; color:${isFollowing ? 'black' : 'white'};">${isFollowing ? 'Unfollow' : 'Follow'}</button><button onclick="if(${hasUserStory}) { this.parentElement.parentElement.remove(); viewStory('${targetUser.id}'); } else { showToast('No story'); }">📸 View Story</button><button onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
         document.body.appendChild(modal);
     };
     
@@ -957,7 +677,7 @@
         renderHomeFeed(); renderProfile(); renderStories();
     };
     
-    // ========== SWIPE NAVIGATION ==========
+    // ========== NAVIGATION ==========
     let currentPage = 0;
     const track = document.getElementById('swipeTrack');
     const navItems = document.querySelectorAll('.nav-item');
@@ -975,21 +695,9 @@
     let touchStartX = 0;
     const container = document.getElementById('swipeContainer');
     container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
-    container.addEventListener('touchend', (e) => { let touchEndX = e.changedTouches[0].screenX; let diff = touchEndX - touchStartX; if (Math.abs(diff) > 50) { if (diff > 0 && currentPage > 0) goToPage(currentPage - 1); else if (diff < 0 && currentPage < 3) goToPage(currentPage + 1); } });
+    container.addEventListener('touchend', (e) => { let endX = e.changedTouches[0].screenX; let diff = endX - touchStartX; if (Math.abs(diff) > 50) { if (diff > 0 && currentPage > 0) goToPage(currentPage - 1); else if (diff < 0 && currentPage < 3) goToPage(currentPage + 1); } });
     
-    // Pull to refresh
-    let refreshStartY = 0, refreshing = false;
-    container.addEventListener('touchstart', (e) => { if (container.scrollTop === 0) refreshStartY = e.touches[0].clientY; });
-    container.addEventListener('touchmove', (e) => {
-        if (container.scrollTop === 0 && e.touches[0].clientY - refreshStartY > 60 && !refreshing && currentPage === 0) {
-            refreshing = true;
-            let loader = document.createElement('div'); loader.className = 'spinner'; loader.style.margin = '20px auto';
-            document.querySelector('.page').prepend(loader);
-            setTimeout(() => { renderHomeFeed(); renderStories(); renderProfile(); loader.remove(); refreshing = false; showToast("✨ Updated!"); }, 800);
-        }
-    });
-    
-    // Floating action button
+    // Floating action button - CREATE POST
     let fab = document.createElement('div'); fab.className = 'fab'; fab.innerHTML = '✚';
     fab.onclick = () => {
         let caption = prompt("📝 Write caption (optional):");
@@ -999,19 +707,48 @@
             if (file) {
                 let reader = new FileReader();
                 reader.onload = (ev) => {
-                    let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: caption || '', image: ev.target.result, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
-                    allPosts.unshift(newPost); saveAll(); renderHomeFeed(); renderProfile(); showToast("✅ Posted!");
+                    let newPost = { 
+                        id: Date.now(), 
+                        userId: currentUser.id, 
+                        username: currentUser.username, 
+                        text: caption || '', 
+                        image: ev.target.result, 
+                        likes: [], 
+                        comments: [], 
+                        timestamp: Date.now(), 
+                        timeAgo: new Date().toLocaleString() 
+                    };
+                    allPosts.unshift(newPost);
+                    saveAll();
+                    renderHomeFeed();
+                    renderProfile();
+                    showToast("✅ Posted! Refresh to see.");
                 };
                 reader.readAsDataURL(file);
             } else {
-                let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: caption || '', image: null, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
-                allPosts.unshift(newPost); saveAll(); renderHomeFeed(); renderProfile(); showToast("✅ Posted!");
+                let newPost = { 
+                    id: Date.now(), 
+                    userId: currentUser.id, 
+                    username: currentUser.username, 
+                    text: caption || '', 
+                    image: null, 
+                    likes: [], 
+                    comments: [], 
+                    timestamp: Date.now(), 
+                    timeAgo: new Date().toLocaleString() 
+                };
+                allPosts.unshift(newPost);
+                saveAll();
+                renderHomeFeed();
+                renderProfile();
+                showToast("✅ Posted!");
             }
         };
         fileInput.click();
     };
     document.querySelector('.app').appendChild(fab);
     
+    // Initial render
     goToPage(0);
 </script>
 </body>
