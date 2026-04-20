@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="or">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
-    <title>ନହନ୍ତରା — ମୋ ସ୍ବାଭିମାନ</title>
+    <title>Nahantara — My Pride</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Oriya', Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #000;
             display: flex;
             justify-content: center;
@@ -40,18 +40,24 @@
             justify-content: space-between;
             align-items: center;
         }
-        .logo { font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; }
-        .logo span { font-size: 26px; margin-right: 4px; }
+        .logo { font-size: 22px; font-weight: 600; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; }
+        .logo span { font-size: 24px; margin-right: 4px; }
         .header-icons { display: flex; gap: 22px; font-size: 24px; cursor: pointer; }
-        .swipe-area { flex: 1; overflow-x: hidden; overflow-y: auto; position: relative; }
+        .swipe-area { flex: 1; overflow-x: hidden; overflow-y: auto; position: relative; scroll-behavior: smooth; }
         .track { display: flex; width: 100%; height: 100%; transition: transform 0.25s ease-out; }
         .page { width: 100%; flex-shrink: 0; overflow-y: auto; padding-bottom: 70px; scrollbar-width: thin; }
         .page::-webkit-scrollbar { display: none; }
         /* Pull to refresh */
         .refresh-indicator {
             text-align: center; padding: 10px; color: #8e8e8e; font-size: 12px;
-            transform: translateY(-40px); transition: transform 0.2s;
+            transform: translateY(-50px); transition: transform 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
         }
+        .spinner {
+            width: 20px; height: 20px; border: 2px solid #dbdbdb; border-top-color: #0095f6;
+            border-radius: 50%; animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .bottom-nav {
             position: sticky;
             bottom: 0;
@@ -104,13 +110,6 @@
         .liked { color: #ed4956; }
         .post-likes { padding: 0 12px 4px; font-weight: 600; font-size: 13px; cursor: pointer; }
         .post-caption { padding: 0 12px 8px; font-size: 14px; }
-        .comments-section { padding: 8px 12px 12px; background: #fafafa; border-top: 0.5px solid #efefef; }
-        .comment-item { font-size: 13px; margin-bottom: 8px; }
-        .comment-user { font-weight: 600; margin-right: 8px; }
-        .create-bar { background: white; padding: 12px; border-bottom: 0.5px solid #dbdbdb; display: flex; align-items: center; gap: 12px; }
-        .create-avatar { width: 44px; height: 44px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .create-input { flex: 1; border: none; background: #efefef; padding: 12px 16px; border-radius: 25px; font-size: 14px; }
-        .photo-icon { font-size: 28px; cursor: pointer; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #fff; }
         .grid-item { aspect-ratio: 1 / 1; background: #efefef; cursor: pointer; overflow: hidden; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
@@ -120,8 +119,11 @@
         .profile-avatar-lg .inner-avatar { width: 100%; height: 100%; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; }
         .profile-stats { display: flex; gap: 24px; text-align: center; }
         .stat-num { font-weight: 700; font-size: 18px; }
+        .stat-label { font-size: 12px; color: #8e8e8e; }
         .edit-btn { margin: 12px 16px; background: #efefef; padding: 8px; border-radius: 8px; text-align: center; font-weight: 600; cursor: pointer; }
         .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4px; }
+        .follow-btn { margin: 12px 16px; background: #0095f6; color: white; padding: 8px; border-radius: 8px; text-align: center; font-weight: 600; cursor: pointer; }
+        .unfollow-btn { background: #efefef; color: #262626; }
         .announcement-card { background: #f0f7ff; margin: 12px; padding: 14px; border-radius: 16px; border-left: 5px solid #0095f6; }
         .admin-badge { background: #0095f6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 30px; display: inline-block; margin-bottom: 6px; }
         .chat-messages { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; height: calc(100vh - 200px); }
@@ -137,34 +139,33 @@
         .menu-popup { position: absolute; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2500; overflow: hidden; }
         .menu-item { padding: 12px 20px; cursor: pointer; white-space: nowrap; }
         .menu-item:hover { background: #efefef; }
-        button, .action-click { cursor: pointer; }
         .likes-modal { max-height: 300px; overflow-y: auto; }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <div class="logo"><span>🌾</span> ନହନ୍ତରା</div>
+        <div class="logo"><span>🌾</span> Nahantara</div>
         <div class="header-icons">❤️ 💬</div>
     </div>
     <div class="swipe-area" id="swipeArea">
         <div class="track" id="track">
             <div class="page" id="homePage"><div class="stories-row" id="storiesList"></div><div id="feedContainer"></div></div>
-            <div class="page" id="announcePage"><div style="padding: 16px;"><h3>📢 ଗାଁ ଘୋଷଣା</h3><p style="color:gray; font-size:12px;">ପ୍ରଶାସକଙ୍କ ଦ୍ୱାରା ଜାରି</p></div><div id="announcementsList"></div><div id="adminAnnouncePanel" style="display:none; margin:16px;"><textarea id="announceText" rows="2" placeholder="ନୂଆ ଘୋଷଣା..." style="width:100%; padding:12px; border-radius:12px;"></textarea><button onclick="postAnnouncement()" style="margin-top:8px; background:#0095f6; color:white; border:none; padding:8px; border-radius:30px; width:100%;">➕ ଘୋଷଣା</button></div></div>
-            <div class="page" id="chatPage"><div style="display:flex; gap:12px; padding:12px;"><button id="dmTab" style="flex:1; background:none; border:none; font-weight:600;">💬 DM</button><button id="groupTab" style="flex:1; background:none; border:none; font-weight:600;">👥 ଗ୍ରୁପ୍</button></div><div id="dmPanel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="ସନ୍ଦେଶ..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="ଗ୍ରୁପ୍..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
+            <div class="page" id="announcePage"><div style="padding: 16px;"><h3>📢 Village Announcements</h3><p style="color:gray; font-size:12px;">Posted by admins only</p></div><div id="announcementsList"></div><div id="adminAnnouncePanel" style="display:none; margin:16px;"><textarea id="announceText" rows="2" placeholder="New announcement..." style="width:100%; padding:12px; border-radius:12px;"></textarea><button onclick="postAnnouncement()" style="margin-top:8px; background:#0095f6; color:white; border:none; padding:8px; border-radius:30px; width:100%;">➕ Post Announcement</button></div></div>
+            <div class="page" id="chatPage"><div style="display:flex; gap:12px; padding:12px;"><button id="dmTab" style="flex:1; background:none; border:none; font-weight:600;">💬 DM</button><button id="groupTab" style="flex:1; background:none; border:none; font-weight:600;">👥 Group Chat</button></div><div id="dmPanel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group message..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
             <div class="page" id="profilePage"><div id="profileArea"></div></div>
         </div>
     </div>
-    <div class="bottom-nav"><div class="nav-item active" data-index="0"><div class="nav-icon">🏠</div><div>ହୋମ୍</div></div><div class="nav-item" data-index="1"><div class="nav-icon">📢</div><div>ଘୋଷଣା</div></div><div class="nav-item" data-index="2"><div class="nav-icon">💬</div><div>ଚାଟ୍</div></div><div class="nav-item" data-index="3"><div class="nav-icon">👤</div><div>ମୋର</div></div></div>
+    <div class="bottom-nav"><div class="nav-item active" data-index="0"><div class="nav-icon">🏠</div><div>Home</div></div><div class="nav-item" data-index="1"><div class="nav-icon">📢</div><div>News</div></div><div class="nav-item" data-index="2"><div class="nav-icon">💬</div><div>Chat</div></div><div class="nav-item" data-index="3"><div class="nav-icon">👤</div><div>Profile</div></div></div>
 </div>
 <div id="toastMsg" class="toast" style="display:none;"></div>
 
 <script>
-    // ========== DATA MODELS ==========
+    // ========== DATA ==========
     let allUsers = JSON.parse(localStorage.getItem('nahantara_users')) || [];
     let currentUserId = localStorage.getItem('nahantara_currentId');
     if(!allUsers.length || !currentUserId) {
-        let defaultUser = { id: 'user_'+Date.now(), username: 'ଗ୍ରାମୀଣ', bio: '🌾 ମୋ ସ୍ବାଭିମାନ', avatar: null, followers: [], following: [], role: 'user' };
+        let defaultUser = { id: 'user_'+Date.now(), username: 'Villager', bio: '🌾 My pride | Nahantara', avatar: null, followers: [], following: [], role: 'user' };
         allUsers = [defaultUser];
         currentUserId = defaultUser.id;
         localStorage.setItem('nahantara_users', JSON.stringify(allUsers));
@@ -178,7 +179,6 @@
     let announcements = JSON.parse(localStorage.getItem('nahantara_announcements')) || [];
     let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm')) || [];
     let groupMessages = JSON.parse(localStorage.getItem('nahantara_group')) || [];
-    let notifications = JSON.parse(localStorage.getItem('nahantara_notifications')) || [];
     
     function cleanExpiredStories() {
         const now = Date.now();
@@ -198,26 +198,43 @@
         localStorage.setItem('nahantara_announcements', JSON.stringify(announcements));
         localStorage.setItem('nahantara_dm', JSON.stringify(dmMessages));
         localStorage.setItem('nahantara_group', JSON.stringify(groupMessages));
-        localStorage.setItem('nahantara_notifications', JSON.stringify(notifications));
         localStorage.setItem('nahantara_currentId', currentUserId);
     }
     function showToast(msg) { let t=document.getElementById('toastMsg'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-    function addNotification(msg, targetUserId=null) { notifications.unshift({msg, time:Date.now(), targetUserId}); if(notifications.length>40) notifications.pop(); saveAll(); }
     
-    // ========== PULL TO REFRESH ==========
-    let refreshStartY = 0;
-    let isRefreshing = false;
-    const swipeArea = document.getElementById('swipeArea');
-    swipeArea.addEventListener('touchstart', (e) => { refreshStartY = e.touches[0].clientY; });
-    swipeArea.addEventListener('touchmove', (e) => {
-        if(swipeArea.scrollTop === 0 && e.touches[0].clientY - refreshStartY > 60 && !isRefreshing) {
+    // ========== PULL TO REFRESH with spinner ==========
+    let refreshStartY = 0, isRefreshing = false;
+    const swipeAreaDiv = document.getElementById('swipeArea');
+    let refreshDiv = null;
+    
+    function addRefreshIndicator() {
+        if(!refreshDiv) {
+            refreshDiv = document.createElement('div');
+            refreshDiv.className = 'refresh-indicator';
+            refreshDiv.innerHTML = '<div class="spinner"></div><span>Refreshing...</span>';
+            swipeAreaDiv.insertBefore(refreshDiv, swipeAreaDiv.firstChild);
+            refreshDiv.style.transform = 'translateY(-50px)';
+        }
+    }
+    addRefreshIndicator();
+    
+    swipeAreaDiv.addEventListener('touchstart', (e) => { refreshStartY = e.touches[0].clientY; });
+    swipeAreaDiv.addEventListener('touchmove', (e) => {
+        if(swipeAreaDiv.scrollTop === 0 && e.touches[0].clientY - refreshStartY > 50 && !isRefreshing) {
+            if(refreshDiv) refreshDiv.style.transform = 'translateY(0px)';
+        }
+    });
+    swipeAreaDiv.addEventListener('touchend', (e) => {
+        if(swipeAreaDiv.scrollTop === 0 && e.changedTouches[0].clientY - refreshStartY > 50 && !isRefreshing) {
             isRefreshing = true;
-            showToast("Refreshing...");
+            if(refreshDiv) refreshDiv.style.transform = 'translateY(-50px)';
             setTimeout(() => {
                 renderHomeFeed(); renderStories(); renderExploreGrid(); renderProfile(); renderAnnouncements();
-                showToast("Updated!");
+                showToast("✓ Updated!");
                 isRefreshing = false;
-            }, 500);
+            }, 800);
+        } else {
+            if(refreshDiv) refreshDiv.style.transform = 'translateY(-50px)';
         }
     });
     
@@ -228,7 +245,7 @@
         if(!container) return;
         let storyUsers = allUsers.filter(u => u.id !== currentUser.id);
         let ownStoryExist = hasStory(currentUser.id);
-        let addStoryHtml = `<div class="story ${ownStoryExist ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring ${ownStoryExist ? 'has-story' : ''}"><div class="story-avatar">✚</div></div><span>ତୁମର</span></div>`;
+        let addStoryHtml = `<div class="story ${ownStoryExist ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring ${ownStoryExist ? 'has-story' : ''}"><div class="story-avatar">✚</div></div><span>Your story</span></div>`;
         let othersHtml = storyUsers.map(u => {
             let has = hasStory(u.id);
             return `<div class="story ${has ? 'has-story' : ''}" onclick="viewStory('${u.id}')"><div class="story-ring ${has ? 'has-story' : ''}"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><span>${u.username.slice(0,10)}</span></div>`;
@@ -267,7 +284,7 @@
             deleteBtn = document.createElement('button');
             deleteBtn.innerText = '🗑️ Delete Story';
             deleteBtn.className = 'story-delete-btn';
-            deleteBtn.onclick = (e) => { e.stopPropagation(); if(confirm("Delete?")) { storiesData = storiesData.filter(s => s.id !== userStories[idx].id); saveAll(); modal.remove(); renderStories(); renderProfile(); showToast("Deleted"); } };
+            deleteBtn.onclick = (e) => { e.stopPropagation(); if(confirm("Delete this story?")) { storiesData = storiesData.filter(s => s.id !== userStories[idx].id); saveAll(); modal.remove(); renderStories(); renderProfile(); showToast("Deleted"); } };
             modal.appendChild(deleteBtn);
         }
         let closeBtn = document.createElement('div'); closeBtn.innerText = '✕'; closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;'; closeBtn.onclick = (e) => { e.stopPropagation(); modal.remove(); };
@@ -281,7 +298,57 @@
         modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
     }
     
-    // ========== POSTS with Edit & Delete (3-dots menu) ==========
+    // ========== FOLLOW SYSTEM ==========
+    function followUser(userId) {
+        let targetUser = allUsers.find(u => u.id === userId);
+        if(!targetUser || targetUser.id === currentUser.id) return;
+        if(!currentUser.following.includes(userId)) {
+            currentUser.following.push(userId);
+            targetUser.followers.push(currentUser.id);
+            saveAll();
+            showToast(`Following ${targetUser.username}`);
+            renderProfile();
+            renderHomeFeed();
+        }
+    }
+    
+    function unfollowUser(userId) {
+        let targetUser = allUsers.find(u => u.id === userId);
+        if(!targetUser) return;
+        currentUser.following = currentUser.following.filter(id => id !== userId);
+        targetUser.followers = targetUser.followers.filter(id => id !== currentUser.id);
+        saveAll();
+        showToast(`Unfollowed ${targetUser.username}`);
+        renderProfile();
+        renderHomeFeed();
+    }
+    
+    function viewUserProfile(userId) {
+        let targetUser = allUsers.find(u => u.id === userId);
+        if(!targetUser || targetUser.id === currentUser.id) return;
+        let isFollowing = currentUser.following.includes(userId);
+        let userPosts = allPosts.filter(p => p.userId === userId);
+        let modal = document.createElement('div'); modal.className='modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-card">
+                <div style="text-align:center;">
+                    <div style="width:80px; height:80px; background:#ddd; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:40px; overflow:hidden;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;">` : targetUser.username.charAt(0).toUpperCase()}</div>
+                    <h3>${escapeHtml(targetUser.username)}</h3>
+                    <p style="color:gray; font-size:12px;">${escapeHtml(targetUser.bio)}</p>
+                    <div style="display:flex; gap:20px; justify-content:center; margin:12px 0;">
+                        <div><strong>${userPosts.length}</strong><br><span style="font-size:10px;">posts</span></div>
+                        <div><strong>${targetUser.followers.length}</strong><br><span style="font-size:10px;">followers</span></div>
+                        <div><strong>${targetUser.following.length}</strong><br><span style="font-size:10px;">following</span></div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove(); ${isFollowing ? `unfollowUser('${userId}')` : `followUser('${userId}')`}" style="width:100%; padding:10px; background:${isFollowing ? '#efefef' : '#0095f6'}; color:${isFollowing ? '#262626' : 'white'}; border:none; border-radius:8px; font-weight:600;">${isFollowing ? 'Unfollow' : 'Follow'}</button>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" style="width:100%; margin-top:8px; padding:10px; background:#efefef; border:none; border-radius:8px;">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // ========== POSTS ==========
     function openCreatePost() {
         let caption = prompt("📝 Caption (optional):");
         let fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
@@ -297,14 +364,13 @@
         if(!text && !imageData) { showToast("Write something or add image"); return; }
         let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: text, image: imageData || null, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
         allPosts.unshift(newPost); saveAll();
-        addNotification(`${currentUser.username} posted new!`);
         renderHomeFeed(); renderExploreGrid(); renderProfile();
         showToast("✅ Posted!");
     }
     
     function editPost(postId) {
         let post = allPosts.find(p=>p.id==postId);
-        if(!post || post.userId !== currentUser.id) { showToast("Can't edit"); return; }
+        if(!post || post.userId !== currentUser.id) return;
         let newText = prompt("Edit caption:", post.text);
         if(newText !== null) { post.text = newText; saveAll(); renderHomeFeed(); renderExploreGrid(); renderProfile(); showToast("Updated"); }
     }
@@ -318,7 +384,7 @@
         if(post) {
             let idx = post.likes.indexOf(currentUser.id);
             if(idx!==-1) post.likes.splice(idx,1);
-            else { post.likes.push(currentUser.id); addNotification(`${currentUser.username} liked your post.`, post.userId); }
+            else { post.likes.push(currentUser.id); }
             saveAll(); renderHomeFeed(); renderProfile();
         }
     }
@@ -328,14 +394,14 @@
         let post = allPosts.find(p=>p.id==postId);
         if(post) {
             post.comments.push({ userId: currentUser.id, username: currentUser.username, text: commentText, time: Date.now() });
-            saveAll(); addNotification(`${currentUser.username} commented`, post.userId);
+            saveAll();
             renderHomeFeed();
         }
     }
     
     function showLikesModal(postId) {
         let post = allPosts.find(p=>p.id==postId);
-        if(!post || !post.likes.length) { showToast("No likes"); return; }
+        if(!post || !post.likes.length) { showToast("No likes yet"); return; }
         let likers = post.likes.map(uid=>allUsers.find(u=>u.id===uid)).filter(u=>u);
         let modal = document.createElement('div'); modal.className='modal-overlay';
         modal.innerHTML = `<div class="modal-card"><h3>❤️ Likes</h3><div class="likes-modal">${likers.map(u=>`<div style="padding:8px; display:flex; align-items:center; gap:10px;"><div class="post-avatar" style="width:32px;height:32px;">${u.avatar?`<img src="${u.avatar}" style="width:100%;">`:u.username.charAt(0)}</div><span>${escapeHtml(u.username)}</span></div>`).join('')}</div><button onclick="this.parentElement.parentElement.remove()" style="margin-top:12px; width:100%; padding:8px; background:#efefef; border:none; border-radius:30px;">Close</button></div>`;
@@ -345,7 +411,7 @@
     function showPostMenu(postId, event) {
         event.stopPropagation();
         let post = allPosts.find(p=>p.id==postId);
-        if(!post || post.userId !== currentUser.id) { showToast("Only owner can edit/delete"); return; }
+        if(!post || post.userId !== currentUser.id) return;
         let menu = document.createElement('div'); menu.className='menu-popup';
         menu.style.position = 'absolute';
         menu.style.top = (event.clientY - 80) + 'px';
@@ -405,12 +471,11 @@
         if(panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
     }
     window.postAnnouncement = () => {
-        if(currentUser.role !== 'admin') { showToast("Only admin can post"); return; }
+        if(currentUser.role !== 'admin') { showToast("Only admin can post announcements"); return; }
         let text = document.getElementById('announceText')?.value.trim();
         if(!text) { showToast("Write announcement"); return; }
         announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() });
         saveAll(); renderAnnouncements(); document.getElementById('announceText').value='';
-        addNotification(`📢 New announcement: ${text.slice(0,60)}`, null);
         showToast("Announcement posted!");
     };
     
@@ -425,7 +490,7 @@
                 <div class="profile-avatar-lg ${hasUserStory ? 'has-story-ring' : ''}" onclick="viewOwnStory()">
                     <div class="inner-avatar" onclick="event.stopPropagation(); uploadProfilePicture()">${currentUser.avatar ? `<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;">` : currentUser.username.charAt(0).toUpperCase()}</div>
                 </div>
-                <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div>posts</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div>followers</div></div><div><div class="stat-num">${currentUser.following.length}</div><div>following</div></div></div>
+                <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div class="stat-label">posts</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div class="stat-label">followers</div></div><div><div class="stat-num">${currentUser.following.length}</div><div class="stat-label">following</div></div></div>
             </div>
             <div class="edit-btn" onclick="openEditProfileModal()">✏️ Edit Profile & Role</div>
             <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br>${escapeHtml(currentUser.bio)}</div>
@@ -482,7 +547,6 @@
         inp.click();
     };
     window.viewOwnStory = () => { if(hasStory(currentUser.id)) viewStory(currentUser.id); else showToast("No story uploaded"); };
-    window.viewUserProfile = (userId) => {};
     
     // ========== CHAT ==========
     function renderDM() { let d=document.getElementById('dmMessages'); if(d) d.innerHTML=dmMessages.map(m=>`<div class="message-bubble ${m.senderId===currentUser.id?'message-right':'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0,d.scrollHeight); }
