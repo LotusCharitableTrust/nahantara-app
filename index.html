@@ -43,10 +43,15 @@
         .logo { font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; }
         .logo span { font-size: 26px; margin-right: 4px; }
         .header-icons { display: flex; gap: 22px; font-size: 24px; cursor: pointer; }
-        .swipe-area { flex: 1; overflow-x: hidden; position: relative; }
+        .swipe-area { flex: 1; overflow-x: hidden; overflow-y: auto; position: relative; }
         .track { display: flex; width: 100%; height: 100%; transition: transform 0.25s ease-out; }
         .page { width: 100%; flex-shrink: 0; overflow-y: auto; padding-bottom: 70px; scrollbar-width: thin; }
         .page::-webkit-scrollbar { display: none; }
+        /* Pull to refresh */
+        .refresh-indicator {
+            text-align: center; padding: 10px; color: #8e8e8e; font-size: 12px;
+            transform: translateY(-40px); transition: transform 0.2s;
+        }
         .bottom-nav {
             position: sticky;
             bottom: 0;
@@ -60,7 +65,6 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #8e8e8e; cursor: pointer; transition: color 0.1s; }
         .nav-item.active { color: #0095f6; }
         .nav-icon { font-size: 24px; }
-        /* Stories Row */
         .stories-row {
             padding: 12px 0 12px 12px;
             display: flex;
@@ -75,7 +79,6 @@
         .story.has-story .story-ring { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); padding: 2px; }
         .story-avatar { width: 66px; height: 66px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        /* Story Viewer */
         .story-viewer {
             position: fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:2000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -88,7 +91,6 @@
             padding: 10px 24px; border-radius: 30px; font-weight: bold; font-size: 14px;
             cursor: pointer; z-index: 2002;
         }
-        /* Post Card */
         .post-card { margin-bottom: 12px; background: #fff; border-bottom: 0.5px solid #efefef; }
         .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
         .post-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -105,16 +107,13 @@
         .comments-section { padding: 8px 12px 12px; background: #fafafa; border-top: 0.5px solid #efefef; }
         .comment-item { font-size: 13px; margin-bottom: 8px; }
         .comment-user { font-weight: 600; margin-right: 8px; }
-        /* Create Post Bar */
         .create-bar { background: white; padding: 12px; border-bottom: 0.5px solid #dbdbdb; display: flex; align-items: center; gap: 12px; }
         .create-avatar { width: 44px; height: 44px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .create-input { flex: 1; border: none; background: #efefef; padding: 12px 16px; border-radius: 25px; font-size: 14px; }
         .photo-icon { font-size: 28px; cursor: pointer; }
-        /* Explore Grid */
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #fff; }
         .grid-item { aspect-ratio: 1 / 1; background: #efefef; cursor: pointer; overflow: hidden; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        /* Profile */
         .profile-header { padding: 16px; display: flex; align-items: center; gap: 24px; border-bottom: 0.5px solid #efefef; }
         .profile-avatar-lg { width: 84px; height: 84px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 48px; overflow: hidden; cursor: pointer; position: relative; }
         .profile-avatar-lg.has-story-ring { padding: 2px; background: linear-gradient(45deg, #f09433, #d62976, #962fbf); }
@@ -123,23 +122,23 @@
         .stat-num { font-weight: 700; font-size: 18px; }
         .edit-btn { margin: 12px 16px; background: #efefef; padding: 8px; border-radius: 8px; text-align: center; font-weight: 600; cursor: pointer; }
         .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4px; }
-        /* Announcement */
         .announcement-card { background: #f0f7ff; margin: 12px; padding: 14px; border-radius: 16px; border-left: 5px solid #0095f6; }
         .admin-badge { background: #0095f6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 30px; display: inline-block; margin-bottom: 6px; }
-        /* Chat */
         .chat-messages { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; height: calc(100vh - 200px); }
         .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 22px; font-size: 14px; }
         .message-left { background: #efefef; align-self: flex-start; }
         .message-right { background: #0095f6; color: white; align-self: flex-end; }
         .chat-input-area { display: flex; padding: 12px; gap: 8px; border-top: 0.5px solid #dbdbdb; background: white; }
         .chat-input-area input { flex: 1; padding: 10px; border-radius: 25px; border: 0.5px solid #dbdbdb; }
-        /* Modal */
         .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; align-items: center; justify-content: center; }
         .modal-card { background: white; border-radius: 20px; width: 90%; max-width: 340px; padding: 20px; }
         .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 8px 20px; border-radius: 30px; font-size: 13px; z-index: 1100; }
+        .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; }
+        .menu-popup { position: absolute; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2500; overflow: hidden; }
+        .menu-item { padding: 12px 20px; cursor: pointer; white-space: nowrap; }
+        .menu-item:hover { background: #efefef; }
         button, .action-click { cursor: pointer; }
         .likes-modal { max-height: 300px; overflow-y: auto; }
-        input, textarea { font-family: inherit; }
     </style>
 </head>
 <body>
@@ -181,23 +180,15 @@
     let groupMessages = JSON.parse(localStorage.getItem('nahantara_group')) || [];
     let notifications = JSON.parse(localStorage.getItem('nahantara_notifications')) || [];
     
-    // Auto-delete stories older than 24 hours
     function cleanExpiredStories() {
         const now = Date.now();
         const oneDay = 24 * 60 * 60 * 1000;
         let changed = false;
         storiesData = storiesData.filter(story => {
-            if(now - story.timestamp > oneDay) {
-                changed = true;
-                return false;
-            }
+            if(now - story.timestamp > oneDay) { changed = true; return false; }
             return true;
         });
-        if(changed) {
-            saveAll();
-            renderStories();
-            renderProfile();
-        }
+        if(changed) { saveAll(); renderStories(); renderProfile(); }
     }
     
     function saveAll() {
@@ -211,9 +202,26 @@
         localStorage.setItem('nahantara_currentId', currentUserId);
     }
     function showToast(msg) { let t=document.getElementById('toastMsg'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-    function addNotification(msg, targetUserId=null) { notifications.unshift({msg, time:Date.now(), targetUserId}); if(notifications.length>40) notifications.pop(); saveAll(); if(!targetUserId || targetUserId===currentUser.id) showToast(msg); }
+    function addNotification(msg, targetUserId=null) { notifications.unshift({msg, time:Date.now(), targetUserId}); if(notifications.length>40) notifications.pop(); saveAll(); }
     
-    // ========== STORIES with red ring, delete, auto-expire, click to close ==========
+    // ========== PULL TO REFRESH ==========
+    let refreshStartY = 0;
+    let isRefreshing = false;
+    const swipeArea = document.getElementById('swipeArea');
+    swipeArea.addEventListener('touchstart', (e) => { refreshStartY = e.touches[0].clientY; });
+    swipeArea.addEventListener('touchmove', (e) => {
+        if(swipeArea.scrollTop === 0 && e.touches[0].clientY - refreshStartY > 60 && !isRefreshing) {
+            isRefreshing = true;
+            showToast("Refreshing...");
+            setTimeout(() => {
+                renderHomeFeed(); renderStories(); renderExploreGrid(); renderProfile(); renderAnnouncements();
+                showToast("Updated!");
+                isRefreshing = false;
+            }, 500);
+        }
+    });
+    
+    // ========== STORIES ==========
     function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
     function renderStories() {
         let container = document.getElementById('storiesList');
@@ -240,10 +248,8 @@
                     let userStories = storiesData.filter(s=>s.userId===currentUser.id);
                     if(userStories.length>10) storiesData = storiesData.filter(s=>!(userStories.sort((a,b)=>b.timestamp-a.timestamp).slice(10).some(d=>d.id===s.id)));
                     saveAll();
-                    renderStories();
-                    renderProfile();
-                    showToast("📸 ଷ୍ଟୋରୀ ଅପଲୋଡ୍ ହେଲା! (24hr auto-delete)");
-                    addNotification(`${currentUser.username} ନୂଆ ଷ୍ଟୋରୀ ଅପଲୋଡ୍ କଲେ |`);
+                    renderStories(); renderProfile();
+                    showToast("📸 Story uploaded! (auto-delete 24hr)");
                 };
                 reader.readAsDataURL(file);
             }
@@ -253,59 +259,31 @@
     
     function viewStory(userId) {
         let userStories = storiesData.filter(s=>s.userId===userId).sort((a,b)=>a.timestamp-b.timestamp);
-        if(!userStories.length) { showToast("କୋଉଠି ଷ୍ଟୋରୀ ନାହିଁ"); return; }
-        let idx=0;
-        let modal = document.createElement('div');
-        modal.className = 'story-viewer';
-        modal.onclick = (e) => { if(e.target === modal) modal.remove(); }; // click background to close
-        
-        let img = document.createElement('img');
-        img.className = 'story-img';
-        
+        if(!userStories.length) { showToast("No stories"); return; }
+        let idx=0, modal = document.createElement('div'); modal.className='story-viewer';
+        let img = document.createElement('img'); img.className='story-img';
         let deleteBtn = null;
         if(userId === currentUser.id) {
             deleteBtn = document.createElement('button');
             deleteBtn.innerText = '🗑️ Delete Story';
             deleteBtn.className = 'story-delete-btn';
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                if(confirm("Delete this story?")) {
-                    storiesData = storiesData.filter(s => s.id !== userStories[idx].id);
-                    saveAll();
-                    modal.remove();
-                    renderStories();
-                    renderProfile();
-                    showToast("Story deleted");
-                }
-            };
+            deleteBtn.onclick = (e) => { e.stopPropagation(); if(confirm("Delete?")) { storiesData = storiesData.filter(s => s.id !== userStories[idx].id); saveAll(); modal.remove(); renderStories(); renderProfile(); showToast("Deleted"); } };
             modal.appendChild(deleteBtn);
         }
-        
-        let closeBtn = document.createElement('div');
-        closeBtn.innerText = '✕';
-        closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;';
-        closeBtn.onclick = (e) => { e.stopPropagation(); modal.remove(); };
-        
-        let prev = document.createElement('div');
-        prev.innerText = '‹';
-        prev.style.cssText = 'position:absolute; left:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
-        let next = document.createElement('div');
-        next.innerText = '›';
-        next.style.cssText = 'position:absolute; right:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
-        
+        let closeBtn = document.createElement('div'); closeBtn.innerText = '✕'; closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;'; closeBtn.onclick = (e) => { e.stopPropagation(); modal.remove(); };
+        let prev = document.createElement('div'); prev.innerText = '‹'; prev.style.cssText = 'position:absolute; left:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
+        let next = document.createElement('div'); next.innerText = '›'; next.style.cssText = 'position:absolute; right:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
         function update() { img.src = userStories[idx].image; }
         update();
-        
-        prev.onclick = (e) => { e.stopPropagation(); if(idx>0) { idx--; update(); } else showToast("First story"); };
-        next.onclick = (e) => { e.stopPropagation(); if(idx<userStories.length-1) { idx++; update(); } else { modal.remove(); } };
-        
-        modal.append(img, closeBtn, prev, next);
-        document.body.appendChild(modal);
+        prev.onclick = (e) => { e.stopPropagation(); if(idx>0) { idx--; update(); } };
+        next.onclick = (e) => { e.stopPropagation(); if(idx<userStories.length-1) { idx++; update(); } else modal.remove(); };
+        modal.append(img, closeBtn, prev, next); document.body.appendChild(modal);
+        modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
     }
     
-    // ========== POSTS ==========
+    // ========== POSTS with Edit & Delete (3-dots menu) ==========
     function openCreatePost() {
-        let caption = prompt("📝 କ୍ୟାପ୍ସନ୍ (ବିକଳ୍ପ):");
+        let caption = prompt("📝 Caption (optional):");
         let fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
         fileInput.onchange = (e) => {
             let file = e.target.files[0];
@@ -314,14 +292,27 @@
         };
         fileInput.click();
     }
+    
     function createNewPost(text, imageData) {
-        if(!text && !imageData) { showToast("କିଛି ଲେଖନ୍ତୁ କିମ୍ବା ଫଟୋ ଦିଅନ୍ତୁ"); return; }
+        if(!text && !imageData) { showToast("Write something or add image"); return; }
         let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: text, image: imageData || null, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
         allPosts.unshift(newPost); saveAll();
-        addNotification(`${currentUser.username} ନୂଆ ପୋଷ୍ଟ କଲେ |`);
+        addNotification(`${currentUser.username} posted new!`);
         renderHomeFeed(); renderExploreGrid(); renderProfile();
-        showToast("✅ ପୋଷ୍ଟ ହେଲା!");
+        showToast("✅ Posted!");
     }
+    
+    function editPost(postId) {
+        let post = allPosts.find(p=>p.id==postId);
+        if(!post || post.userId !== currentUser.id) { showToast("Can't edit"); return; }
+        let newText = prompt("Edit caption:", post.text);
+        if(newText !== null) { post.text = newText; saveAll(); renderHomeFeed(); renderExploreGrid(); renderProfile(); showToast("Updated"); }
+    }
+    
+    function deletePost(postId) {
+        if(confirm("Delete this post?")) { allPosts = allPosts.filter(p=>p.id!==postId); saveAll(); renderHomeFeed(); renderExploreGrid(); renderProfile(); showToast("Deleted"); }
+    }
+    
     function toggleLike(postId) {
         let post = allPosts.find(p=>p.id==postId);
         if(post) {
@@ -331,40 +322,68 @@
             saveAll(); renderHomeFeed(); renderProfile();
         }
     }
+    
     function addComment(postId, commentText) {
         if(!commentText.trim()) return;
         let post = allPosts.find(p=>p.id==postId);
         if(post) {
             post.comments.push({ userId: currentUser.id, username: currentUser.username, text: commentText, time: Date.now() });
-            saveAll(); addNotification(`${currentUser.username} commented: "${commentText.slice(0,30)}"`, post.userId);
+            saveAll(); addNotification(`${currentUser.username} commented`, post.userId);
             renderHomeFeed();
         }
     }
-    function deletePost(postId) { if(confirm("ଏହି ପୋଷ୍ଟ ଡିଲିଟ୍ କରିବେ?")) { allPosts = allPosts.filter(p=>p.id!==postId); saveAll(); renderHomeFeed(); renderExploreGrid(); renderProfile(); showToast("ଡିଲିଟ୍ ହେଲା"); } }
+    
     function showLikesModal(postId) {
         let post = allPosts.find(p=>p.id==postId);
-        if(!post || !post.likes.length) { showToast("କୌଣସି ଲାଇକ୍ ନାହିଁ"); return; }
+        if(!post || !post.likes.length) { showToast("No likes"); return; }
         let likers = post.likes.map(uid=>allUsers.find(u=>u.id===uid)).filter(u=>u);
         let modal = document.createElement('div'); modal.className='modal-overlay';
         modal.innerHTML = `<div class="modal-card"><h3>❤️ Likes</h3><div class="likes-modal">${likers.map(u=>`<div style="padding:8px; display:flex; align-items:center; gap:10px;"><div class="post-avatar" style="width:32px;height:32px;">${u.avatar?`<img src="${u.avatar}" style="width:100%;">`:u.username.charAt(0)}</div><span>${escapeHtml(u.username)}</span></div>`).join('')}</div><button onclick="this.parentElement.parentElement.remove()" style="margin-top:12px; width:100%; padding:8px; background:#efefef; border:none; border-radius:30px;">Close</button></div>`;
         document.body.appendChild(modal);
     }
     
+    function showPostMenu(postId, event) {
+        event.stopPropagation();
+        let post = allPosts.find(p=>p.id==postId);
+        if(!post || post.userId !== currentUser.id) { showToast("Only owner can edit/delete"); return; }
+        let menu = document.createElement('div'); menu.className='menu-popup';
+        menu.style.position = 'absolute';
+        menu.style.top = (event.clientY - 80) + 'px';
+        menu.style.left = (event.clientX - 60) + 'px';
+        menu.innerHTML = `<div class="menu-item" onclick="editPost(${postId}); this.parentElement.remove();">✏️ Edit</div><div class="menu-item" onclick="deletePost(${postId}); this.parentElement.remove();">🗑️ Delete</div>`;
+        document.body.appendChild(menu);
+        setTimeout(() => { if(menu) menu.remove(); }, 3000);
+        menu.onclick = (e) => e.stopPropagation();
+    }
+    
     function renderHomeFeed() {
         let feedDiv = document.getElementById('feedContainer');
         if(!feedDiv) return;
-        if(!allPosts.length) { feedDiv.innerHTML = '<div style="text-align:center;padding:40px;">🌾 ପ୍ରଥମ ପୋଷ୍ଟ କରନ୍ତୁ ✨</div>'; return; }
+        if(!allPosts.length) { feedDiv.innerHTML = '<div style="text-align:center;padding:40px;">🌾 No posts yet. Create first!</div>'; return; }
         feedDiv.innerHTML = allPosts.map(post => `
             <div class="post-card">
-                <div class="post-header"><div class="post-user" onclick="viewUserProfile('${post.userId}')"><div class="post-avatar">${post.username.charAt(0).toUpperCase()}</div><div><div class="post-name">${escapeHtml(post.username)}${post.userId===currentUser.id?' (you)':''}</div><div class="post-time">${post.timeAgo}</div></div></div><div style="cursor:pointer; font-size:20px;" onclick="deletePost(${post.id})">🗑️</div></div>
+                <div class="post-header">
+                    <div class="post-user" onclick="viewUserProfile('${post.userId}')">
+                        <div class="post-avatar">${post.username.charAt(0).toUpperCase()}</div>
+                        <div><div class="post-name">${escapeHtml(post.username)}${post.userId===currentUser.id?' (you)':''}</div><div class="post-time">${post.timeAgo}</div></div>
+                    </div>
+                    <div class="menu-dots" onclick="showPostMenu(${post.id}, event)">⋯</div>
+                </div>
                 ${post.image ? `<img src="${post.image}" class="post-image" onclick="openFullImage('${post.image}')">` : ''}
-                <div class="post-actions"><div class="action-btn ${post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div><div class="action-btn" onclick="toggleCommentBox(${post.id})">💬</div></div>
+                <div class="post-actions">
+                    <div class="action-btn ${post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div>
+                    <div class="action-btn" onclick="toggleCommentBox(${post.id})">💬</div>
+                </div>
                 <div class="post-likes" onclick="showLikesModal(${post.id})">❤️ ${post.likes.length} likes</div>
                 <div class="post-caption"><strong>${escapeHtml(post.username)}</strong> ${escapeHtml(post.text || '')}</div>
-                <div id="commentBox-${post.id}" style="display:none; padding:8px 12px;"><div>${post.comments.map(c=>`<div class="comment-item"><span class="comment-user">${escapeHtml(c.username)}</span> ${escapeHtml(c.text)}</div>`).join('')}</div><div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:8px; border-radius:20px; border:0.5px solid #ccc;"><button onclick="submitComment(${post.id})">Post</button></div></div>
+                <div id="commentBox-${post.id}" style="display:none; padding:8px 12px;">
+                    <div>${post.comments.map(c=>`<div class="comment-item"><span class="comment-user">${escapeHtml(c.username)}</span> ${escapeHtml(c.text)}</div>`).join('')}</div>
+                    <div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:8px; border-radius:20px; border:0.5px solid #ccc;"><button onclick="submitComment(${post.id})">Post</button></div>
+                </div>
             </div>
         `).join('');
     }
+    
     window.toggleCommentBox = (id)=>{ let box=document.getElementById(`commentBox-${id}`); if(box) box.style.display = box.style.display==='none'?'block':'none'; };
     window.submitComment = (postId)=>{ let input=document.getElementById(`commentInput-${postId}`); if(input){ addComment(postId, input.value); input.value=''; } };
     window.openFullImage = (src)=>{ let modal=document.createElement('div'); modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:2000;display:flex;align-items:center;justify-content:center'; modal.innerHTML=`<img src="${src}" style="max-width:90%;max-height:80%;"><div style="position:absolute;top:30px;right:30px;color:white;font-size:40px;cursor:pointer" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
@@ -377,25 +396,25 @@
         } 
     }
     
-    // ========== ANNOUNCEMENTS (admin only) ==========
+    // ========== ANNOUNCEMENTS ==========
     function renderAnnouncements() {
         let cont=document.getElementById('announcementsList');
         if(!cont) return;
-        cont.innerHTML = announcements.length? announcements.map(a=>`<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)} (ପ୍ରଶାସକ)</div><div>${escapeHtml(a.text)}</div><div style="font-size:10px;color:gray;">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('') : '<div style="padding:20px;text-align:center;color:gray;">📭 କୌଣସି ଘୋଷଣା ନାହିଁ</div>';
+        cont.innerHTML = announcements.length? announcements.map(a=>`<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)} (Admin)</div><div>${escapeHtml(a.text)}</div><div style="font-size:10px;color:gray;">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('') : '<div style="padding:20px;text-align:center;color:gray;">📭 No announcements</div>';
         let panel=document.getElementById('adminAnnouncePanel');
         if(panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
     }
     window.postAnnouncement = () => {
-        if(currentUser.role !== 'admin') { showToast("କେବଳ ପ୍ରଶାସକ ଘୋଷଣା କରିପାରିବେ"); return; }
+        if(currentUser.role !== 'admin') { showToast("Only admin can post"); return; }
         let text = document.getElementById('announceText')?.value.trim();
-        if(!text) { showToast("ଘୋଷଣା ଲେଖନ୍ତୁ"); return; }
+        if(!text) { showToast("Write announcement"); return; }
         announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() });
         saveAll(); renderAnnouncements(); document.getElementById('announceText').value='';
-        addNotification(`📢 ନୂଆ ଘୋଷଣା: ${text.slice(0,60)}`, null);
-        showToast("ଘୋଷଣା ପ୍ରକାଶିତ | ସମସ୍ତଙ୍କୁ notification");
+        addNotification(`📢 New announcement: ${text.slice(0,60)}`, null);
+        showToast("Announcement posted!");
     };
     
-    // ========== PROFILE with Role Selection (Admin Code "7") ==========
+    // ========== PROFILE ==========
     function renderProfile() {
         let container = document.getElementById('profileArea');
         if(!container) return;
@@ -406,7 +425,7 @@
                 <div class="profile-avatar-lg ${hasUserStory ? 'has-story-ring' : ''}" onclick="viewOwnStory()">
                     <div class="inner-avatar" onclick="event.stopPropagation(); uploadProfilePicture()">${currentUser.avatar ? `<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;">` : currentUser.username.charAt(0).toUpperCase()}</div>
                 </div>
-                <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div>ପୋଷ୍ଟ</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div>ଫଲୋଅର୍</div></div><div><div class="stat-num">${currentUser.following.length}</div><div>ଫଲୋଇଙ୍ଗ୍</div></div></div>
+                <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div>posts</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div>followers</div></div><div><div class="stat-num">${currentUser.following.length}</div><div>following</div></div></div>
             </div>
             <div class="edit-btn" onclick="openEditProfileModal()">✏️ Edit Profile & Role</div>
             <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br>${escapeHtml(currentUser.bio)}</div>
@@ -419,29 +438,11 @@
     
     window.openEditProfileModal = () => {
         let modal = document.createElement('div'); modal.className='modal-overlay';
-        modal.innerHTML = `
-            <div class="modal-card">
-                <h3>Edit Profile</h3>
-                <input type="text" id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;">
-                <input type="text" id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;">
-                <select id="editRoleSelect" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;">
-                    <option value="user" ${currentUser.role==='user'?'selected':''}>🌾 Normal User</option>
-                    <option value="admin" ${currentUser.role==='admin'?'selected':''}>👑 Admin</option>
-                </select>
-                <div id="adminCodeDiv" style="display:${currentUser.role==='admin' ? 'block' : 'none'}; margin-bottom:10px;">
-                    <input type="password" id="adminCode" placeholder="Admin Code (required for admin)" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px;">
-                    <small style="color:gray;">Enter code "7" to become admin</small>
-                </div>
-                <button onclick="saveProfileWithRole()" style="width:100%; padding:10px; background:#0095f6; color:white; border:none; border-radius:10px;">Save</button>
-                <button onclick="this.parentElement.parentElement.remove()" style="width:100%; margin-top:8px; padding:10px; background:#ddd; border:none; border-radius:10px;">Cancel</button>
-            </div>
-        `;
+        modal.innerHTML = `<div class="modal-card"><h3>Edit Profile</h3><input type="text" id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;"><input type="text" id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;"><select id="editRoleSelect" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;"><option value="user" ${currentUser.role==='user'?'selected':''}>🌾 Normal User</option><option value="admin" ${currentUser.role==='admin'?'selected':''}>👑 Admin</option></select><div id="adminCodeDiv" style="display:${currentUser.role==='admin' ? 'block' : 'none'}; margin-bottom:10px;"><input type="password" id="adminCode" placeholder="Admin Code (7)" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px;"><small>Enter "7" to become admin</small></div><button onclick="saveProfileWithRole()" style="width:100%; padding:10px; background:#0095f6; color:white; border:none; border-radius:10px;">Save</button><button onclick="this.parentElement.parentElement.remove()" style="width:100%; margin-top:8px; padding:10px; background:#ddd; border:none; border-radius:10px;">Cancel</button></div>`;
         document.body.appendChild(modal);
         let roleSelect = document.getElementById('editRoleSelect');
         let codeDiv = document.getElementById('adminCodeDiv');
-        roleSelect.onchange = () => {
-            codeDiv.style.display = roleSelect.value === 'admin' ? 'block' : 'none';
-        };
+        roleSelect.onchange = () => { codeDiv.style.display = roleSelect.value === 'admin' ? 'block' : 'none'; };
     };
     
     window.saveProfileWithRole = () => {
@@ -449,11 +450,7 @@
         let newBio = document.getElementById('editBio').value.trim();
         let newRole = document.getElementById('editRoleSelect').value;
         let adminCode = document.getElementById('adminCode')?.value;
-        
-        if(newRole === 'admin' && adminCode !== '7') {
-            showToast("Invalid admin code! Use '7' to become admin.");
-            return;
-        }
+        if(newRole === 'admin' && adminCode !== '7') { showToast("Invalid admin code! Use '7'"); return; }
         if(newName) currentUser.username = newName;
         if(newBio) currentUser.bio = newBio;
         currentUser.role = newRole;
@@ -494,7 +491,7 @@
     window.sendGroupMsg = () => { let inp=document.getElementById('groupInput'); if(inp.value.trim()){ groupMessages.push({senderId:currentUser.id, senderName:currentUser.username, text:inp.value, time:new Date().toLocaleTimeString()}); saveAll(); renderGroup(); inp.value=''; } };
     function initChatTabs() { let dmBtn=document.getElementById('dmTab'), grpBtn=document.getElementById('groupTab'); if(dmBtn&&grpBtn){ dmBtn.onclick=()=>{ document.getElementById('dmPanel').style.display='block'; document.getElementById('groupPanel').style.display='none'; renderDM(); }; grpBtn.onclick=()=>{ document.getElementById('dmPanel').style.display='none'; document.getElementById('groupPanel').style.display='block'; renderGroup(); }; } }
     
-    // ========== SWIPE & FLOATING BUTTON ==========
+    // ========== SWIPE NAVIGATION ==========
     let currentIndex=0, trackDiv=document.getElementById('track'), pages=document.querySelectorAll('.page'), navItems=document.querySelectorAll('.nav-item');
     function updateSwipe() {
         if(trackDiv) trackDiv.style.transform = `translateX(-${currentIndex*100}%)`;
@@ -510,10 +507,8 @@
     function addFloatingPlus() { let fab=document.createElement('div'); fab.innerHTML='✚'; fab.style.cssText='position:fixed; bottom:80px; right:16px; background:#0095f6; color:white; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow:0 4px 12px rgba(0,0,0,0.2); cursor:pointer; z-index:200;'; fab.onclick=openCreatePost; document.querySelector('.app').appendChild(fab); }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
     
-    // Initial render
     cleanExpiredStories();
     renderHomeFeed(); renderStories(); renderExploreGrid(); renderProfile(); renderAnnouncements(); renderDM(); renderGroup(); initChatTabs(); addFloatingPlus(); updateSwipe();
-    // Auto clean every hour
     setInterval(cleanExpiredStories, 60*60*1000);
 </script>
 </body>
