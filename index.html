@@ -2,578 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
     <title>Nahantara — My Pride</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .app {
-            max-width: 450px;
-            width: 100%;
-            background: #fff;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        .header {
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 100;
-            padding: 12px 16px;
-            border-bottom: 0.5px solid #dbdbdb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo { font-size: 22px; font-weight: 600; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; }
-        .logo span { font-size: 24px; margin-right: 4px; }
-        .header-icons { display: flex; gap: 22px; font-size: 24px; cursor: pointer; }
-        .swipe-area { flex: 1; overflow-x: hidden; overflow-y: auto; position: relative; scroll-behavior: smooth; }
-        .track { display: flex; width: 100%; height: 100%; transition: transform 0.25s ease-out; }
-        .page { width: 100%; flex-shrink: 0; overflow-y: auto; padding-bottom: 70px; scrollbar-width: thin; }
-        .page::-webkit-scrollbar { display: none; }
-        /* Pull to refresh */
-        .refresh-indicator {
-            text-align: center; padding: 10px; color: #8e8e8e; font-size: 12px;
-            transform: translateY(-50px); transition: transform 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
-        .spinner {
-            width: 20px; height: 20px; border: 2px solid #dbdbdb; border-top-color: #0095f6;
-            border-radius: 50%; animation: spin 0.6s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .bottom-nav {
-            position: sticky;
-            bottom: 0;
-            background: #fff;
-            border-top: 0.5px solid #dbdbdb;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 12px 14px;
-            z-index: 99;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #8e8e8e; cursor: pointer; transition: color 0.1s; }
-        .nav-item.active { color: #0095f6; }
-        .nav-icon { font-size: 24px; }
-        .stories-row {
-            padding: 12px 0 12px 12px;
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            border-bottom: 0.5px solid #efefef;
-        }
-        .stories-row::-webkit-scrollbar { display: none; }
-        .story { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; }
-        .story-ring { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #dbdbdb; }
-        .story.has-story .story-ring { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); padding: 2px; }
-        .story-avatar { width: 66px; height: 66px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
-        .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .story-viewer {
-            position: fixed; top:0; left:0; right:0; bottom:0; background:#000; z-index:2000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer;
-        }
-        .story-img { max-width: 100%; max-height: 80%; border-radius: 12px; pointer-events: none; }
-        .story-delete-btn {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            background: rgba(255,255,255,0.9); color: #ed4956; border: none;
-            padding: 10px 24px; border-radius: 30px; font-weight: bold; font-size: 14px;
-            cursor: pointer; z-index: 2002;
-        }
-        .post-card { margin-bottom: 12px; background: #fff; border-bottom: 0.5px solid #efefef; }
-        .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .post-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .post-avatar { width: 36px; height: 36px; background: #e4e6eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; text-transform: uppercase; }
-        .post-name { font-weight: 600; font-size: 14px; }
-        .post-time { font-size: 10px; color: #8e8e8e; }
-        .post-image { width: 100%; max-height: 450px; object-fit: cover; background: #fafafa; cursor: pointer; }
-        .post-actions { padding: 8px 12px; display: flex; gap: 20px; }
-        .action-btn { font-size: 26px; cursor: pointer; transition: transform 0.1s; }
-        .action-btn:active { transform: scale(0.92); }
-        .liked { color: #ed4956; }
-        .post-likes { padding: 0 12px 4px; font-weight: 600; font-size: 13px; cursor: pointer; }
-        .post-caption { padding: 0 12px 8px; font-size: 14px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #fff; }
-        .grid-item { aspect-ratio: 1 / 1; background: #efefef; cursor: pointer; overflow: hidden; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-header { padding: 16px; display: flex; align-items: center; gap: 24px; border-bottom: 0.5px solid #efefef; }
-        .profile-avatar-lg { width: 84px; height: 84px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 48px; overflow: hidden; cursor: pointer; position: relative; }
-        .profile-avatar-lg.has-story-ring { padding: 2px; background: linear-gradient(45deg, #f09433, #d62976, #962fbf); }
-        .profile-avatar-lg .inner-avatar { width: 100%; height: 100%; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; }
-        .profile-stats { display: flex; gap: 24px; text-align: center; }
-        .stat-num { font-weight: 700; font-size: 18px; }
-        .stat-label { font-size: 12px; color: #8e8e8e; }
-        .edit-btn { margin: 12px 16px; background: #efefef; padding: 8px; border-radius: 8px; text-align: center; font-weight: 600; cursor: pointer; }
-        .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4px; }
-        .follow-btn { margin: 12px 16px; background: #0095f6; color: white; padding: 8px; border-radius: 8px; text-align: center; font-weight: 600; cursor: pointer; }
-        .unfollow-btn { background: #efefef; color: #262626; }
-        .announcement-card { background: #f0f7ff; margin: 12px; padding: 14px; border-radius: 16px; border-left: 5px solid #0095f6; }
-        .admin-badge { background: #0095f6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 30px; display: inline-block; margin-bottom: 6px; }
-        .chat-messages { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; height: calc(100vh - 200px); }
-        .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 22px; font-size: 14px; }
-        .message-left { background: #efefef; align-self: flex-start; }
-        .message-right { background: #0095f6; color: white; align-self: flex-end; }
-        .chat-input-area { display: flex; padding: 12px; gap: 8px; border-top: 0.5px solid #dbdbdb; background: white; }
-        .chat-input-area input { flex: 1; padding: 10px; border-radius: 25px; border: 0.5px solid #dbdbdb; }
-        .modal-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; align-items: center; justify-content: center; }
-        .modal-card { background: white; border-radius: 20px; width: 90%; max-width: 340px; padding: 20px; }
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 8px 20px; border-radius: 30px; font-size: 13px; z-index: 1100; }
-        .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; }
-        .menu-popup { position: absolute; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2500; overflow: hidden; }
-        .menu-item { padding: 12px 20px; cursor: pointer; white-space: nowrap; }
-        .menu-item:hover { background: #efefef; }
-        .likes-modal { max-height: 300px; overflow-y: auto; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <div class="logo"><span>🌾</span> Nahantara</div>
+        <div class="logo"><span>🌾</span> ନହନ୍ତରା</div>
         <div class="header-icons">❤️ 💬</div>
     </div>
+    
     <div class="swipe-area" id="swipeArea">
         <div class="track" id="track">
-            <div class="page" id="homePage"><div class="stories-row" id="storiesList"></div><div id="feedContainer"></div></div>
-            <div class="page" id="announcePage"><div style="padding: 16px;"><h3>📢 Village Announcements</h3><p style="color:gray; font-size:12px;">Posted by admins only</p></div><div id="announcementsList"></div><div id="adminAnnouncePanel" style="display:none; margin:16px;"><textarea id="announceText" rows="2" placeholder="New announcement..." style="width:100%; padding:12px; border-radius:12px;"></textarea><button onclick="postAnnouncement()" style="margin-top:8px; background:#0095f6; color:white; border:none; padding:8px; border-radius:30px; width:100%;">➕ Post Announcement</button></div></div>
-            <div class="page" id="chatPage"><div style="display:flex; gap:12px; padding:12px;"><button id="dmTab" style="flex:1; background:none; border:none; font-weight:600;">💬 DM</button><button id="groupTab" style="flex:1; background:none; border:none; font-weight:600;">👥 Group Chat</button></div><div id="dmPanel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group message..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
-            <div class="page" id="profilePage"><div id="profileArea"></div></div>
+            <!-- HOME PAGE -->
+            <div class="page" id="homePage">
+                <div class="stories-row" id="storiesList"></div>
+                <div id="feedContainer"></div>
+            </div>
+            
+            <!-- ANNOUNCEMENT PAGE -->
+            <div class="page" id="announcePage">
+                <div style="padding:16px"><h3>📢 Announcements</h3><p style="color:gray; font-size:12px;">Posted by Admin</p></div>
+                <div id="announcementsList"></div>
+                <div id="adminPanel" style="display:none; margin:16px;">
+                    <textarea id="announceText" rows="2" placeholder="New announcement..." style="width:100%; padding:12px; border-radius:12px; border:0.5px solid #ccc;"></textarea>
+                    <button onclick="postAnnouncement()" style="margin-top:8px; background:#0095f6; color:white; border:none; padding:8px; border-radius:30px; width:100%;">➕ Post Announcement</button>
+                </div>
+            </div>
+            
+            <!-- CHAT PAGE -->
+            <div class="page" id="chatPage">
+                <div style="display:flex; gap:12px; padding:12px; border-bottom:0.5px solid #dbdbdb;">
+                    <button id="dmTab" style="flex:1; background:none; border:none; font-weight:600; padding:8px;">💬 DM</button>
+                    <button id="groupTab" style="flex:1; background:none; border:none; font-weight:600; padding:8px;">👥 Group Chat</button>
+                </div>
+                <div id="dmPanel">
+                    <div class="chat-messages" id="dmMessages"></div>
+                    <div class="chat-input">
+                        <input id="dmInput" placeholder="Message...">
+                        <button onclick="sendDM()">➤</button>
+                    </div>
+                </div>
+                <div id="groupPanel" style="display:none;">
+                    <div class="chat-messages" id="groupMessages"></div>
+                    <div class="chat-input">
+                        <input id="groupInput" placeholder="Group message...">
+                        <button onclick="sendGroupMsg()">➤</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PROFILE PAGE -->
+            <div class="page" id="profilePage">
+                <div id="profileArea"></div>
+            </div>
         </div>
     </div>
-    <div class="bottom-nav"><div class="nav-item active" data-index="0"><div class="nav-icon">🏠</div><div>Home</div></div><div class="nav-item" data-index="1"><div class="nav-icon">📢</div><div>News</div></div><div class="nav-item" data-index="2"><div class="nav-icon">💬</div><div>Chat</div></div><div class="nav-item" data-index="3"><div class="nav-icon">👤</div><div>Profile</div></div></div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item active" data-index="0"><div class="nav-icon">🏠</div><div>Home</div></div>
+        <div class="nav-item" data-index="1"><div class="nav-icon">📢</div><div>News</div></div>
+        <div class="nav-item" data-index="2"><div class="nav-icon">💬</div><div>Chat</div></div>
+        <div class="nav-item" data-index="3"><div class="nav-icon">👤</div><div>Profile</div></div>
+    </div>
 </div>
-<div id="toastMsg" class="toast" style="display:none;"></div>
+<div id="toastMsg" class="toast"></div>
+
+<script src="data.js"></script>
+<script src="home.js"></script>
+<script src="announce.js"></script>
+<script src="chat.js"></script>
+<script src="profile.js"></script>
 
 <script>
-    // ========== DATA ==========
-    let allUsers = JSON.parse(localStorage.getItem('nahantara_users')) || [];
-    let currentUserId = localStorage.getItem('nahantara_currentId');
-    if(!allUsers.length || !currentUserId) {
-        let defaultUser = { id: 'user_'+Date.now(), username: 'Villager', bio: '🌾 My pride | Nahantara', avatar: null, followers: [], following: [], role: 'user' };
-        allUsers = [defaultUser];
-        currentUserId = defaultUser.id;
-        localStorage.setItem('nahantara_users', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_currentId', currentUserId);
-    }
-    let currentUser = allUsers.find(u => u.id === currentUserId) || allUsers[0];
-    if(!currentUser.role) currentUser.role = 'user';
-    
-    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts')) || [];
-    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories')) || [];
-    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements')) || [];
-    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm')) || [];
-    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group')) || [];
-    
-    function cleanExpiredStories() {
-        const now = Date.now();
-        const oneDay = 24 * 60 * 60 * 1000;
-        let changed = false;
-        storiesData = storiesData.filter(story => {
-            if(now - story.timestamp > oneDay) { changed = true; return false; }
-            return true;
-        });
-        if(changed) { saveAll(); renderStories(); renderProfile(); }
-    }
-    
-    function saveAll() {
-        localStorage.setItem('nahantara_users', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_posts', JSON.stringify(allPosts));
-        localStorage.setItem('nahantara_stories', JSON.stringify(storiesData));
-        localStorage.setItem('nahantara_announcements', JSON.stringify(announcements));
-        localStorage.setItem('nahantara_dm', JSON.stringify(dmMessages));
-        localStorage.setItem('nahantara_group', JSON.stringify(groupMessages));
-        localStorage.setItem('nahantara_currentId', currentUserId);
-    }
-    function showToast(msg) { let t=document.getElementById('toastMsg'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
-    
-    // ========== PULL TO REFRESH with spinner ==========
-    let refreshStartY = 0, isRefreshing = false;
-    const swipeAreaDiv = document.getElementById('swipeArea');
-    let refreshDiv = null;
-    
-    function addRefreshIndicator() {
-        if(!refreshDiv) {
-            refreshDiv = document.createElement('div');
-            refreshDiv.className = 'refresh-indicator';
-            refreshDiv.innerHTML = '<div class="spinner"></div><span>Refreshing...</span>';
-            swipeAreaDiv.insertBefore(refreshDiv, swipeAreaDiv.firstChild);
-            refreshDiv.style.transform = 'translateY(-50px)';
-        }
-    }
-    addRefreshIndicator();
-    
-    swipeAreaDiv.addEventListener('touchstart', (e) => { refreshStartY = e.touches[0].clientY; });
-    swipeAreaDiv.addEventListener('touchmove', (e) => {
-        if(swipeAreaDiv.scrollTop === 0 && e.touches[0].clientY - refreshStartY > 50 && !isRefreshing) {
-            if(refreshDiv) refreshDiv.style.transform = 'translateY(0px)';
-        }
-    });
-    swipeAreaDiv.addEventListener('touchend', (e) => {
-        if(swipeAreaDiv.scrollTop === 0 && e.changedTouches[0].clientY - refreshStartY > 50 && !isRefreshing) {
-            isRefreshing = true;
-            if(refreshDiv) refreshDiv.style.transform = 'translateY(-50px)';
-            setTimeout(() => {
-                renderHomeFeed(); renderStories(); renderExploreGrid(); renderProfile(); renderAnnouncements();
-                showToast("✓ Updated!");
-                isRefreshing = false;
-            }, 800);
-        } else {
-            if(refreshDiv) refreshDiv.style.transform = 'translateY(-50px)';
-        }
-    });
-    
-    // ========== STORIES ==========
-    function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
-    function renderStories() {
-        let container = document.getElementById('storiesList');
-        if(!container) return;
-        let storyUsers = allUsers.filter(u => u.id !== currentUser.id);
-        let ownStoryExist = hasStory(currentUser.id);
-        let addStoryHtml = `<div class="story ${ownStoryExist ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring ${ownStoryExist ? 'has-story' : ''}"><div class="story-avatar">✚</div></div><span>Your story</span></div>`;
-        let othersHtml = storyUsers.map(u => {
-            let has = hasStory(u.id);
-            return `<div class="story ${has ? 'has-story' : ''}" onclick="viewStory('${u.id}')"><div class="story-ring ${has ? 'has-story' : ''}"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><span>${u.username.slice(0,10)}</span></div>`;
-        }).join('');
-        container.innerHTML = addStoryHtml + othersHtml;
-    }
-    
-    function uploadStory() {
-        let fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
-        fileInput.onchange = (e) => {
-            let file = e.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = (ev) => {
-                    let newStory = { id: Date.now(), userId: currentUser.id, username: currentUser.username, image: ev.target.result, timestamp: Date.now() };
-                    storiesData.push(newStory);
-                    let userStories = storiesData.filter(s=>s.userId===currentUser.id);
-                    if(userStories.length>10) storiesData = storiesData.filter(s=>!(userStories.sort((a,b)=>b.timestamp-a.timestamp).slice(10).some(d=>d.id===s.id)));
-                    saveAll();
-                    renderStories(); renderProfile();
-                    showToast("📸 Story uploaded! (auto-delete 24hr)");
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        fileInput.click();
-    }
-    
-    function viewStory(userId) {
-        let userStories = storiesData.filter(s=>s.userId===userId).sort((a,b)=>a.timestamp-b.timestamp);
-        if(!userStories.length) { showToast("No stories"); return; }
-        let idx=0, modal = document.createElement('div'); modal.className='story-viewer';
-        let img = document.createElement('img'); img.className='story-img';
-        let deleteBtn = null;
-        if(userId === currentUser.id) {
-            deleteBtn = document.createElement('button');
-            deleteBtn.innerText = '🗑️ Delete Story';
-            deleteBtn.className = 'story-delete-btn';
-            deleteBtn.onclick = (e) => { e.stopPropagation(); if(confirm("Delete this story?")) { storiesData = storiesData.filter(s => s.id !== userStories[idx].id); saveAll(); modal.remove(); renderStories(); renderProfile(); showToast("Deleted"); } };
-            modal.appendChild(deleteBtn);
-        }
-        let closeBtn = document.createElement('div'); closeBtn.innerText = '✕'; closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;'; closeBtn.onclick = (e) => { e.stopPropagation(); modal.remove(); };
-        let prev = document.createElement('div'); prev.innerText = '‹'; prev.style.cssText = 'position:absolute; left:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
-        let next = document.createElement('div'); next.innerText = '›'; next.style.cssText = 'position:absolute; right:10px; top:50%; color:white; font-size:48px; cursor:pointer; background:rgba(0,0,0,0.5); width:40px; text-align:center; border-radius:50%; transform:translateY(-50%);';
-        function update() { img.src = userStories[idx].image; }
-        update();
-        prev.onclick = (e) => { e.stopPropagation(); if(idx>0) { idx--; update(); } };
-        next.onclick = (e) => { e.stopPropagation(); if(idx<userStories.length-1) { idx++; update(); } else modal.remove(); };
-        modal.append(img, closeBtn, prev, next); document.body.appendChild(modal);
-        modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
-    }
-    
-    // ========== FOLLOW SYSTEM ==========
-    function followUser(userId) {
-        let targetUser = allUsers.find(u => u.id === userId);
-        if(!targetUser || targetUser.id === currentUser.id) return;
-        if(!currentUser.following.includes(userId)) {
-            currentUser.following.push(userId);
-            targetUser.followers.push(currentUser.id);
-            saveAll();
-            showToast(`Following ${targetUser.username}`);
-            renderProfile();
-            renderHomeFeed();
-        }
-    }
-    
-    function unfollowUser(userId) {
-        let targetUser = allUsers.find(u => u.id === userId);
-        if(!targetUser) return;
-        currentUser.following = currentUser.following.filter(id => id !== userId);
-        targetUser.followers = targetUser.followers.filter(id => id !== currentUser.id);
-        saveAll();
-        showToast(`Unfollowed ${targetUser.username}`);
-        renderProfile();
-        renderHomeFeed();
-    }
-    
-    function viewUserProfile(userId) {
-        let targetUser = allUsers.find(u => u.id === userId);
-        if(!targetUser || targetUser.id === currentUser.id) return;
-        let isFollowing = currentUser.following.includes(userId);
-        let userPosts = allPosts.filter(p => p.userId === userId);
-        let modal = document.createElement('div'); modal.className='modal-overlay';
-        modal.innerHTML = `
-            <div class="modal-card">
-                <div style="text-align:center;">
-                    <div style="width:80px; height:80px; background:#ddd; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:40px; overflow:hidden;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;">` : targetUser.username.charAt(0).toUpperCase()}</div>
-                    <h3>${escapeHtml(targetUser.username)}</h3>
-                    <p style="color:gray; font-size:12px;">${escapeHtml(targetUser.bio)}</p>
-                    <div style="display:flex; gap:20px; justify-content:center; margin:12px 0;">
-                        <div><strong>${userPosts.length}</strong><br><span style="font-size:10px;">posts</span></div>
-                        <div><strong>${targetUser.followers.length}</strong><br><span style="font-size:10px;">followers</span></div>
-                        <div><strong>${targetUser.following.length}</strong><br><span style="font-size:10px;">following</span></div>
-                    </div>
-                    <button onclick="this.parentElement.parentElement.parentElement.remove(); ${isFollowing ? `unfollowUser('${userId}')` : `followUser('${userId}')`}" style="width:100%; padding:10px; background:${isFollowing ? '#efefef' : '#0095f6'}; color:${isFollowing ? '#262626' : 'white'}; border:none; border-radius:8px; font-weight:600;">${isFollowing ? 'Unfollow' : 'Follow'}</button>
-                    <button onclick="this.parentElement.parentElement.parentElement.remove()" style="width:100%; margin-top:8px; padding:10px; background:#efefef; border:none; border-radius:8px;">Close</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-    
-    // ========== POSTS ==========
-    function openCreatePost() {
-        let caption = prompt("📝 Caption (optional):");
-        let fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
-        fileInput.onchange = (e) => {
-            let file = e.target.files[0];
-            if(file) { let reader = new FileReader(); reader.onload = (ev) => createNewPost(caption||'', ev.target.result); reader.readAsDataURL(file); }
-            else createNewPost(caption||'', null);
-        };
-        fileInput.click();
-    }
-    
-    function createNewPost(text, imageData) {
-        if(!text && !imageData) { showToast("Write something or add image"); return; }
-        let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: text, image: imageData || null, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
-        allPosts.unshift(newPost); saveAll();
-        renderHomeFeed(); renderExploreGrid(); renderProfile();
-        showToast("✅ Posted!");
-    }
-    
-    function editPost(postId) {
-        let post = allPosts.find(p=>p.id==postId);
-        if(!post || post.userId !== currentUser.id) return;
-        let newText = prompt("Edit caption:", post.text);
-        if(newText !== null) { post.text = newText; saveAll(); renderHomeFeed(); renderExploreGrid(); renderProfile(); showToast("Updated"); }
-    }
-    
-    function deletePost(postId) {
-        if(confirm("Delete this post?")) { allPosts = allPosts.filter(p=>p.id!==postId); saveAll(); renderHomeFeed(); renderExploreGrid(); renderProfile(); showToast("Deleted"); }
-    }
-    
-    function toggleLike(postId) {
-        let post = allPosts.find(p=>p.id==postId);
-        if(post) {
-            let idx = post.likes.indexOf(currentUser.id);
-            if(idx!==-1) post.likes.splice(idx,1);
-            else { post.likes.push(currentUser.id); }
-            saveAll(); renderHomeFeed(); renderProfile();
-        }
-    }
-    
-    function addComment(postId, commentText) {
-        if(!commentText.trim()) return;
-        let post = allPosts.find(p=>p.id==postId);
-        if(post) {
-            post.comments.push({ userId: currentUser.id, username: currentUser.username, text: commentText, time: Date.now() });
-            saveAll();
-            renderHomeFeed();
-        }
-    }
-    
-    function showLikesModal(postId) {
-        let post = allPosts.find(p=>p.id==postId);
-        if(!post || !post.likes.length) { showToast("No likes yet"); return; }
-        let likers = post.likes.map(uid=>allUsers.find(u=>u.id===uid)).filter(u=>u);
-        let modal = document.createElement('div'); modal.className='modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><h3>❤️ Likes</h3><div class="likes-modal">${likers.map(u=>`<div style="padding:8px; display:flex; align-items:center; gap:10px;"><div class="post-avatar" style="width:32px;height:32px;">${u.avatar?`<img src="${u.avatar}" style="width:100%;">`:u.username.charAt(0)}</div><span>${escapeHtml(u.username)}</span></div>`).join('')}</div><button onclick="this.parentElement.parentElement.remove()" style="margin-top:12px; width:100%; padding:8px; background:#efefef; border:none; border-radius:30px;">Close</button></div>`;
-        document.body.appendChild(modal);
-    }
-    
-    function showPostMenu(postId, event) {
-        event.stopPropagation();
-        let post = allPosts.find(p=>p.id==postId);
-        if(!post || post.userId !== currentUser.id) return;
-        let menu = document.createElement('div'); menu.className='menu-popup';
-        menu.style.position = 'absolute';
-        menu.style.top = (event.clientY - 80) + 'px';
-        menu.style.left = (event.clientX - 60) + 'px';
-        menu.innerHTML = `<div class="menu-item" onclick="editPost(${postId}); this.parentElement.remove();">✏️ Edit</div><div class="menu-item" onclick="deletePost(${postId}); this.parentElement.remove();">🗑️ Delete</div>`;
-        document.body.appendChild(menu);
-        setTimeout(() => { if(menu) menu.remove(); }, 3000);
-        menu.onclick = (e) => e.stopPropagation();
-    }
-    
-    function renderHomeFeed() {
-        let feedDiv = document.getElementById('feedContainer');
-        if(!feedDiv) return;
-        if(!allPosts.length) { feedDiv.innerHTML = '<div style="text-align:center;padding:40px;">🌾 No posts yet. Create first!</div>'; return; }
-        feedDiv.innerHTML = allPosts.map(post => `
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="post-user" onclick="viewUserProfile('${post.userId}')">
-                        <div class="post-avatar">${post.username.charAt(0).toUpperCase()}</div>
-                        <div><div class="post-name">${escapeHtml(post.username)}${post.userId===currentUser.id?' (you)':''}</div><div class="post-time">${post.timeAgo}</div></div>
-                    </div>
-                    <div class="menu-dots" onclick="showPostMenu(${post.id}, event)">⋯</div>
-                </div>
-                ${post.image ? `<img src="${post.image}" class="post-image" onclick="openFullImage('${post.image}')">` : ''}
-                <div class="post-actions">
-                    <div class="action-btn ${post.likes.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike(${post.id})">❤️</div>
-                    <div class="action-btn" onclick="toggleCommentBox(${post.id})">💬</div>
-                </div>
-                <div class="post-likes" onclick="showLikesModal(${post.id})">❤️ ${post.likes.length} likes</div>
-                <div class="post-caption"><strong>${escapeHtml(post.username)}</strong> ${escapeHtml(post.text || '')}</div>
-                <div id="commentBox-${post.id}" style="display:none; padding:8px 12px;">
-                    <div>${post.comments.map(c=>`<div class="comment-item"><span class="comment-user">${escapeHtml(c.username)}</span> ${escapeHtml(c.text)}</div>`).join('')}</div>
-                    <div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:8px; border-radius:20px; border:0.5px solid #ccc;"><button onclick="submitComment(${post.id})">Post</button></div>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    window.toggleCommentBox = (id)=>{ let box=document.getElementById(`commentBox-${id}`); if(box) box.style.display = box.style.display==='none'?'block':'none'; };
-    window.submitComment = (postId)=>{ let input=document.getElementById(`commentInput-${postId}`); if(input){ addComment(postId, input.value); input.value=''; } };
-    window.openFullImage = (src)=>{ let modal=document.createElement('div'); modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:2000;display:flex;align-items:center;justify-content:center'; modal.innerHTML=`<img src="${src}" style="max-width:90%;max-height:80%;"><div style="position:absolute;top:30px;right:30px;color:white;font-size:40px;cursor:pointer" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
-    
-    function renderExploreGrid() { 
-        let gridDiv=document.getElementById('exploreGrid'); 
-        if(gridDiv){ 
-            let imgPosts=allPosts.filter(p=>p.image); 
-            gridDiv.innerHTML=imgPosts.length? imgPosts.map(p=>`<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('') : '<div style="grid-column:span3; text-align:center;padding:40px;">📸 No media</div>'; 
-        } 
-    }
-    
-    // ========== ANNOUNCEMENTS ==========
-    function renderAnnouncements() {
-        let cont=document.getElementById('announcementsList');
-        if(!cont) return;
-        cont.innerHTML = announcements.length? announcements.map(a=>`<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)} (Admin)</div><div>${escapeHtml(a.text)}</div><div style="font-size:10px;color:gray;">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('') : '<div style="padding:20px;text-align:center;color:gray;">📭 No announcements</div>';
-        let panel=document.getElementById('adminAnnouncePanel');
-        if(panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
-    }
-    window.postAnnouncement = () => {
-        if(currentUser.role !== 'admin') { showToast("Only admin can post announcements"); return; }
-        let text = document.getElementById('announceText')?.value.trim();
-        if(!text) { showToast("Write announcement"); return; }
-        announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() });
-        saveAll(); renderAnnouncements(); document.getElementById('announceText').value='';
-        showToast("Announcement posted!");
-    };
-    
-    // ========== PROFILE ==========
-    function renderProfile() {
-        let container = document.getElementById('profileArea');
-        if(!container) return;
-        let userPosts = allPosts.filter(p=>p.userId===currentUser.id);
-        let hasUserStory = hasStory(currentUser.id);
-        container.innerHTML = `
-            <div class="profile-header">
-                <div class="profile-avatar-lg ${hasUserStory ? 'has-story-ring' : ''}" onclick="viewOwnStory()">
-                    <div class="inner-avatar" onclick="event.stopPropagation(); uploadProfilePicture()">${currentUser.avatar ? `<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;">` : currentUser.username.charAt(0).toUpperCase()}</div>
-                </div>
-                <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div class="stat-label">posts</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div class="stat-label">followers</div></div><div><div class="stat-num">${currentUser.following.length}</div><div class="stat-label">following</div></div></div>
-            </div>
-            <div class="edit-btn" onclick="openEditProfileModal()">✏️ Edit Profile & Role</div>
-            <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br>${escapeHtml(currentUser.bio)}</div>
-            <div class="profile-grid" id="userPostGrid"></div>
-        `;
-        let gridSmall = document.getElementById('userPostGrid');
-        let userImages = userPosts.filter(p=>p.image);
-        if(gridSmall) gridSmall.innerHTML = userImages.length ? userImages.map(p=>`<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('') : '<div style="grid-column:span3; text-align:center;padding:20px;">No posts</div>';
-    }
-    
-    window.openEditProfileModal = () => {
-        let modal = document.createElement('div'); modal.className='modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><h3>Edit Profile</h3><input type="text" id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;"><input type="text" id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;"><select id="editRoleSelect" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:10px;"><option value="user" ${currentUser.role==='user'?'selected':''}>🌾 Normal User</option><option value="admin" ${currentUser.role==='admin'?'selected':''}>👑 Admin</option></select><div id="adminCodeDiv" style="display:${currentUser.role==='admin' ? 'block' : 'none'}; margin-bottom:10px;"><input type="password" id="adminCode" placeholder="Admin Code (7)" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:10px;"><small>Enter "7" to become admin</small></div><button onclick="saveProfileWithRole()" style="width:100%; padding:10px; background:#0095f6; color:white; border:none; border-radius:10px;">Save</button><button onclick="this.parentElement.parentElement.remove()" style="width:100%; margin-top:8px; padding:10px; background:#ddd; border:none; border-radius:10px;">Cancel</button></div>`;
-        document.body.appendChild(modal);
-        let roleSelect = document.getElementById('editRoleSelect');
-        let codeDiv = document.getElementById('adminCodeDiv');
-        roleSelect.onchange = () => { codeDiv.style.display = roleSelect.value === 'admin' ? 'block' : 'none'; };
-    };
-    
-    window.saveProfileWithRole = () => {
-        let newName = document.getElementById('editName').value.trim();
-        let newBio = document.getElementById('editBio').value.trim();
-        let newRole = document.getElementById('editRoleSelect').value;
-        let adminCode = document.getElementById('adminCode')?.value;
-        if(newRole === 'admin' && adminCode !== '7') { showToast("Invalid admin code! Use '7'"); return; }
-        if(newName) currentUser.username = newName;
-        if(newBio) currentUser.bio = newBio;
-        currentUser.role = newRole;
-        let idx = allUsers.findIndex(u=>u.id===currentUser.id);
-        if(idx!==-1) allUsers[idx]=currentUser;
-        saveAll();
-        document.querySelector('.modal-overlay')?.remove();
-        renderProfile(); renderHomeFeed(); renderStories(); renderAnnouncements();
-        showToast(`Profile updated! Role: ${newRole === 'admin' ? 'Admin' : 'User'}`);
-    };
-    
-    window.uploadProfilePicture = () => {
-        let inp = document.createElement('input'); inp.type='file'; inp.accept='image/*';
-        inp.onchange = (e) => {
-            let file = e.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = (ev) => {
-                    currentUser.avatar = ev.target.result;
-                    let idx = allUsers.findIndex(u=>u.id===currentUser.id);
-                    if(idx!==-1) allUsers[idx]=currentUser;
-                    saveAll();
-                    renderProfile(); renderStories(); renderHomeFeed();
-                    showToast("Profile picture updated");
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        inp.click();
-    };
-    window.viewOwnStory = () => { if(hasStory(currentUser.id)) viewStory(currentUser.id); else showToast("No story uploaded"); };
-    
-    // ========== CHAT ==========
-    function renderDM() { let d=document.getElementById('dmMessages'); if(d) d.innerHTML=dmMessages.map(m=>`<div class="message-bubble ${m.senderId===currentUser.id?'message-right':'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0,d.scrollHeight); }
-    function renderGroup() { let g=document.getElementById('groupMessages'); if(g) g.innerHTML=groupMessages.map(m=>`<div class="message-bubble ${m.senderId===currentUser.id?'message-right':'message-left'}"><strong>${escapeHtml(m.senderName)}</strong> ${escapeHtml(m.text)}<div style="font-size:9px;">${m.time}</div></div>`).join(''); g?.scrollTo(0,g.scrollHeight); }
-    window.sendDM = () => { let inp=document.getElementById('dmInput'); if(inp.value.trim()){ dmMessages.push({senderId:currentUser.id, senderName:currentUser.username, text:inp.value, time:new Date().toLocaleTimeString()}); saveAll(); renderDM(); inp.value=''; } };
-    window.sendGroupMsg = () => { let inp=document.getElementById('groupInput'); if(inp.value.trim()){ groupMessages.push({senderId:currentUser.id, senderName:currentUser.username, text:inp.value, time:new Date().toLocaleTimeString()}); saveAll(); renderGroup(); inp.value=''; } };
-    function initChatTabs() { let dmBtn=document.getElementById('dmTab'), grpBtn=document.getElementById('groupTab'); if(dmBtn&&grpBtn){ dmBtn.onclick=()=>{ document.getElementById('dmPanel').style.display='block'; document.getElementById('groupPanel').style.display='none'; renderDM(); }; grpBtn.onclick=()=>{ document.getElementById('dmPanel').style.display='none'; document.getElementById('groupPanel').style.display='block'; renderGroup(); }; } }
-    
     // ========== SWIPE NAVIGATION ==========
-    let currentIndex=0, trackDiv=document.getElementById('track'), pages=document.querySelectorAll('.page'), navItems=document.querySelectorAll('.nav-item');
-    function updateSwipe() {
-        if(trackDiv) trackDiv.style.transform = `translateX(-${currentIndex*100}%)`;
-        navItems.forEach((item,i)=>{ if(i===currentIndex) item.classList.add('active'); else item.classList.remove('active'); });
-        if(currentIndex===0){ renderHomeFeed(); renderStories(); cleanExpiredStories(); }
-        if(currentIndex===1) renderAnnouncements();
-        if(currentIndex===2){ renderDM(); renderGroup(); initChatTabs(); if(document.getElementById('dmPanel')?.style.display!=='none') renderDM(); else renderGroup(); }
-        if(currentIndex===3) renderProfile();
-    }
-    navItems.forEach((item,idx)=>item.addEventListener('click',()=>{ currentIndex=idx; updateSwipe(); }));
-    let startX=0; document.getElementById('swipeArea')?.addEventListener('touchstart',e=>{ startX=e.touches[0].clientX; });
-    document.getElementById('swipeArea')?.addEventListener('touchend',e=>{ let endX=e.changedTouches[0].clientX, diff=endX-startX; if(Math.abs(diff)>40){ if(diff>0 && currentIndex>0) currentIndex--; else if(diff<0 && currentIndex<pages.length-1) currentIndex++; updateSwipe(); } });
-    function addFloatingPlus() { let fab=document.createElement('div'); fab.innerHTML='✚'; fab.style.cssText='position:fixed; bottom:80px; right:16px; background:#0095f6; color:white; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow:0 4px 12px rgba(0,0,0,0.2); cursor:pointer; z-index:200;'; fab.onclick=openCreatePost; document.querySelector('.app').appendChild(fab); }
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
+    let currentIndex = 0;
+    const track = document.getElementById('track');
+    const pages = document.querySelectorAll('.page');
+    const navItems = document.querySelectorAll('.nav-item');
     
-    cleanExpiredStories();
-    renderHomeFeed(); renderStories(); renderExploreGrid(); renderProfile(); renderAnnouncements(); renderDM(); renderGroup(); initChatTabs(); addFloatingPlus(); updateSwipe();
-    setInterval(cleanExpiredStories, 60*60*1000);
+    function updateSwipe() {
+        if (track) track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        navItems.forEach((item, i) => {
+            if (i === currentIndex) item.classList.add('active');
+            else item.classList.remove('active');
+        });
+        
+        if (currentIndex === 0) {
+            if (typeof renderHomeFeed === 'function') renderHomeFeed();
+            if (typeof renderStories === 'function') renderStories();
+        }
+        if (currentIndex === 1 && typeof renderAnnouncements === 'function') renderAnnouncements();
+        if (currentIndex === 2) {
+            if (typeof renderDM === 'function') renderDM();
+            if (typeof renderGroup === 'function') renderGroup();
+        }
+        if (currentIndex === 3 && typeof renderProfile === 'function') renderProfile();
+    }
+    
+    navItems.forEach((item, idx) => {
+        item.addEventListener('click', () => {
+            currentIndex = idx;
+            updateSwipe();
+        });
+    });
+    
+    let startX = 0;
+    const container = document.getElementById('swipeArea');
+    if (container) {
+        container.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+        container.addEventListener('touchend', (e) => {
+            let endX = e.changedTouches[0].clientX;
+            let diff = endX - startX;
+            if (Math.abs(diff) > 40) {
+                if (diff > 0 && currentIndex > 0) currentIndex--;
+                else if (diff < 0 && currentIndex < pages.length - 1) currentIndex++;
+                updateSwipe();
+            }
+        });
+    }
+    
+    // ========== FLOATING CREATE POST BUTTON ==========
+    let fab = document.createElement('div');
+    fab.innerHTML = '✚';
+    fab.style.cssText = 'position:fixed; bottom:80px; right:16px; background:#0095f6; color:white; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow:0 4px 12px rgba(0,0,0,0.2); cursor:pointer; z-index:200;';
+    fab.onclick = () => {
+        let caption = prompt("📝 Caption (optional):");
+        let fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = (e) => {
+            let file = e.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = (ev) => {
+                    let newPost = {
+                        id: Date.now(),
+                        userId: currentUser.id,
+                        username: currentUser.username,
+                        text: caption || '',
+                        image: ev.target.result,
+                        likes: [],
+                        comments: [],
+                        timestamp: Date.now(),
+                        timeAgo: new Date().toLocaleString()
+                    };
+                    allPosts.unshift(newPost);
+                    saveAll();
+                    if (typeof renderHomeFeed === 'function') renderHomeFeed();
+                    if (typeof renderProfile === 'function') renderProfile();
+                    if (typeof renderExploreGrid === 'function') renderExploreGrid();
+                    showToast("✅ Posted!");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                let newPost = {
+                    id: Date.now(),
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    text: caption || '',
+                    image: null,
+                    likes: [],
+                    comments: [],
+                    timestamp: Date.now(),
+                    timeAgo: new Date().toLocaleString()
+                };
+                allPosts.unshift(newPost);
+                saveAll();
+                if (typeof renderHomeFeed === 'function') renderHomeFeed();
+                if (typeof renderProfile === 'function') renderProfile();
+                showToast("✅ Posted!");
+            }
+        };
+        fileInput.click();
+    };
+    document.querySelector('.app').appendChild(fab);
+    
+    updateSwipe();
 </script>
 </body>
 </html>
