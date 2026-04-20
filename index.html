@@ -6,67 +6,81 @@
     <meta name="theme-color" content="#ffffff">
     <title>Nahantara — My Pride</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 <div class="app">
     <div class="header">
         <div class="logo"><span>🌾</span> ନହନ୍ତରା</div>
-        <div class="header-icons">❤️ 💬</div>
+        <div class="header-icons">
+            <span>❤️</span>
+            <span>💬</span>
+        </div>
     </div>
     
-    <div class="swipe-area" id="swipeArea">
-        <div class="track" id="track">
-            <!-- HOME PAGE -->
-            <div class="page" id="homePage">
+    <div class="swipe-container" id="swipeContainer">
+        <div class="swipe-track" id="swipeTrack">
+            <!-- PAGE 1 - HOME -->
+            <div class="page page-home">
                 <div class="stories-row" id="storiesList"></div>
                 <div id="feedContainer"></div>
             </div>
             
-            <!-- ANNOUNCEMENT PAGE -->
-            <div class="page" id="announcePage">
-                <div style="padding:16px"><h3>📢 Announcements</h3><p style="color:gray; font-size:12px;">Posted by Admin</p></div>
+            <!-- PAGE 2 - ANNOUNCEMENTS -->
+            <div class="page page-announce">
+                <div class="announce-header"><h3>📢 Announcements</h3><p>From village admin</p></div>
                 <div id="announcementsList"></div>
                 <div id="adminPanel" style="display:none; margin:16px;">
-                    <textarea id="announceText" rows="2" placeholder="New announcement..." style="width:100%; padding:12px; border-radius:12px; border:0.5px solid #ccc;"></textarea>
-                    <button onclick="postAnnouncement()" style="margin-top:8px; background:#0095f6; color:white; border:none; padding:8px; border-radius:30px; width:100%;">➕ Post Announcement</button>
+                    <textarea id="announceText" rows="2" placeholder="Write announcement..."></textarea>
+                    <button onclick="postAnnouncement()">➕ Post Announcement</button>
                 </div>
             </div>
             
-            <!-- CHAT PAGE -->
-            <div class="page" id="chatPage">
-                <div style="display:flex; gap:12px; padding:12px; border-bottom:0.5px solid #dbdbdb;">
-                    <button id="dmTab" style="flex:1; background:none; border:none; font-weight:600; padding:8px;">💬 DM</button>
-                    <button id="groupTab" style="flex:1; background:none; border:none; font-weight:600; padding:8px;">👥 Group Chat</button>
+            <!-- PAGE 3 - CHAT -->
+            <div class="page page-chat">
+                <div class="chat-tabs">
+                    <button id="dmTab" class="chat-tab active">💬 Direct Message</button>
+                    <button id="groupTab" class="chat-tab">👥 Group Chat</button>
                 </div>
-                <div id="dmPanel">
+                <div id="dmPanel" class="chat-panel">
                     <div class="chat-messages" id="dmMessages"></div>
-                    <div class="chat-input">
+                    <div class="chat-input-area">
                         <input id="dmInput" placeholder="Message...">
                         <button onclick="sendDM()">➤</button>
                     </div>
                 </div>
-                <div id="groupPanel" style="display:none;">
+                <div id="groupPanel" class="chat-panel" style="display:none;">
                     <div class="chat-messages" id="groupMessages"></div>
-                    <div class="chat-input">
+                    <div class="chat-input-area">
                         <input id="groupInput" placeholder="Group message...">
                         <button onclick="sendGroupMsg()">➤</button>
                     </div>
                 </div>
             </div>
             
-            <!-- PROFILE PAGE -->
-            <div class="page" id="profilePage">
+            <!-- PAGE 4 - PROFILE -->
+            <div class="page page-profile">
                 <div id="profileArea"></div>
             </div>
         </div>
     </div>
     
     <div class="bottom-nav">
-        <div class="nav-item active" data-index="0"><div class="nav-icon">🏠</div><div>Home</div></div>
-        <div class="nav-item" data-index="1"><div class="nav-icon">📢</div><div>News</div></div>
-        <div class="nav-item" data-index="2"><div class="nav-icon">💬</div><div>Chat</div></div>
-        <div class="nav-item" data-index="3"><div class="nav-icon">👤</div><div>Profile</div></div>
+        <div class="nav-item" data-page="0">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Home</div>
+        </div>
+        <div class="nav-item" data-page="1">
+            <div class="nav-icon">📢</div>
+            <div class="nav-label">News</div>
+        </div>
+        <div class="nav-item" data-page="2">
+            <div class="nav-icon">💬</div>
+            <div class="nav-label">Chat</div>
+        </div>
+        <div class="nav-item" data-page="3">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Profile</div>
+        </div>
     </div>
 </div>
 <div id="toastMsg" class="toast"></div>
@@ -76,112 +90,6 @@
 <script src="announce.js"></script>
 <script src="chat.js"></script>
 <script src="profile.js"></script>
-
-<script>
-    // ========== SWIPE NAVIGATION ==========
-    let currentIndex = 0;
-    const track = document.getElementById('track');
-    const pages = document.querySelectorAll('.page');
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    function updateSwipe() {
-        if (track) track.style.transform = `translateX(-${currentIndex * 100}%)`;
-        navItems.forEach((item, i) => {
-            if (i === currentIndex) item.classList.add('active');
-            else item.classList.remove('active');
-        });
-        
-        if (currentIndex === 0) {
-            if (typeof renderHomeFeed === 'function') renderHomeFeed();
-            if (typeof renderStories === 'function') renderStories();
-        }
-        if (currentIndex === 1 && typeof renderAnnouncements === 'function') renderAnnouncements();
-        if (currentIndex === 2) {
-            if (typeof renderDM === 'function') renderDM();
-            if (typeof renderGroup === 'function') renderGroup();
-        }
-        if (currentIndex === 3 && typeof renderProfile === 'function') renderProfile();
-    }
-    
-    navItems.forEach((item, idx) => {
-        item.addEventListener('click', () => {
-            currentIndex = idx;
-            updateSwipe();
-        });
-    });
-    
-    let startX = 0;
-    const container = document.getElementById('swipeArea');
-    if (container) {
-        container.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
-        container.addEventListener('touchend', (e) => {
-            let endX = e.changedTouches[0].clientX;
-            let diff = endX - startX;
-            if (Math.abs(diff) > 40) {
-                if (diff > 0 && currentIndex > 0) currentIndex--;
-                else if (diff < 0 && currentIndex < pages.length - 1) currentIndex++;
-                updateSwipe();
-            }
-        });
-    }
-    
-    // ========== FLOATING CREATE POST BUTTON ==========
-    let fab = document.createElement('div');
-    fab.innerHTML = '✚';
-    fab.style.cssText = 'position:fixed; bottom:80px; right:16px; background:#0095f6; color:white; width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow:0 4px 12px rgba(0,0,0,0.2); cursor:pointer; z-index:200;';
-    fab.onclick = () => {
-        let caption = prompt("📝 Caption (optional):");
-        let fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.onchange = (e) => {
-            let file = e.target.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = (ev) => {
-                    let newPost = {
-                        id: Date.now(),
-                        userId: currentUser.id,
-                        username: currentUser.username,
-                        text: caption || '',
-                        image: ev.target.result,
-                        likes: [],
-                        comments: [],
-                        timestamp: Date.now(),
-                        timeAgo: new Date().toLocaleString()
-                    };
-                    allPosts.unshift(newPost);
-                    saveAll();
-                    if (typeof renderHomeFeed === 'function') renderHomeFeed();
-                    if (typeof renderProfile === 'function') renderProfile();
-                    if (typeof renderExploreGrid === 'function') renderExploreGrid();
-                    showToast("✅ Posted!");
-                };
-                reader.readAsDataURL(file);
-            } else {
-                let newPost = {
-                    id: Date.now(),
-                    userId: currentUser.id,
-                    username: currentUser.username,
-                    text: caption || '',
-                    image: null,
-                    likes: [],
-                    comments: [],
-                    timestamp: Date.now(),
-                    timeAgo: new Date().toLocaleString()
-                };
-                allPosts.unshift(newPost);
-                saveAll();
-                if (typeof renderHomeFeed === 'function') renderHomeFeed();
-                if (typeof renderProfile === 'function') renderProfile();
-                showToast("✅ Posted!");
-            }
-        };
-        fileInput.click();
-    };
-    document.querySelector('.app').appendChild(fab);
-    
-    updateSwipe();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
