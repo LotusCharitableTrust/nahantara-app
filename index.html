@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Nahantara — Professional Social Village</title>
+    <meta name="theme-color" content="#121212">
+    <title>Nahantara — Premium Social Village</title>
     <style>
         * {
             margin: 0;
@@ -146,10 +147,79 @@
         .post-likes { padding: 0 12px 4px; font-weight: 600; font-size: 13px; cursor: pointer; color: var(--text-primary); }
         .post-caption { padding: 0 12px 12px; font-size: 14px; color: var(--text-primary); }
 
-        .announce-header { padding: 16px; border-bottom: 0.5px solid var(--border-color); }
-        .announce-header h3 { color: var(--text-primary); }
-        .announcement-card { background: rgba(0,149,246,0.1); margin: 12px; padding: 14px; border-radius: 16px; border-left: 4px solid var(--accent-color); }
-        .admin-badge { background: var(--accent-color); color: white; font-size: 10px; padding: 2px 8px; border-radius: 30px; display: inline-block; }
+        /* Improved Announcement UI */
+        .announce-header {
+            padding: 16px;
+            border-bottom: 0.5px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+        .announce-header h3 { color: var(--text-primary); font-size: 18px; margin-bottom: 4px; }
+        .announce-header p { color: var(--text-secondary); font-size: 12px; }
+        
+        .announcement-list {
+            padding: 8px;
+        }
+        .announcement-card {
+            background: linear-gradient(135deg, rgba(0,149,246,0.08), rgba(0,0,0,0.02));
+            margin: 12px;
+            padding: 16px;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.2s;
+        }
+        .announcement-card:active { transform: scale(0.98); }
+        .admin-badge {
+            background: var(--accent-color);
+            color: white;
+            font-size: 10px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .announcement-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        .announcement-time {
+            font-size: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .admin-panel {
+            background: var(--bg-secondary);
+            margin: 12px;
+            padding: 16px;
+            border-radius: 20px;
+            border: 0.5px solid var(--border-color);
+        }
+        .admin-panel textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            resize: none;
+        }
+        .admin-panel button {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
         .chat-tabs { display: flex; gap: 12px; padding: 12px; border-bottom: 0.5px solid var(--border-color); }
         .chat-tab { flex: 1; background: none; border: none; padding: 10px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-radius: 30px; }
@@ -264,7 +334,28 @@
         .fab:active { transform: scale(0.92); }
 
         .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; color: var(--text-primary); }
-        .spinner { width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+        
+        .refresh-indicator {
+            text-align: center;
+            padding: 12px;
+            color: var(--accent-color);
+            font-size: 13px;
+            background: var(--bg-primary);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: none;
+        }
+        
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 10px auto;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -281,10 +372,41 @@
 
     <div class="swipe-container" id="swipeContainer">
         <div class="swipe-track" id="swipeTrack">
-            <div class="page"><div class="stories-row" id="storiesList"></div><div id="feedContainer"></div></div>
-            <div class="page"><div class="announce-header"><h3>📢 Announcements</h3><p>From village admin</p></div><div id="announcementsList"></div><div id="adminPanel" style="display:none;"><textarea id="announceText" rows="2" placeholder="Write announcement..."></textarea><button onclick="postAnnouncement()" style="background:var(--accent-color); color:white;">➕ Post</button></div></div>
-            <div class="page"><div class="chat-tabs"><button id="dmTab" class="chat-tab active">💬 DM</button><button id="groupTab" class="chat-tab">👥 Group</button></div><div id="dmPanel" class="chat-panel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" class="chat-panel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
-            <div class="page"><div id="profileArea"></div></div>
+            <div class="page">
+                <div class="stories-row" id="storiesList"></div>
+                <div id="feedContainer"></div>
+            </div>
+            <div class="page">
+                <div class="announce-header"><h3>📢 Announcements</h3><p>Stay updated with village news</p></div>
+                <div id="announcementsList" class="announcement-list"></div>
+                <div id="adminPanel" class="admin-panel" style="display:none;">
+                    <textarea id="announceText" rows="3" placeholder="Write announcement..."></textarea>
+                    <button onclick="postAnnouncement()">➕ Post Announcement</button>
+                </div>
+            </div>
+            <div class="page">
+                <div class="chat-tabs">
+                    <button id="dmTab" class="chat-tab active">💬 DM</button>
+                    <button id="groupTab" class="chat-tab">👥 Group</button>
+                </div>
+                <div id="dmPanel" class="chat-panel">
+                    <div class="chat-messages" id="dmMessages"></div>
+                    <div class="chat-input-area">
+                        <input id="dmInput" placeholder="Message...">
+                        <button onclick="sendDM()">➤</button>
+                    </div>
+                </div>
+                <div id="groupPanel" class="chat-panel" style="display:none;">
+                    <div class="chat-messages" id="groupMessages"></div>
+                    <div class="chat-input-area">
+                        <input id="groupInput" placeholder="Group message...">
+                        <button onclick="sendGroupMsg()">➤</button>
+                    </div>
+                </div>
+            </div>
+            <div class="page">
+                <div id="profileArea"></div>
+            </div>
         </div>
     </div>
 
@@ -308,10 +430,9 @@
     document.getElementById('themeToggle').onclick = () => { isDark = !isDark; applyTheme(); };
     applyTheme();
 
-    // ========== DATA - PERSISTENT STORAGE ==========
-    // Load users
-    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_pro')) || [];
-    let currentUserId = localStorage.getItem('nahantara_currentId_pro');
+    // ========== DATA INITIALIZATION ==========
+    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_final')) || [];
+    let currentUserId = localStorage.getItem('nahantara_currentId_final');
     
     if (!allUsers.length || !currentUserId) {
         let defaultUser = { 
@@ -326,8 +447,8 @@
         };
         allUsers = [defaultUser];
         currentUserId = defaultUser.id;
-        localStorage.setItem('nahantara_users_pro', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_currentId_pro', currentUserId);
+        localStorage.setItem('nahantara_users_final', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_currentId_final', currentUserId);
     }
     
     let currentUser = allUsers.find(u => u.id === currentUserId) || allUsers[0];
@@ -335,51 +456,21 @@
     if (!currentUser.followers) currentUser.followers = [];
     if (!currentUser.following) currentUser.following = [];
     
-    // Load posts - CRITICAL FIX: Ensure posts load correctly
-    let allPosts = [];
-    try {
-        const storedPosts = localStorage.getItem('nahantara_posts_pro');
-        if (storedPosts && storedPosts !== 'undefined') {
-            allPosts = JSON.parse(storedPosts);
-        }
-        if (!Array.isArray(allPosts)) allPosts = [];
-    } catch(e) { allPosts = []; }
-    
-    let storiesData = [];
-    try {
-        const stored = localStorage.getItem('nahantara_stories_pro');
-        if (stored) storiesData = JSON.parse(stored) || [];
-    } catch(e) { storiesData = []; }
-    
-    let announcements = [];
-    try {
-        const stored = localStorage.getItem('nahantara_announcements_pro');
-        if (stored) announcements = JSON.parse(stored) || [];
-    } catch(e) { announcements = []; }
-    
-    let dmMessages = [];
-    try {
-        const stored = localStorage.getItem('nahantara_dm_pro');
-        if (stored) dmMessages = JSON.parse(stored) || [];
-    } catch(e) { dmMessages = []; }
-    
-    let groupMessages = [];
-    try {
-        const stored = localStorage.getItem('nahantara_group_pro');
-        if (stored) groupMessages = JSON.parse(stored) || [];
-    } catch(e) { groupMessages = []; }
+    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_final')) || [];
+    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_final')) || [];
+    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_final')) || [];
+    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_final')) || [];
+    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_final')) || [];
     
     function saveAll() {
-        localStorage.setItem('nahantara_users_pro', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_posts_pro', JSON.stringify(allPosts));
-        localStorage.setItem('nahantara_stories_pro', JSON.stringify(storiesData));
-        localStorage.setItem('nahantara_announcements_pro', JSON.stringify(announcements));
-        localStorage.setItem('nahantara_dm_pro', JSON.stringify(dmMessages));
-        localStorage.setItem('nahantara_group_pro', JSON.stringify(groupMessages));
-        localStorage.setItem('nahantara_currentId_pro', currentUserId);
-        
-        // Debug log
-        console.log('Saved posts count:', allPosts.length);
+        localStorage.setItem('nahantara_users_final', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_posts_final', JSON.stringify(allPosts));
+        localStorage.setItem('nahantara_stories_final', JSON.stringify(storiesData));
+        localStorage.setItem('nahantara_announcements_final', JSON.stringify(announcements));
+        localStorage.setItem('nahantara_dm_final', JSON.stringify(dmMessages));
+        localStorage.setItem('nahantara_group_final', JSON.stringify(groupMessages));
+        localStorage.setItem('nahantara_currentId_final', currentUserId);
+        console.log('✅ Data saved. Posts count:', allPosts.length);
     }
     
     function showToast(msg) { 
@@ -398,7 +489,6 @@
         return storiesData.some(s => s.userId === userId); 
     }
     
-    // Clean expired stories
     function cleanExpiredStories() {
         const now = Date.now();
         const oneDay = 24 * 60 * 60 * 1000;
@@ -407,7 +497,7 @@
             if (now - story.timestamp > oneDay) { changed = true; return false; }
             return true;
         });
-        if (changed) { saveAll(); renderStories(); renderProfile(); }
+        if (changed) { saveAll(); }
     }
     setInterval(cleanExpiredStories, 60 * 60 * 1000);
     cleanExpiredStories();
@@ -418,10 +508,10 @@
         if (!container) return;
         let users = allUsers.filter(u => u.id !== currentUser.id);
         let ownStory = hasStory(currentUser.id);
-        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><span>Your Story</span></div>`;
+        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><div class="story-name">Your Story</div></div>`;
         users.slice(0, 15).forEach(u => {
             let has = hasStory(u.id);
-            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><span>${u.username.slice(0, 12)}</span></div>`;
+            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><div class="story-name">${u.username.slice(0, 12)}</div></div>`;
         });
         container.innerHTML = html;
     }
@@ -522,10 +612,8 @@
         let feedDiv = document.getElementById('feedContainer');
         if (!feedDiv) return;
         
-        console.log('Rendering posts, count:', allPosts.length);
-        
         if (!allPosts.length) {
-            feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Create your first post!</p></div>';
+            feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Click + to create your first post!</p></div>';
             return;
         }
         
@@ -561,12 +649,33 @@
     function renderAnnouncements() {
         let cont = document.getElementById('announcementsList');
         if (!cont) return;
-        if (!announcements.length) cont.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">📭 No announcements yet</div>';
-        else cont.innerHTML = announcements.map(a => `<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)}</div><div style="margin:8px 0;">${escapeHtml(a.text)}</div><div style="font-size:10px; color:var(--text-secondary);">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('');
+        if (!announcements.length) {
+            cont.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">📭 No announcements yet</div>';
+        } else {
+            cont.innerHTML = announcements.map(a => `
+                <div class="announcement-card">
+                    <div class="admin-badge">👑 ${escapeHtml(a.adminName)}</div>
+                    <div class="announcement-text">${escapeHtml(a.text)}</div>
+                    <div class="announcement-time">
+                        <span>🕒 ${new Date(a.timestamp).toLocaleString()}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
         let panel = document.getElementById('adminPanel');
         if (panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
     }
-    window.postAnnouncement = () => { if (currentUser.role !== 'admin') { showToast("Only admin can post"); return; } let text = document.getElementById('announceText')?.value.trim(); if (!text) { showToast("Write announcement"); return; } announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() }); saveAll(); renderAnnouncements(); document.getElementById('announceText').value = ''; showToast("📢 Posted!"); };
+    
+    window.postAnnouncement = () => {
+        if (currentUser.role !== 'admin') { showToast("Only admin can post announcements"); return; }
+        let text = document.getElementById('announceText')?.value.trim();
+        if (!text) { showToast("Write announcement first"); return; }
+        announcements.unshift({ id: Date.now(), adminId: currentUser.id, adminName: currentUser.username, text, timestamp: Date.now() });
+        saveAll();
+        renderAnnouncements();
+        document.getElementById('announceText').value = '';
+        showToast("📢 Announcement posted!");
+    };
     
     // ========== CHAT ==========
     function renderDM() { let d = document.getElementById('dmMessages'); if (d) d.innerHTML = dmMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0, d.scrollHeight); }
@@ -677,10 +786,11 @@
         renderHomeFeed(); renderProfile(); renderStories();
     };
     
-    // ========== NAVIGATION ==========
+    // ========== SWIPE NAVIGATION ==========
     let currentPage = 0;
     const track = document.getElementById('swipeTrack');
     const navItems = document.querySelectorAll('.nav-item');
+    
     function goToPage(pageIndex) {
         if (pageIndex < 0 || pageIndex > 3) return;
         currentPage = pageIndex;
@@ -691,13 +801,53 @@
         if (currentPage === 2) { renderDM(); renderGroup(); initChatTabs(); }
         if (currentPage === 3) renderProfile();
     }
+    
     navItems.forEach((item, idx) => item.addEventListener('click', () => goToPage(idx)));
+    
     let touchStartX = 0;
     const container = document.getElementById('swipeContainer');
     container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
     container.addEventListener('touchend', (e) => { let endX = e.changedTouches[0].screenX; let diff = endX - touchStartX; if (Math.abs(diff) > 50) { if (diff > 0 && currentPage > 0) goToPage(currentPage - 1); else if (diff < 0 && currentPage < 3) goToPage(currentPage + 1); } });
     
-    // Floating action button - CREATE POST
+    // ========== PULL TO REFRESH (FIXED) ==========
+    let refreshStartY = 0;
+    let refreshing = false;
+    let refreshIndicator = null;
+    
+    container.addEventListener('touchstart', (e) => {
+        if (container.scrollTop === 0 && currentPage === 0) {
+            refreshStartY = e.touches[0].clientY;
+        }
+    });
+    
+    container.addEventListener('touchmove', (e) => {
+        if (container.scrollTop === 0 && currentPage === 0 && !refreshing) {
+            let diff = e.touches[0].clientY - refreshStartY;
+            if (diff > 60) {
+                refreshing = true;
+                if (!refreshIndicator) {
+                    refreshIndicator = document.createElement('div');
+                    refreshIndicator.className = 'refresh-indicator';
+                    refreshIndicator.innerHTML = '<div class="spinner"></div><div>Refreshing...</div>';
+                    const firstPage = document.querySelector('.page');
+                    if (firstPage) firstPage.prepend(refreshIndicator);
+                }
+                refreshIndicator.style.display = 'block';
+                
+                setTimeout(() => {
+                    renderHomeFeed();
+                    renderStories();
+                    renderProfile();
+                    if (refreshIndicator) refreshIndicator.remove();
+                    refreshIndicator = null;
+                    refreshing = false;
+                    showToast("✨ Updated!");
+                }, 800);
+            }
+        }
+    });
+    
+    // ========== FLOATING ACTION BUTTON ==========
     let fab = document.createElement('div'); fab.className = 'fab'; fab.innerHTML = '✚';
     fab.onclick = () => {
         let caption = prompt("📝 Write caption (optional):");
@@ -748,7 +898,7 @@
     };
     document.querySelector('.app').appendChild(fab);
     
-    // Initial render
+    // ========== INITIAL RENDER ==========
     goToPage(0);
 </script>
 </body>
