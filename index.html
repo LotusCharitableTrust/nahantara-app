@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>Nahantara — Premium Social Village</title>
+    <title>Nahantara — Verified Social Village</title>
     <style>
         * {
             margin: 0;
@@ -50,6 +50,55 @@
             transition: background 0.3s;
         }
 
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+        .login-card h2 { margin-bottom: 8px; color: var(--text-primary); }
+        .login-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; }
+        .login-card input {
+            width: 100%;
+            padding: 14px;
+            border: 0.5px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .otp-group { display: none; margin-top: 16px; }
+        .otp-group input { letter-spacing: 4px; font-size: 20px; }
+
         .header {
             background: var(--bg-primary);
             padding: 12px 16px;
@@ -58,31 +107,11 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
+        .logo { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .logo span { font-size: 24px; }
-
         .header-actions { display: flex; gap: 20px; align-items: center; }
         .header-icon { font-size: 24px; cursor: pointer; color: var(--text-primary); }
-        .theme-toggle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            background: var(--bg-secondary);
-            font-size: 20px;
-        }
+        .theme-toggle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--bg-secondary); font-size: 20px; }
 
         .swipe-container { flex: 1; overflow: hidden; position: relative; }
         .swipe-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-out; }
@@ -95,46 +124,19 @@
             justify-content: space-around;
             padding: 8px 12px 14px;
         }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary); cursor: pointer; }
         .nav-item.active { color: var(--accent-color); }
         .nav-icon { font-size: 24px; }
 
-        .stories-row {
-            padding: 16px 0 16px 16px;
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            border-bottom: 0.5px solid var(--border-color);
-        }
+        .stories-row { padding: 16px 0 16px 16px; display: flex; gap: 16px; overflow-x: auto; border-bottom: 0.5px solid var(--border-color); }
         .stories-row::-webkit-scrollbar { display: none; }
-
-        .story {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            cursor: pointer;
-        }
+        .story { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; }
         .story-ring { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--border-color); }
         .story.has-story .story-ring { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); padding: 2px; }
         .story-avatar { width: 68px; height: 68px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .post-card {
-            margin-bottom: 12px;
-            background: var(--bg-primary);
-            border-bottom: 0.5px solid var(--border-color);
-        }
+        .post-card { margin-bottom: 12px; background: var(--bg-primary); border-bottom: 0.5px solid var(--border-color); }
         .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
         .post-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .post-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #833ab4, #fd1d1d); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
@@ -147,79 +149,12 @@
         .post-likes { padding: 0 12px 4px; font-weight: 600; font-size: 13px; cursor: pointer; color: var(--text-primary); }
         .post-caption { padding: 0 12px 12px; font-size: 14px; color: var(--text-primary); }
 
-        /* Improved Announcement UI */
-        .announce-header {
-            padding: 16px;
-            border-bottom: 0.5px solid var(--border-color);
-            background: var(--bg-primary);
-        }
-        .announce-header h3 { color: var(--text-primary); font-size: 18px; margin-bottom: 4px; }
-        .announce-header p { color: var(--text-secondary); font-size: 12px; }
-        
-        .announcement-list {
-            padding: 8px;
-        }
-        .announcement-card {
-            background: linear-gradient(135deg, rgba(0,149,246,0.08), rgba(0,0,0,0.02));
-            margin: 12px;
-            padding: 16px;
-            border-radius: 16px;
-            border-left: 4px solid var(--accent-color);
-            transition: all 0.2s;
-        }
-        .announcement-card:active { transform: scale(0.98); }
-        .admin-badge {
-            background: var(--accent-color);
-            color: white;
-            font-size: 10px;
-            padding: 4px 12px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        .announcement-text {
-            font-size: 14px;
-            color: var(--text-primary);
-            margin: 8px 0;
-            line-height: 1.4;
-        }
-        .announcement-time {
-            font-size: 10px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        
-        .admin-panel {
-            background: var(--bg-secondary);
-            margin: 12px;
-            padding: 16px;
-            border-radius: 20px;
-            border: 0.5px solid var(--border-color);
-        }
-        .admin-panel textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 0.5px solid var(--border-color);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: inherit;
-            resize: none;
-        }
-        .admin-panel button {
-            width: 100%;
-            margin-top: 12px;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .announce-header { padding: 16px; border-bottom: 0.5px solid var(--border-color); }
+        .announcement-card { background: rgba(0,149,246,0.1); margin: 12px; padding: 16px; border-radius: 16px; border-left: 4px solid var(--accent-color); }
+        .admin-badge { background: var(--accent-color); color: white; font-size: 10px; padding: 4px 12px; border-radius: 30px; display: inline-block; margin-bottom: 10px; }
+        .admin-panel { background: var(--bg-secondary); margin: 12px; padding: 16px; border-radius: 20px; }
+        .admin-panel textarea { width: 100%; padding: 12px; border-radius: 12px; border: 0.5px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); }
+        .admin-panel button { width: 100%; margin-top: 12px; background: var(--accent-color); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; }
 
         .chat-tabs { display: flex; gap: 12px; padding: 12px; border-bottom: 0.5px solid var(--border-color); }
         .chat-tab { flex: 1; background: none; border: none; padding: 10px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-radius: 30px; }
@@ -229,7 +164,7 @@
         .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 22px; font-size: 14px; }
         .message-left { background: var(--bg-secondary); color: var(--text-primary); align-self: flex-start; }
         .message-right { background: var(--accent-color); color: white; align-self: flex-end; }
-        .chat-input-area { display: flex; padding: 12px; gap: 8px; border-top: 0.5px solid var(--border-color); background: var(--bg-primary); }
+        .chat-input-area { display: flex; padding: 12px; gap: 8px; border-top: 0.5px solid var(--border-color); }
         .chat-input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 0.5px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); }
         .chat-input-area button { background: var(--accent-color); color: white; border: none; width: 44px; border-radius: 25px; cursor: pointer; }
 
@@ -240,122 +175,23 @@
         .profile-stats { display: flex; gap: 28px; text-align: center; }
         .stat-num { font-weight: 700; font-size: 18px; color: var(--text-primary); }
         .stat-label { font-size: 12px; color: var(--text-secondary); }
-        .edit-btn { margin: 16px; background: var(--bg-secondary); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; cursor: pointer; color: var(--text-primary); }
+        .edit-btn { margin: 16px; background: var(--bg-secondary); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; cursor: pointer; }
         .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4px; }
         .grid-item { aspect-ratio: 1; background: var(--bg-secondary); cursor: pointer; overflow: hidden; }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-card {
-            background: var(--bg-primary);
-            border-radius: 24px;
-            width: 90%;
-            max-width: 340px;
-            padding: 24px;
-        }
-        .modal-card input, .modal-card select, .modal-card textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 0.5px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        .modal-card button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            margin-top: 8px;
-            font-weight: 600;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: flex; align-items: center; justify-content: center; }
+        .modal-card { background: var(--bg-primary); border-radius: 24px; width: 90%; max-width: 340px; padding: 24px; }
+        .modal-card input, .modal-card select { width: 100%; padding: 12px; margin: 10px 0; border: 0.5px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary); color: var(--text-primary); }
+        .modal-card button { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; margin-top: 8px; font-weight: 600; }
 
-        .story-viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #000;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
+        .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .story-img { max-width: 90%; max-height: 80%; border-radius: 16px; }
 
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-size: 13px;
-            z-index: 1100;
-            display: none;
-        }
-
-        .fab {
-            position: fixed;
-            bottom: 80px;
-            right: 16px;
-            background: linear-gradient(135deg, var(--accent-color), #0077cc);
-            color: white;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 200;
-        }
-        .fab:active { transform: scale(0.92); }
-
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); color: white; padding: 10px 20px; border-radius: 40px; font-size: 13px; z-index: 1100; display: none; }
+        .fab { position: fixed; bottom: 80px; right: 16px; background: linear-gradient(135deg, var(--accent-color), #0077cc); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 200; }
         .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; color: var(--text-primary); }
-        
-        .refresh-indicator {
-            text-align: center;
-            padding: 12px;
-            color: var(--accent-color);
-            font-size: 13px;
-            background: var(--bg-primary);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            display: none;
-        }
-        
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-            margin: 10px auto;
-        }
+        .spinner { width: 36px; height: 36px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 0.6s linear infinite; margin: 10px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -372,41 +208,10 @@
 
     <div class="swipe-container" id="swipeContainer">
         <div class="swipe-track" id="swipeTrack">
-            <div class="page">
-                <div class="stories-row" id="storiesList"></div>
-                <div id="feedContainer"></div>
-            </div>
-            <div class="page">
-                <div class="announce-header"><h3>📢 Announcements</h3><p>Stay updated with village news</p></div>
-                <div id="announcementsList" class="announcement-list"></div>
-                <div id="adminPanel" class="admin-panel" style="display:none;">
-                    <textarea id="announceText" rows="3" placeholder="Write announcement..."></textarea>
-                    <button onclick="postAnnouncement()">➕ Post Announcement</button>
-                </div>
-            </div>
-            <div class="page">
-                <div class="chat-tabs">
-                    <button id="dmTab" class="chat-tab active">💬 DM</button>
-                    <button id="groupTab" class="chat-tab">👥 Group</button>
-                </div>
-                <div id="dmPanel" class="chat-panel">
-                    <div class="chat-messages" id="dmMessages"></div>
-                    <div class="chat-input-area">
-                        <input id="dmInput" placeholder="Message...">
-                        <button onclick="sendDM()">➤</button>
-                    </div>
-                </div>
-                <div id="groupPanel" class="chat-panel" style="display:none;">
-                    <div class="chat-messages" id="groupMessages"></div>
-                    <div class="chat-input-area">
-                        <input id="groupInput" placeholder="Group message...">
-                        <button onclick="sendGroupMsg()">➤</button>
-                    </div>
-                </div>
-            </div>
-            <div class="page">
-                <div id="profileArea"></div>
-            </div>
+            <div class="page"><div class="stories-row" id="storiesList"></div><div id="feedContainer"></div></div>
+            <div class="page"><div class="announce-header"><h3>📢 Announcements</h3><p>Village news & updates</p></div><div id="announcementsList"></div><div id="adminPanel" class="admin-panel" style="display:none;"><textarea id="announceText" rows="3" placeholder="Write announcement..."></textarea><button onclick="postAnnouncement()">➕ Post</button></div></div>
+            <div class="page"><div class="chat-tabs"><button id="dmTab" class="chat-tab active">💬 DM</button><button id="groupTab" class="chat-tab">👥 Group</button></div><div id="dmPanel" class="chat-panel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" class="chat-panel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
+            <div class="page"><div id="profileArea"></div></div>
         </div>
     </div>
 
@@ -430,88 +235,125 @@
     document.getElementById('themeToggle').onclick = () => { isDark = !isDark; applyTheme(); };
     applyTheme();
 
-    // ========== DATA INITIALIZATION ==========
-    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_final')) || [];
-    let currentUserId = localStorage.getItem('nahantara_currentId_final');
+    // ========== PHONE VERIFICATION SYSTEM ==========
+    let pendingPhone = null;
+    let generatedOTP = null;
     
-    if (!allUsers.length || !currentUserId) {
-        let defaultUser = { 
-            id: 'user_' + Date.now(), 
-            username: 'Villager', 
-            bio: '🌾 Living my best life', 
-            avatar: null, 
-            followers: [], 
-            following: [], 
-            role: 'user',
-            createdAt: Date.now()
-        };
-        allUsers = [defaultUser];
-        currentUserId = defaultUser.id;
-        localStorage.setItem('nahantara_users_final', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_currentId_final', currentUserId);
+    function showLogin() {
+        let loginDiv = document.createElement('div');
+        loginDiv.className = 'login-screen';
+        loginDiv.id = 'loginScreen';
+        loginDiv.innerHTML = `
+            <div class="login-card">
+                <h2>🌾 Welcome to Nahantara</h2>
+                <p>Enter your phone number to join the village</p>
+                <input type="tel" id="phoneInput" placeholder="+91 9876543210" maxlength="13">
+                <button onclick="sendOTP()">Send OTP</button>
+                <div class="otp-group" id="otpGroup">
+                    <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6">
+                    <button onclick="verifyOTP()">Verify & Login</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(loginDiv);
     }
     
-    let currentUser = allUsers.find(u => u.id === currentUserId) || allUsers[0];
-    if (!currentUser.role) currentUser.role = 'user';
-    if (!currentUser.followers) currentUser.followers = [];
-    if (!currentUser.following) currentUser.following = [];
+    window.sendOTP = () => {
+        let phone = document.getElementById('phoneInput').value.trim();
+        if (!phone || phone.length < 10) {
+            alert("Enter valid phone number");
+            return;
+        }
+        pendingPhone = phone;
+        generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        alert(`📱 OTP for ${phone}: ${generatedOTP}\n(Simulated - in real app this would be SMS)`);
+        document.getElementById('otpGroup').style.display = 'block';
+    };
     
-    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_final')) || [];
-    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_final')) || [];
-    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_final')) || [];
-    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_final')) || [];
-    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_final')) || [];
+    window.verifyOTP = () => {
+        let enteredOTP = document.getElementById('otpInput').value.trim();
+        if (enteredOTP === generatedOTP) {
+            localStorage.setItem('nahantara_verified_phone', pendingPhone);
+            document.getElementById('loginScreen').remove();
+            initApp();
+            // Notify all users about new member
+            addGlobalNotification(`📱 New member joined: ${pendingPhone.slice(-6)}`);
+            showToast("✅ Verified successfully!");
+        } else {
+            alert("Wrong OTP! Try again.");
+        }
+    };
+    
+    // ========== GLOBAL NOTIFICATION SYSTEM ==========
+    function addGlobalNotification(msg) {
+        let notifications = JSON.parse(localStorage.getItem('nahantara_global_notifications')) || [];
+        notifications.unshift({ msg, time: Date.now(), id: Date.now() });
+        if (notifications.length > 50) notifications.pop();
+        localStorage.setItem('nahantara_global_notifications', JSON.stringify(notifications));
+        showToast(msg);
+    }
+    
+    // ========== DATA STORAGE (PERSISTENT) ==========
+    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_v2')) || [];
+    let currentUser = null;
+    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_v2')) || [];
+    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_v2')) || [];
+    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_v2')) || [];
+    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_v2')) || [];
+    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_v2')) || [];
     
     function saveAll() {
-        localStorage.setItem('nahantara_users_final', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_posts_final', JSON.stringify(allPosts));
-        localStorage.setItem('nahantara_stories_final', JSON.stringify(storiesData));
-        localStorage.setItem('nahantara_announcements_final', JSON.stringify(announcements));
-        localStorage.setItem('nahantara_dm_final', JSON.stringify(dmMessages));
-        localStorage.setItem('nahantara_group_final', JSON.stringify(groupMessages));
-        localStorage.setItem('nahantara_currentId_final', currentUserId);
-        console.log('✅ Data saved. Posts count:', allPosts.length);
+        localStorage.setItem('nahantara_users_v2', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_posts_v2', JSON.stringify(allPosts));
+        localStorage.setItem('nahantara_stories_v2', JSON.stringify(storiesData));
+        localStorage.setItem('nahantara_announcements_v2', JSON.stringify(announcements));
+        localStorage.setItem('nahantara_dm_v2', JSON.stringify(dmMessages));
+        localStorage.setItem('nahantara_group_v2', JSON.stringify(groupMessages));
+        console.log('💾 Saved - Posts:', allPosts.length);
     }
     
-    function showToast(msg) { 
-        let t = document.getElementById('toastMsg'); 
-        t.innerText = msg; 
-        t.style.display = 'block'; 
-        setTimeout(() => t.style.display = 'none', 2000); 
+    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+    function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
+    
+    function initApp() {
+        let verifiedPhone = localStorage.getItem('nahantara_verified_phone');
+        if (!verifiedPhone) { showLogin(); return; }
+        
+        currentUser = allUsers.find(u => u.phone === verifiedPhone);
+        if (!currentUser) {
+            let newUser = {
+                id: 'user_' + Date.now(),
+                phone: verifiedPhone,
+                username: 'User_' + verifiedPhone.slice(-6),
+                bio: '🌾 New to Nahantara',
+                avatar: null,
+                followers: [],
+                following: [],
+                role: 'user',
+                createdAt: Date.now()
+            };
+            allUsers.push(newUser);
+            currentUser = newUser;
+            saveAll();
+            addGlobalNotification(`✨ Welcome ${currentUser.username} to Nahantara!`);
+        }
+        
+        renderAll();
+        setupNavigation();
+        setupFab();
+        setupPullToRefresh();
     }
     
-    function escapeHtml(str) { 
-        if (!str) return ''; 
-        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); 
-    }
-    
-    function hasStory(userId) { 
-        return storiesData.some(s => s.userId === userId); 
-    }
-    
-    function cleanExpiredStories() {
-        const now = Date.now();
-        const oneDay = 24 * 60 * 60 * 1000;
-        let changed = false;
-        storiesData = storiesData.filter(story => {
-            if (now - story.timestamp > oneDay) { changed = true; return false; }
-            return true;
-        });
-        if (changed) { saveAll(); }
-    }
-    setInterval(cleanExpiredStories, 60 * 60 * 1000);
-    cleanExpiredStories();
-    
-    // ========== STORIES ==========
     function renderStories() {
         let container = document.getElementById('storiesList');
         if (!container) return;
         let users = allUsers.filter(u => u.id !== currentUser.id);
         let ownStory = hasStory(currentUser.id);
-        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><div class="story-name">Your Story</div></div>`;
+        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><div>Your Story</div></div>`;
         users.slice(0, 15).forEach(u => {
             let has = hasStory(u.id);
-            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><div class="story-name">${u.username.slice(0, 12)}</div></div>`;
+            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><div>${u.username.slice(0, 12)}</div></div>`;
         });
         container.innerHTML = html;
     }
@@ -527,7 +369,7 @@
                     saveAll();
                     renderStories();
                     renderProfile();
-                    showToast("📸 Story uploaded! (24h auto-delete)");
+                    showToast("📸 Story uploaded!");
                 };
                 reader.readAsDataURL(file);
             }
@@ -548,15 +390,11 @@
         modal.onclick = () => modal.remove();
     }
     
-    // ========== POST FUNCTIONS ==========
     function toggleLike(postId) {
         let post = allPosts.find(p => p.id == postId);
         if (post) {
-            if (post.likes.includes(currentUser.id)) {
-                post.likes = post.likes.filter(id => id !== currentUser.id);
-            } else {
-                post.likes.push(currentUser.id);
-            }
+            if (post.likes.includes(currentUser.id)) post.likes = post.likes.filter(id => id !== currentUser.id);
+            else post.likes.push(currentUser.id);
             saveAll();
             renderHomeFeed();
         }
@@ -566,7 +404,7 @@
         if (!text.trim()) return;
         let post = allPosts.find(p => p.id == postId);
         if (post) {
-            post.comments.push({ userId: currentUser.id, username: currentUser.username, text: text, time: Date.now() });
+            post.comments.push({ userId: currentUser.id, username: currentUser.username, text: text });
             saveAll();
             renderHomeFeed();
         }
@@ -611,12 +449,10 @@
     function renderHomeFeed() {
         let feedDiv = document.getElementById('feedContainer');
         if (!feedDiv) return;
-        
         if (!allPosts.length) {
             feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Click + to create your first post!</p></div>';
             return;
         }
-        
         feedDiv.innerHTML = allPosts.map(post => `
             <div class="post-card">
                 <div class="post-header">
@@ -645,23 +481,11 @@
     window.toggleCommentBox = (id) => { let box = document.getElementById(`commentBox-${id}`); if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none'; };
     window.openFullImage = (src) => { let modal = document.createElement('div'); modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center;'; modal.innerHTML = `<img src="${src}" style="max-width:90%;"><div style="position:absolute; top:30px; right:30px; color:white; font-size:40px; cursor:pointer;" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
     
-    // ========== ANNOUNCEMENTS ==========
     function renderAnnouncements() {
         let cont = document.getElementById('announcementsList');
         if (!cont) return;
-        if (!announcements.length) {
-            cont.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">📭 No announcements yet</div>';
-        } else {
-            cont.innerHTML = announcements.map(a => `
-                <div class="announcement-card">
-                    <div class="admin-badge">👑 ${escapeHtml(a.adminName)}</div>
-                    <div class="announcement-text">${escapeHtml(a.text)}</div>
-                    <div class="announcement-time">
-                        <span>🕒 ${new Date(a.timestamp).toLocaleString()}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
+        if (!announcements.length) cont.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">📭 No announcements yet</div>';
+        else cont.innerHTML = announcements.map(a => `<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)}</div><div>${escapeHtml(a.text)}</div><div style="font-size:10px; color:var(--text-secondary); margin-top:8px;">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('');
         let panel = document.getElementById('adminPanel');
         if (panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
     }
@@ -674,17 +498,16 @@
         saveAll();
         renderAnnouncements();
         document.getElementById('announceText').value = '';
-        showToast("📢 Announcement posted!");
+        addGlobalNotification(`📢 New announcement: ${text.slice(0,50)}`);
+        showToast("Announcement posted!");
     };
     
-    // ========== CHAT ==========
     function renderDM() { let d = document.getElementById('dmMessages'); if (d) d.innerHTML = dmMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0, d.scrollHeight); }
     function renderGroup() { let g = document.getElementById('groupMessages'); if (g) g.innerHTML = groupMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}"><strong>${escapeHtml(m.senderName)}</strong> ${escapeHtml(m.text)}<div style="font-size:9px;">${m.time}</div></div>`).join(''); g?.scrollTo(0, g.scrollHeight); }
     window.sendDM = () => { let inp = document.getElementById('dmInput'); if (inp && inp.value.trim()) { dmMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: inp.value, time: new Date().toLocaleTimeString() }); saveAll(); renderDM(); inp.value = ''; } };
     window.sendGroupMsg = () => { let inp = document.getElementById('groupInput'); if (inp && inp.value.trim()) { groupMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: inp.value, time: new Date().toLocaleTimeString() }); saveAll(); renderGroup(); inp.value = ''; } };
     function initChatTabs() { let dmBtn = document.getElementById('dmTab'), grpBtn = document.getElementById('groupTab'); if (dmBtn && grpBtn) { dmBtn.onclick = () => { document.getElementById('dmPanel').style.display = 'flex'; document.getElementById('groupPanel').style.display = 'none'; dmBtn.classList.add('active'); grpBtn.classList.remove('active'); renderDM(); }; grpBtn.onclick = () => { document.getElementById('dmPanel').style.display = 'none'; document.getElementById('groupPanel').style.display = 'flex'; grpBtn.classList.add('active'); dmBtn.classList.remove('active'); renderGroup(); }; } }
     
-    // ========== PROFILE ==========
     function renderProfile() {
         let container = document.getElementById('profileArea');
         if (!container) return;
@@ -698,13 +521,13 @@
                 <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div class="stat-label">posts</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div class="stat-label">followers</div></div><div><div class="stat-num">${currentUser.following.length}</div><div class="stat-label">following</div></div></div>
             </div>
             <div class="edit-btn" onclick="openEditModal()">✏️ Edit Profile</div>
-            <div style="padding:0 16px 12px;"><strong style="color:var(--text-primary);">${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑' : '🌾'}<br><span style="color:var(--text-secondary);">${escapeHtml(currentUser.bio)}</span></div>
+            <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br><span style="color:var(--text-secondary);">📱 ${currentUser.phone}</span><br>${escapeHtml(currentUser.bio)}</div>
             <div class="profile-grid" id="userPostGrid"></div>
         `;
         let grid = document.getElementById('userPostGrid');
         if (grid) {
             let userImages = userPosts.filter(p => p.image);
-            if (!userImages.length) grid.innerHTML = '<div style="grid-column:span3; text-align:center; padding:40px; color:var(--text-secondary);">No posts yet</div>';
+            if (!userImages.length) grid.innerHTML = '<div style="grid-column:span3; text-align:center; padding:40px;">No posts yet</div>';
             else grid.innerHTML = userImages.map(p => `<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('');
         }
     }
@@ -755,14 +578,13 @@
         inp.click();
     };
     
-    // ========== VIEW USER PROFILE ==========
     window.viewUserProfile = (userId) => {
         let targetUser = allUsers.find(u => u.id === userId);
         if (!targetUser || targetUser.id === currentUser.id) return;
         let isFollowing = currentUser.following.includes(targetUser.id);
         let hasUserStory = hasStory(targetUser.id);
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><div style="text-align:center;"><div class="story-avatar" style="width:80px; height:80px; margin:0 auto 12px;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;border-radius:50%;">` : targetUser.username.charAt(0).toUpperCase()}</div><h3>${escapeHtml(targetUser.username)}</h3><p>${targetUser.followers.length} followers</p><p>${escapeHtml(targetUser.bio)}</p></div><button onclick="followUser('${targetUser.id}'); this.parentElement.parentElement.remove();" style="background:${isFollowing ? '#efefef' : 'var(--accent-color)'}; color:${isFollowing ? 'black' : 'white'};">${isFollowing ? 'Unfollow' : 'Follow'}</button><button onclick="if(${hasUserStory}) { this.parentElement.parentElement.remove(); viewStory('${targetUser.id}'); } else { showToast('No story'); }">📸 View Story</button><button onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
+        modal.innerHTML = `<div class="modal-card"><div style="text-align:center;"><div class="story-avatar" style="width:80px; height:80px; margin:0 auto 12px;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;border-radius:50%;">` : targetUser.username.charAt(0).toUpperCase()}</div><h3>${escapeHtml(targetUser.username)}</h3><p>📱 ${targetUser.phone}</p><p>${targetUser.followers.length} followers</p><p>${escapeHtml(targetUser.bio)}</p></div><button onclick="followUser('${targetUser.id}'); this.parentElement.parentElement.remove();" style="background:${isFollowing ? '#efefef' : 'var(--accent-color)'}; color:${isFollowing ? 'black' : 'white'};">${isFollowing ? 'Unfollow' : 'Follow'}</button><button onclick="if(${hasUserStory}) { this.parentElement.parentElement.remove(); viewStory('${targetUser.id}'); } else { showToast('No story'); }">📸 View Story</button><button onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
         document.body.appendChild(modal);
     };
     
@@ -776,6 +598,7 @@
         } else {
             currentUser.following.push(targetId);
             target.followers.push(currentUser.id);
+            addGlobalNotification(`🤝 ${currentUser.username} started following ${target.username}`);
             showToast(`Following ${target.username}`);
         }
         let idx = allUsers.findIndex(u => u.id === currentUser.id);
@@ -786,120 +609,91 @@
         renderHomeFeed(); renderProfile(); renderStories();
     };
     
-    // ========== SWIPE NAVIGATION ==========
-    let currentPage = 0;
-    const track = document.getElementById('swipeTrack');
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    function goToPage(pageIndex) {
-        if (pageIndex < 0 || pageIndex > 3) return;
-        currentPage = pageIndex;
-        if (track) track.style.transform = `translateX(-${currentPage * 100}%)`;
-        navItems.forEach((item, i) => { if (i === currentPage) item.classList.add('active'); else item.classList.remove('active'); });
-        if (currentPage === 0) { renderHomeFeed(); renderStories(); }
-        if (currentPage === 1) renderAnnouncements();
-        if (currentPage === 2) { renderDM(); renderGroup(); initChatTabs(); }
-        if (currentPage === 3) renderProfile();
+    function setupNavigation() {
+        let currentPage = 0;
+        const track = document.getElementById('swipeTrack');
+        const navItems = document.querySelectorAll('.nav-item');
+        function goToPage(pageIndex) {
+            if (pageIndex < 0 || pageIndex > 3) return;
+            currentPage = pageIndex;
+            if (track) track.style.transform = `translateX(-${currentPage * 100}%)`;
+            navItems.forEach((item, i) => { if (i === currentPage) item.classList.add('active'); else item.classList.remove('active'); });
+            if (currentPage === 0) { renderHomeFeed(); renderStories(); }
+            if (currentPage === 1) renderAnnouncements();
+            if (currentPage === 2) { renderDM(); renderGroup(); initChatTabs(); }
+            if (currentPage === 3) renderProfile();
+        }
+        navItems.forEach((item, idx) => item.addEventListener('click', () => goToPage(idx)));
+        let touchStartX = 0;
+        const container = document.getElementById('swipeContainer');
+        container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+        container.addEventListener('touchend', (e) => { let endX = e.changedTouches[0].screenX; let diff = endX - touchStartX; if (Math.abs(diff) > 50) { if (diff > 0 && currentPage > 0) goToPage(currentPage - 1); else if (diff < 0 && currentPage < 3) goToPage(currentPage + 1); } });
+        goToPage(0);
     }
     
-    navItems.forEach((item, idx) => item.addEventListener('click', () => goToPage(idx)));
-    
-    let touchStartX = 0;
-    const container = document.getElementById('swipeContainer');
-    container.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
-    container.addEventListener('touchend', (e) => { let endX = e.changedTouches[0].screenX; let diff = endX - touchStartX; if (Math.abs(diff) > 50) { if (diff > 0 && currentPage > 0) goToPage(currentPage - 1); else if (diff < 0 && currentPage < 3) goToPage(currentPage + 1); } });
-    
-    // ========== PULL TO REFRESH (FIXED) ==========
-    let refreshStartY = 0;
-    let refreshing = false;
-    let refreshIndicator = null;
-    
-    container.addEventListener('touchstart', (e) => {
-        if (container.scrollTop === 0 && currentPage === 0) {
-            refreshStartY = e.touches[0].clientY;
-        }
-    });
-    
-    container.addEventListener('touchmove', (e) => {
-        if (container.scrollTop === 0 && currentPage === 0 && !refreshing) {
-            let diff = e.touches[0].clientY - refreshStartY;
-            if (diff > 60) {
-                refreshing = true;
-                if (!refreshIndicator) {
-                    refreshIndicator = document.createElement('div');
-                    refreshIndicator.className = 'refresh-indicator';
-                    refreshIndicator.innerHTML = '<div class="spinner"></div><div>Refreshing...</div>';
-                    const firstPage = document.querySelector('.page');
-                    if (firstPage) firstPage.prepend(refreshIndicator);
-                }
-                refreshIndicator.style.display = 'block';
-                
-                setTimeout(() => {
-                    renderHomeFeed();
-                    renderStories();
-                    renderProfile();
-                    if (refreshIndicator) refreshIndicator.remove();
-                    refreshIndicator = null;
-                    refreshing = false;
-                    showToast("✨ Updated!");
-                }, 800);
-            }
-        }
-    });
-    
-    // ========== FLOATING ACTION BUTTON ==========
-    let fab = document.createElement('div'); fab.className = 'fab'; fab.innerHTML = '✚';
-    fab.onclick = () => {
-        let caption = prompt("📝 Write caption (optional):");
-        let fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
-        fileInput.onchange = (e) => {
-            let file = e.target.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = (ev) => {
-                    let newPost = { 
-                        id: Date.now(), 
-                        userId: currentUser.id, 
-                        username: currentUser.username, 
-                        text: caption || '', 
-                        image: ev.target.result, 
-                        likes: [], 
-                        comments: [], 
-                        timestamp: Date.now(), 
-                        timeAgo: new Date().toLocaleString() 
+    function setupFab() {
+        let fab = document.createElement('div'); fab.className = 'fab'; fab.innerHTML = '✚';
+        fab.onclick = () => {
+            let caption = prompt("📝 Write caption (optional):");
+            let fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
+            fileInput.onchange = (e) => {
+                let file = e.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = (ev) => {
+                        let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: caption || '', image: ev.target.result, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
+                        allPosts.unshift(newPost);
+                        saveAll();
+                        renderHomeFeed();
+                        renderProfile();
+                        addGlobalNotification(`📷 ${currentUser.username} posted a new photo!`);
+                        showToast("✅ Posted!");
                     };
+                    reader.readAsDataURL(file);
+                } else {
+                    let newPost = { id: Date.now(), userId: currentUser.id, username: currentUser.username, text: caption || '', image: null, likes: [], comments: [], timestamp: Date.now(), timeAgo: new Date().toLocaleString() };
                     allPosts.unshift(newPost);
                     saveAll();
                     renderHomeFeed();
                     renderProfile();
-                    showToast("✅ Posted! Refresh to see.");
-                };
-                reader.readAsDataURL(file);
-            } else {
-                let newPost = { 
-                    id: Date.now(), 
-                    userId: currentUser.id, 
-                    username: currentUser.username, 
-                    text: caption || '', 
-                    image: null, 
-                    likes: [], 
-                    comments: [], 
-                    timestamp: Date.now(), 
-                    timeAgo: new Date().toLocaleString() 
-                };
-                allPosts.unshift(newPost);
-                saveAll();
-                renderHomeFeed();
-                renderProfile();
-                showToast("✅ Posted!");
-            }
+                    addGlobalNotification(`📝 ${currentUser.username} posted: "${caption?.slice(0,30)}"`);
+                    showToast("✅ Posted!");
+                }
+            };
+            fileInput.click();
         };
-        fileInput.click();
-    };
-    document.querySelector('.app').appendChild(fab);
+        document.querySelector('.app').appendChild(fab);
+    }
     
-    // ========== INITIAL RENDER ==========
-    goToPage(0);
+    function setupPullToRefresh() {
+        const container = document.getElementById('swipeContainer');
+        let startY = 0, refreshing = false;
+        container.addEventListener('touchstart', (e) => { if (container.scrollTop === 0) startY = e.touches[0].clientY; });
+        container.addEventListener('touchmove', (e) => {
+            if (container.scrollTop === 0 && e.touches[0].clientY - startY > 60 && !refreshing) {
+                refreshing = true;
+                let loader = document.createElement('div'); loader.className = 'spinner'; loader.style.margin = '20px auto';
+                document.querySelector('.page').prepend(loader);
+                setTimeout(() => {
+                    renderHomeFeed(); renderStories(); renderProfile();
+                    loader.remove();
+                    refreshing = false;
+                    showToast("✨ Updated!");
+                }, 800);
+            }
+        });
+    }
+    
+    function renderAll() {
+        renderHomeFeed();
+        renderStories();
+        renderAnnouncements();
+        renderDM();
+        renderGroup();
+        renderProfile();
+    }
+    
+    initApp();
 </script>
 </body>
 </html>
