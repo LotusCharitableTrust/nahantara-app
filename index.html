@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>Nahantara — Verified Social Village</title>
+    <title>Nahantara — Social Village</title>
     <style>
         * {
             margin: 0;
@@ -47,57 +47,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: background 0.3s;
         }
-
-        /* Login Screen */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-primary);
-            z-index: 5000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: var(--bg-secondary);
-            border-radius: 24px;
-            padding: 32px 24px;
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-        }
-        .login-card h2 { margin-bottom: 8px; color: var(--text-primary); }
-        .login-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; }
-        .login-card input {
-            width: 100%;
-            padding: 14px;
-            border: 0.5px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 16px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .login-card button {
-            width: 100%;
-            padding: 14px;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-        .otp-group { display: none; margin-top: 16px; }
-        .otp-group input { letter-spacing: 4px; font-size: 20px; }
 
         .header {
             background: var(--bg-primary);
@@ -128,6 +78,7 @@
         .nav-item.active { color: var(--accent-color); }
         .nav-icon { font-size: 24px; }
 
+        /* Stories */
         .stories-row { padding: 16px 0 16px 16px; display: flex; gap: 16px; overflow-x: auto; border-bottom: 0.5px solid var(--border-color); }
         .stories-row::-webkit-scrollbar { display: none; }
         .story { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; }
@@ -136,6 +87,68 @@
         .story-avatar { width: 68px; height: 68px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* Find People Section */
+        .find-people-section {
+            padding: 16px;
+            border-bottom: 0.5px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .section-header h4 { color: var(--text-primary); font-size: 14px; }
+        .section-header span { color: var(--accent-color); font-size: 12px; cursor: pointer; }
+        .people-list {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+        }
+        .people-list::-webkit-scrollbar { display: none; }
+        .person-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            min-width: 70px;
+        }
+        .person-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            overflow: hidden;
+        }
+        .person-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .person-name { font-size: 11px; color: var(--text-primary); text-align: center; }
+        .follow-small-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .unfollow-small-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 0.5px solid var(--border-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        /* Post Card */
         .post-card { margin-bottom: 12px; background: var(--bg-primary); border-bottom: 0.5px solid var(--border-color); }
         .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
         .post-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -193,6 +206,13 @@
         .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; color: var(--text-primary); }
         .spinner { width: 36px; height: 36px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 0.6s linear infinite; margin: 10px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .login-screen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-primary); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: var(--bg-secondary); border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 320px; text-align: center; }
+        .login-card h2 { margin-bottom: 8px; color: var(--text-primary); }
+        .login-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; }
+        .login-card input { width: 100%; padding: 14px; border: 0.5px solid var(--border-color); border-radius: 12px; background: var(--bg-primary); color: var(--text-primary); font-size: 16px; margin-bottom: 12px; text-align: center; }
+        .login-card button { width: 100%; padding: 14px; background: var(--accent-color); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .otp-group { display: none; margin-top: 16px; }
     </style>
 </head>
 <body>
@@ -208,9 +228,24 @@
 
     <div class="swipe-container" id="swipeContainer">
         <div class="swipe-track" id="swipeTrack">
-            <div class="page"><div class="stories-row" id="storiesList"></div><div id="feedContainer"></div></div>
-            <div class="page"><div class="announce-header"><h3>📢 Announcements</h3><p>Village news & updates</p></div><div id="announcementsList"></div><div id="adminPanel" class="admin-panel" style="display:none;"><textarea id="announceText" rows="3" placeholder="Write announcement..."></textarea><button onclick="postAnnouncement()">➕ Post</button></div></div>
-            <div class="page"><div class="chat-tabs"><button id="dmTab" class="chat-tab active">💬 DM</button><button id="groupTab" class="chat-tab">👥 Group</button></div><div id="dmPanel" class="chat-panel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div><div id="groupPanel" class="chat-panel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group..."><button onclick="sendGroupMsg()">➤</button></div></div></div>
+            <div class="page">
+                <div class="stories-row" id="storiesList"></div>
+                <div id="findPeopleContainer"></div>
+                <div id="feedContainer"></div>
+            </div>
+            <div class="page">
+                <div class="announce-header"><h3>📢 Announcements</h3><p>Village news & updates</p></div>
+                <div id="announcementsList"></div>
+                <div id="adminPanel" class="admin-panel" style="display:none;">
+                    <textarea id="announceText" rows="3" placeholder="Write announcement..."></textarea>
+                    <button onclick="postAnnouncement()">➕ Post Announcement</button>
+                </div>
+            </div>
+            <div class="page">
+                <div class="chat-tabs"><button id="dmTab" class="chat-tab active">💬 DM</button><button id="groupTab" class="chat-tab">👥 Group</button></div>
+                <div id="dmPanel" class="chat-panel"><div class="chat-messages" id="dmMessages"></div><div class="chat-input-area"><input id="dmInput" placeholder="Message..."><button onclick="sendDM()">➤</button></div></div>
+                <div id="groupPanel" class="chat-panel" style="display:none;"><div class="chat-messages" id="groupMessages"></div><div class="chat-input-area"><input id="groupInput" placeholder="Group..."><button onclick="sendGroupMsg()">➤</button></div></div>
+            </div>
             <div class="page"><div id="profileArea"></div></div>
         </div>
     </div>
@@ -235,7 +270,30 @@
     document.getElementById('themeToggle').onclick = () => { isDark = !isDark; applyTheme(); };
     applyTheme();
 
-    // ========== PHONE VERIFICATION SYSTEM ==========
+    // ========== DATA STORAGE ==========
+    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_final2')) || [];
+    let currentUser = null;
+    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_final2')) || [];
+    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_final2')) || [];
+    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_final2')) || [];
+    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_final2')) || [];
+    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_final2')) || [];
+    
+    function saveAll() {
+        localStorage.setItem('nahantara_users_final2', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_posts_final2', JSON.stringify(allPosts));
+        localStorage.setItem('nahantara_stories_final2', JSON.stringify(storiesData));
+        localStorage.setItem('nahantara_announcements_final2', JSON.stringify(announcements));
+        localStorage.setItem('nahantara_dm_final2', JSON.stringify(dmMessages));
+        localStorage.setItem('nahantara_group_final2', JSON.stringify(groupMessages));
+        console.log('💾 Saved - Posts:', allPosts.length, 'Users:', allUsers.length);
+    }
+    
+    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+    function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
+    
+    // ========== LOGIN WITH OTP SIMULATION ==========
     let pendingPhone = null;
     let generatedOTP = null;
     
@@ -246,11 +304,11 @@
         loginDiv.innerHTML = `
             <div class="login-card">
                 <h2>🌾 Welcome to Nahantara</h2>
-                <p>Enter your phone number to join the village</p>
+                <p>Enter your phone number to join</p>
                 <input type="tel" id="phoneInput" placeholder="+91 9876543210" maxlength="13">
                 <button onclick="sendOTP()">Send OTP</button>
                 <div class="otp-group" id="otpGroup">
-                    <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6">
+                    <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="6">
                     <button onclick="verifyOTP()">Verify & Login</button>
                 </div>
             </div>
@@ -266,8 +324,10 @@
         }
         pendingPhone = phone;
         generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-        alert(`📱 OTP for ${phone}: ${generatedOTP}\n(Simulated - in real app this would be SMS)`);
+        // Show OTP in alert (simulation)
+        alert(`📱 Your OTP for ${phone} is: ${generatedOTP}\n(Enter this to verify)`);
         document.getElementById('otpGroup').style.display = 'block';
+        showToast(`OTP sent to ${phone}`);
     };
     
     window.verifyOTP = () => {
@@ -284,67 +344,73 @@
         }
     };
     
-    // ========== GLOBAL NOTIFICATION SYSTEM ==========
     function addGlobalNotification(msg) {
-        let notifications = JSON.parse(localStorage.getItem('nahantara_global_notifications')) || [];
+        let notifications = JSON.parse(localStorage.getItem('nahantara_notifications')) || [];
         notifications.unshift({ msg, time: Date.now(), id: Date.now() });
         if (notifications.length > 50) notifications.pop();
-        localStorage.setItem('nahantara_global_notifications', JSON.stringify(notifications));
+        localStorage.setItem('nahantara_notifications', JSON.stringify(notifications));
         showToast(msg);
     }
     
-    // ========== DATA STORAGE (PERSISTENT) ==========
-    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_v2')) || [];
-    let currentUser = null;
-    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_v2')) || [];
-    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_v2')) || [];
-    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_v2')) || [];
-    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_v2')) || [];
-    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_v2')) || [];
-    
-    function saveAll() {
-        localStorage.setItem('nahantara_users_v2', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_posts_v2', JSON.stringify(allPosts));
-        localStorage.setItem('nahantara_stories_v2', JSON.stringify(storiesData));
-        localStorage.setItem('nahantara_announcements_v2', JSON.stringify(announcements));
-        localStorage.setItem('nahantara_dm_v2', JSON.stringify(dmMessages));
-        localStorage.setItem('nahantara_group_v2', JSON.stringify(groupMessages));
-        console.log('💾 Saved - Posts:', allPosts.length);
-    }
-    
-    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
-    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-    function hasStory(userId) { return storiesData.some(s => s.userId === userId); }
-    
-    function initApp() {
-        let verifiedPhone = localStorage.getItem('nahantara_verified_phone');
-        if (!verifiedPhone) { showLogin(); return; }
+    // ========== FIND PEOPLE SECTION ==========
+    function renderFindPeople() {
+        let container = document.getElementById('findPeopleContainer');
+        if (!container) return;
         
-        currentUser = allUsers.find(u => u.phone === verifiedPhone);
-        if (!currentUser) {
-            let newUser = {
-                id: 'user_' + Date.now(),
-                phone: verifiedPhone,
-                username: 'User_' + verifiedPhone.slice(-6),
-                bio: '🌾 New to Nahantara',
-                avatar: null,
-                followers: [],
-                following: [],
-                role: 'user',
-                createdAt: Date.now()
-            };
-            allUsers.push(newUser);
-            currentUser = newUser;
-            saveAll();
-            addGlobalNotification(`✨ Welcome ${currentUser.username} to Nahantara!`);
+        let otherUsers = allUsers.filter(u => u.id !== currentUser.id);
+        if (otherUsers.length === 0) {
+            container.innerHTML = '';
+            return;
         }
         
-        renderAll();
-        setupNavigation();
-        setupFab();
-        setupPullToRefresh();
+        let html = `
+            <div class="find-people-section">
+                <div class="section-header">
+                    <h4>👥 Find People to Connect</h4>
+                    <span>See All →</span>
+                </div>
+                <div class="people-list">
+                    ${otherUsers.map(u => {
+                        let isFollowing = currentUser.following.includes(u.id);
+                        return `
+                            <div class="person-card" onclick="viewUserProfile('${u.id}')">
+                                <div class="person-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div>
+                                <div class="person-name">${escapeHtml(u.username.slice(0, 10))}</div>
+                                <button class="${isFollowing ? 'unfollow-small-btn' : 'follow-small-btn'}" onclick="event.stopPropagation(); quickFollow('${u.id}')">${isFollowing ? 'Following' : 'Follow'}</button>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
     }
     
+    window.quickFollow = (targetId) => {
+        let target = allUsers.find(u => u.id === targetId);
+        if (!target) return;
+        if (currentUser.following.includes(targetId)) {
+            currentUser.following = currentUser.following.filter(id => id !== targetId);
+            target.followers = target.followers.filter(id => id !== currentUser.id);
+            showToast(`Unfollowed ${target.username}`);
+        } else {
+            currentUser.following.push(targetId);
+            target.followers.push(currentUser.id);
+            addGlobalNotification(`🤝 ${currentUser.username} started following ${target.username}`);
+            showToast(`Following ${target.username}`);
+        }
+        let idx = allUsers.findIndex(u => u.id === currentUser.id);
+        if (idx !== -1) allUsers[idx] = currentUser;
+        let tIdx = allUsers.findIndex(u => u.id === targetId);
+        if (tIdx !== -1) allUsers[tIdx] = target;
+        saveAll();
+        renderFindPeople();
+        renderHomeFeed();
+        renderProfile();
+        renderStories();
+    };
+    
+    // ========== STORIES ==========
     function renderStories() {
         let container = document.getElementById('storiesList');
         if (!container) return;
@@ -390,6 +456,7 @@
         modal.onclick = () => modal.remove();
     }
     
+    // ========== POST FUNCTIONS ==========
     function toggleLike(postId) {
         let post = allPosts.find(p => p.id == postId);
         if (post) {
@@ -481,6 +548,7 @@
     window.toggleCommentBox = (id) => { let box = document.getElementById(`commentBox-${id}`); if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none'; };
     window.openFullImage = (src) => { let modal = document.createElement('div'); modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center;'; modal.innerHTML = `<img src="${src}" style="max-width:90%;"><div style="position:absolute; top:30px; right:30px; color:white; font-size:40px; cursor:pointer;" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
     
+    // ========== ANNOUNCEMENTS ==========
     function renderAnnouncements() {
         let cont = document.getElementById('announcementsList');
         if (!cont) return;
@@ -502,12 +570,14 @@
         showToast("Announcement posted!");
     };
     
+    // ========== CHAT ==========
     function renderDM() { let d = document.getElementById('dmMessages'); if (d) d.innerHTML = dmMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}">${escapeHtml(m.text)}<div style="font-size:10px;">${m.time}</div></div>`).join(''); d?.scrollTo(0, d.scrollHeight); }
     function renderGroup() { let g = document.getElementById('groupMessages'); if (g) g.innerHTML = groupMessages.map(m => `<div class="message-bubble ${m.senderId === currentUser.id ? 'message-right' : 'message-left'}"><strong>${escapeHtml(m.senderName)}</strong> ${escapeHtml(m.text)}<div style="font-size:9px;">${m.time}</div></div>`).join(''); g?.scrollTo(0, g.scrollHeight); }
     window.sendDM = () => { let inp = document.getElementById('dmInput'); if (inp && inp.value.trim()) { dmMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: inp.value, time: new Date().toLocaleTimeString() }); saveAll(); renderDM(); inp.value = ''; } };
     window.sendGroupMsg = () => { let inp = document.getElementById('groupInput'); if (inp && inp.value.trim()) { groupMessages.push({ senderId: currentUser.id, senderName: currentUser.username, text: inp.value, time: new Date().toLocaleTimeString() }); saveAll(); renderGroup(); inp.value = ''; } };
     function initChatTabs() { let dmBtn = document.getElementById('dmTab'), grpBtn = document.getElementById('groupTab'); if (dmBtn && grpBtn) { dmBtn.onclick = () => { document.getElementById('dmPanel').style.display = 'flex'; document.getElementById('groupPanel').style.display = 'none'; dmBtn.classList.add('active'); grpBtn.classList.remove('active'); renderDM(); }; grpBtn.onclick = () => { document.getElementById('dmPanel').style.display = 'none'; document.getElementById('groupPanel').style.display = 'flex'; grpBtn.classList.add('active'); dmBtn.classList.remove('active'); renderGroup(); }; } }
     
+    // ========== PROFILE ==========
     function renderProfile() {
         let container = document.getElementById('profileArea');
         if (!container) return;
@@ -554,7 +624,7 @@
         if (idx !== -1) allUsers[idx] = currentUser;
         saveAll();
         document.querySelector('.modal-overlay')?.remove();
-        renderProfile(); renderHomeFeed(); renderStories(); renderAnnouncements();
+        renderProfile(); renderHomeFeed(); renderStories(); renderAnnouncements(); renderFindPeople();
         showToast(`Profile updated!`);
     };
     
@@ -569,7 +639,7 @@
                     let idx = allUsers.findIndex(u => u.id === currentUser.id);
                     if (idx !== -1) allUsers[idx] = currentUser;
                     saveAll();
-                    renderProfile(); renderStories(); renderHomeFeed();
+                    renderProfile(); renderStories(); renderHomeFeed(); renderFindPeople();
                     showToast("Profile picture updated");
                 };
                 reader.readAsDataURL(file);
@@ -578,6 +648,7 @@
         inp.click();
     };
     
+    // ========== VIEW USER PROFILE ==========
     window.viewUserProfile = (userId) => {
         let targetUser = allUsers.find(u => u.id === userId);
         if (!targetUser || targetUser.id === currentUser.id) return;
@@ -606,9 +677,10 @@
         let tIdx = allUsers.findIndex(u => u.id === targetId);
         if (tIdx !== -1) allUsers[tIdx] = target;
         saveAll();
-        renderHomeFeed(); renderProfile(); renderStories();
+        renderHomeFeed(); renderProfile(); renderStories(); renderFindPeople();
     };
     
+    // ========== NAVIGATION ==========
     function setupNavigation() {
         let currentPage = 0;
         const track = document.getElementById('swipeTrack');
@@ -618,7 +690,7 @@
             currentPage = pageIndex;
             if (track) track.style.transform = `translateX(-${currentPage * 100}%)`;
             navItems.forEach((item, i) => { if (i === currentPage) item.classList.add('active'); else item.classList.remove('active'); });
-            if (currentPage === 0) { renderHomeFeed(); renderStories(); }
+            if (currentPage === 0) { renderHomeFeed(); renderStories(); renderFindPeople(); }
             if (currentPage === 1) renderAnnouncements();
             if (currentPage === 2) { renderDM(); renderGroup(); initChatTabs(); }
             if (currentPage === 3) renderProfile();
@@ -631,6 +703,7 @@
         goToPage(0);
     }
     
+    // ========== FAB ==========
     function setupFab() {
         let fab = document.createElement('div'); fab.className = 'fab'; fab.innerHTML = '✚';
         fab.onclick = () => {
@@ -647,7 +720,7 @@
                         renderHomeFeed();
                         renderProfile();
                         addGlobalNotification(`📷 ${currentUser.username} posted a new photo!`);
-                        showToast("✅ Posted!");
+                        showToast("✅ Posted! Everyone can see it now.");
                     };
                     reader.readAsDataURL(file);
                 } else {
@@ -657,7 +730,7 @@
                     renderHomeFeed();
                     renderProfile();
                     addGlobalNotification(`📝 ${currentUser.username} posted: "${caption?.slice(0,30)}"`);
-                    showToast("✅ Posted!");
+                    showToast("✅ Posted! Everyone can see it now.");
                 }
             };
             fileInput.click();
@@ -675,7 +748,7 @@
                 let loader = document.createElement('div'); loader.className = 'spinner'; loader.style.margin = '20px auto';
                 document.querySelector('.page').prepend(loader);
                 setTimeout(() => {
-                    renderHomeFeed(); renderStories(); renderProfile();
+                    renderHomeFeed(); renderStories(); renderProfile(); renderFindPeople();
                     loader.remove();
                     refreshing = false;
                     showToast("✨ Updated!");
@@ -684,13 +757,40 @@
         });
     }
     
-    function renderAll() {
+    // ========== INIT APP ==========
+    function initApp() {
+        let verifiedPhone = localStorage.getItem('nahantara_verified_phone');
+        if (!verifiedPhone) { showLogin(); return; }
+        
+        currentUser = allUsers.find(u => u.phone === verifiedPhone);
+        if (!currentUser) {
+            let newUser = {
+                id: 'user_' + Date.now(),
+                phone: verifiedPhone,
+                username: 'User_' + verifiedPhone.slice(-6),
+                bio: '🌾 New to Nahantara',
+                avatar: null,
+                followers: [],
+                following: [],
+                role: 'user',
+                createdAt: Date.now()
+            };
+            allUsers.push(newUser);
+            currentUser = newUser;
+            saveAll();
+            addGlobalNotification(`✨ Welcome ${currentUser.username} to Nahantara!`);
+        }
+        
         renderHomeFeed();
         renderStories();
+        renderFindPeople();
         renderAnnouncements();
         renderDM();
         renderGroup();
         renderProfile();
+        setupNavigation();
+        setupFab();
+        setupPullToRefresh();
     }
     
     initApp();
