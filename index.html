@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#121212">
-    <title>Nahantara — Social Village</title>
+    <title>Nahantara — Premium Social Village</title>
     <style>
         * {
             margin: 0;
@@ -16,19 +16,28 @@
         :root {
             --bg-primary: #ffffff;
             --bg-secondary: #fafafa;
+            --bg-tertiary: #f5f5f5;
             --text-primary: #262626;
             --text-secondary: #8e8e8e;
+            --text-tertiary: #c7c7c7;
             --border-color: #dbdbdb;
             --accent-color: #0095f6;
+            --accent-gradient: linear-gradient(135deg, #0095f6, #00d4ff);
             --like-color: #ed4956;
+            --success-color: #4caf50;
+            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
 
         [data-theme="dark"] {
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2a2a2a;
             --text-primary: #ffffff;
             --text-secondary: #a8a8a8;
+            --text-tertiary: #6e6e6e;
             --border-color: #2c2c2c;
+            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
 
         body {
@@ -47,8 +56,10 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
+        /* Header */
         .header {
             background: var(--bg-primary);
             padding: 12px 16px;
@@ -56,35 +67,120 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        .logo { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .logo span { font-size: 24px; }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .logo span { font-size: 26px; margin-right: 4px; }
         .header-actions { display: flex; gap: 20px; align-items: center; }
-        .header-icon { font-size: 24px; cursor: pointer; color: var(--text-primary); }
-        .theme-toggle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--bg-secondary); font-size: 20px; }
+        .header-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: transform 0.2s;
+        }
+        .header-icon:active { transform: scale(0.92); }
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            font-size: 20px;
+            transition: var(--transition);
+        }
+        .theme-toggle:active { transform: scale(0.92); }
 
+        /* Swipe Container */
         .swipe-container { flex: 1; overflow: hidden; position: relative; }
-        .swipe-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-out; }
-        .page { width: 100%; flex-shrink: 0; overflow-y: auto; padding-bottom: 70px; }
+        .swipe-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        .page { width: 100%; flex-shrink: 0; overflow-y: auto; padding-bottom: 70px; scrollbar-width: thin; }
+        .page::-webkit-scrollbar { display: none; }
 
+        /* Bottom Navigation */
         .bottom-nav {
             background: var(--bg-primary);
             border-top: 0.5px solid var(--border-color);
             display: flex;
             justify-content: space-around;
             padding: 8px 12px 14px;
+            backdrop-filter: blur(10px);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary); cursor: pointer; }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px 12px;
+            border-radius: 30px;
+        }
         .nav-item.active { color: var(--accent-color); }
+        .nav-item:active { transform: scale(0.95); }
         .nav-icon { font-size: 24px; }
 
-        .stories-row { padding: 16px 0 16px 16px; display: flex; gap: 16px; overflow-x: auto; border-bottom: 0.5px solid var(--border-color); }
+        /* Stories */
+        .stories-row {
+            padding: 16px 0 16px 16px;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-bottom: 0.5px solid var(--border-color);
+        }
         .stories-row::-webkit-scrollbar { display: none; }
-        .story { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; }
-        .story-ring { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--border-color); }
-        .story.has-story .story-ring { background: linear-gradient(45deg, #f09433, #d62976, #962fbf); padding: 2px; }
-        .story-avatar { width: 68px; height: 68px; background: var(--bg-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; overflow: hidden; }
+        .story {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .story:active { transform: scale(0.95); }
+        .story-ring {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--border-color);
+        }
+        .story.has-story .story-ring {
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #0095f6);
+            padding: 2px;
+        }
+        .story-avatar {
+            width: 68px;
+            height: 68px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            overflow: hidden;
+        }
         .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .story-name { color: var(--text-secondary); font-size: 11px; max-width: 68px; text-align: center; overflow: hidden; text-overflow: ellipsis; }
 
         /* Find People Section */
         .find-people-section {
@@ -98,7 +194,7 @@
             align-items: center;
             margin-bottom: 12px;
         }
-        .section-header h4 { color: var(--text-primary); font-size: 14px; }
+        .section-header h4 { color: var(--text-primary); font-size: 14px; font-weight: 600; }
         .section-header span { color: var(--accent-color); font-size: 12px; cursor: pointer; }
         .people-list {
             display: flex;
@@ -113,7 +209,9 @@
             gap: 6px;
             cursor: pointer;
             min-width: 70px;
+            transition: transform 0.2s;
         }
+        .person-card:active { transform: scale(0.95); }
         .person-avatar {
             width: 60px;
             height: 60px;
@@ -127,7 +225,7 @@
             overflow: hidden;
         }
         .person-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .person-name { font-size: 11px; color: var(--text-primary); text-align: center; }
+        .person-name { font-size: 11px; color: var(--text-primary); text-align: center; font-weight: 500; }
         .follow-small-btn {
             background: var(--accent-color);
             color: white;
@@ -136,7 +234,10 @@
             border-radius: 20px;
             font-size: 10px;
             cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
         }
+        .follow-small-btn:active { transform: scale(0.95); }
         .unfollow-small-btn {
             background: var(--bg-secondary);
             color: var(--text-primary);
@@ -145,72 +246,411 @@
             border-radius: 20px;
             font-size: 10px;
             cursor: pointer;
+            transition: var(--transition);
         }
 
-        .post-card { margin-bottom: 12px; background: var(--bg-primary); border-bottom: 0.5px solid var(--border-color); }
+        /* Post Card */
+        .post-card {
+            margin-bottom: 12px;
+            background: var(--bg-primary);
+            border-bottom: 0.5px solid var(--border-color);
+            animation: fadeInUp 0.4s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .post-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
         .post-user { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .post-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #833ab4, #fd1d1d); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s;
+        }
+        .post-user:active .post-avatar { transform: scale(0.95); }
         .post-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
-        .post-time { font-size: 10px; color: var(--text-secondary); }
-        .post-image { width: 100%; max-height: 450px; object-fit: cover; cursor: pointer; }
+        .post-time { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+        .post-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .post-image:active { transform: scale(0.99); }
         .post-actions { padding: 8px 12px; display: flex; gap: 20px; }
-        .action-btn { font-size: 26px; cursor: pointer; color: var(--text-primary); }
-        .action-btn.liked { color: var(--like-color); }
-        .post-likes { padding: 0 12px 4px; font-weight: 600; font-size: 13px; cursor: pointer; color: var(--text-primary); }
-        .post-caption { padding: 0 12px 12px; font-size: 14px; color: var(--text-primary); }
+        .action-btn {
+            font-size: 26px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: var(--text-primary);
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .action-btn.liked { color: var(--like-color); animation: heartBeat 0.3s ease; }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        .post-likes {
+            padding: 0 12px 4px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        .post-caption { padding: 0 12px 12px; font-size: 14px; color: var(--text-primary); line-height: 1.4; }
 
-        .announce-header { padding: 16px; border-bottom: 0.5px solid var(--border-color); }
-        .announcement-card { background: rgba(0,149,246,0.1); margin: 12px; padding: 16px; border-radius: 16px; border-left: 4px solid var(--accent-color); }
-        .admin-badge { background: var(--accent-color); color: white; font-size: 10px; padding: 4px 12px; border-radius: 30px; display: inline-block; margin-bottom: 10px; }
-        .admin-panel { background: var(--bg-secondary); margin: 12px; padding: 16px; border-radius: 20px; }
-        .admin-panel textarea { width: 100%; padding: 12px; border-radius: 12px; border: 0.5px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); }
-        .admin-panel button { width: 100%; margin-top: 12px; background: var(--accent-color); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; }
+        /* Announcement */
+        .announce-header { padding: 16px; border-bottom: 0.5px solid var(--border-color); background: var(--bg-primary); }
+        .announce-header h3 { color: var(--text-primary); font-size: 18px; margin-bottom: 4px; }
+        .announce-header p { color: var(--text-secondary); font-size: 12px; }
+        .announcement-card {
+            background: linear-gradient(135deg, rgba(0,149,246,0.08), rgba(0,0,0,0.02));
+            margin: 12px;
+            padding: 16px;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-color);
+            transition: var(--transition);
+        }
+        .announcement-card:active { transform: scale(0.98); }
+        .admin-badge {
+            background: var(--accent-gradient);
+            color: white;
+            font-size: 10px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .admin-panel {
+            background: var(--bg-secondary);
+            margin: 12px;
+            padding: 16px;
+            border-radius: 20px;
+            border: 0.5px solid var(--border-color);
+        }
+        .admin-panel textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            resize: none;
+        }
+        .admin-panel button {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .admin-panel button:active { transform: scale(0.98); }
 
+        /* Chat */
         .chat-tabs { display: flex; gap: 12px; padding: 12px; border-bottom: 0.5px solid var(--border-color); }
-        .chat-tab { flex: 1; background: none; border: none; padding: 10px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-radius: 30px; }
-        .chat-tab.active { background: var(--accent-color); color: white; }
+        .chat-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .chat-tab.active { background: var(--accent-gradient); color: white; }
+        .chat-tab:active { transform: scale(0.95); }
         .chat-panel { display: flex; flex-direction: column; height: calc(100vh - 130px); }
         .chat-messages { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 22px; font-size: 14px; }
-        .message-left { background: var(--bg-secondary); color: var(--text-primary); align-self: flex-start; }
-        .message-right { background: var(--accent-color); color: white; align-self: flex-end; }
-        .chat-input-area { display: flex; padding: 12px; gap: 8px; border-top: 0.5px solid var(--border-color); }
-        .chat-input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 0.5px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); }
-        .chat-input-area button { background: var(--accent-color); color: white; border: none; width: 44px; border-radius: 25px; cursor: pointer; }
+        .message-bubble {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 22px;
+            font-size: 14px;
+            animation: messageSlide 0.3s ease;
+        }
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-left { background: var(--bg-secondary); color: var(--text-primary); align-self: flex-start; border-radius: 22px 22px 22px 4px; }
+        .message-right { background: var(--accent-gradient); color: white; align-self: flex-end; border-radius: 22px 22px 4px 22px; }
+        .chat-input-area {
+            display: flex;
+            padding: 12px;
+            gap: 8px;
+            border-top: 0.5px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .chat-input-area button {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            width: 44px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-input-area button:active { transform: scale(0.95); }
 
-        .profile-header { padding: 20px 16px; display: flex; align-items: center; gap: 24px; border-bottom: 0.5px solid var(--border-color); }
-        .profile-avatar-lg { width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, #833ab4, #fd1d1d); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        /* Profile */
+        .profile-header {
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            border-bottom: 0.5px solid var(--border-color);
+        }
+        .profile-avatar-lg {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .profile-avatar-lg:active { transform: scale(0.95); }
         .profile-avatar-lg.has-story-ring { padding: 2px; background: linear-gradient(45deg, #f09433, #d62976, #962fbf); }
-        .profile-avatar-lg .inner-avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+        .profile-avatar-lg .inner-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
         .profile-stats { display: flex; gap: 28px; text-align: center; }
         .stat-num { font-weight: 700; font-size: 18px; color: var(--text-primary); }
         .stat-label { font-size: 12px; color: var(--text-secondary); }
-        .edit-btn { margin: 16px; background: var(--bg-secondary); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; cursor: pointer; }
+        .edit-btn {
+            margin: 16px;
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .edit-btn:active { transform: scale(0.98); }
         .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 4px; }
-        .grid-item { aspect-ratio: 1; background: var(--bg-secondary); cursor: pointer; overflow: hidden; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .grid-item {
+            aspect-ratio: 1;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .grid-item:active { transform: scale(0.98); }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .grid-item:active img { transform: scale(1.05); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: flex; align-items: center; justify-content: center; }
-        .modal-card { background: var(--bg-primary); border-radius: 24px; width: 90%; max-width: 340px; padding: 24px; }
-        .modal-card input, .modal-card select { width: 100%; padding: 12px; margin: 10px 0; border: 0.5px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary); color: var(--text-primary); }
-        .modal-card button { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; margin-top: 8px; font-weight: 600; }
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-card {
+            background: var(--bg-primary);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 340px;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-card input, .modal-card select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 0.5px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .modal-card button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            margin-top: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .modal-card button:active { transform: scale(0.98); }
 
-        .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .story-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
         .story-img { max-width: 90%; max-height: 80%; border-radius: 16px; }
 
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); color: white; padding: 10px 20px; border-radius: 40px; font-size: 13px; z-index: 1100; display: none; }
-        .fab { position: fixed; bottom: 80px; right: 16px; background: linear-gradient(135deg, var(--accent-color), #0077cc); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 200; }
-        .menu-dots { cursor: pointer; font-size: 20px; font-weight: bold; padding: 0 8px; color: var(--text-primary); }
-        .spinner { width: 36px; height: 36px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 0.6s linear infinite; margin: 10px auto; }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            z-index: 1100;
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            background: var(--accent-gradient);
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 200;
+            transition: var(--transition);
+        }
+        .fab:active { transform: scale(0.92); }
+
+        .menu-dots {
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0 8px;
+            color: var(--text-primary);
+        }
+        
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 10px auto;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .login-screen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-primary); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--bg-secondary); border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 320px; text-align: center; }
-        .login-card h2 { margin-bottom: 8px; color: var(--text-primary); }
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: var(--bg-secondary);
+            border-radius: 28px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+        .login-card h2 { margin-bottom: 8px; color: var(--text-primary); font-size: 24px; }
         .login-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; }
-        .login-card input { width: 100%; padding: 14px; border: 0.5px solid var(--border-color); border-radius: 12px; background: var(--bg-primary); color: var(--text-primary); font-size: 16px; margin-bottom: 12px; text-align: center; }
-        .login-card button { width: 100%; padding: 14px; background: var(--accent-color); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .login-card input {
+            width: 100%;
+            padding: 14px;
+            border: 0.5px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: var(--transition);
+        }
+        .login-card button:active { transform: scale(0.98); }
         .otp-group { display: none; margin-top: 16px; }
     </style>
 </head>
@@ -233,7 +673,7 @@
                 <div id="feedContainer"></div>
             </div>
             <div class="page">
-                <div class="announce-header"><h3>📢 Announcements</h3><p>Village news & updates</p></div>
+                <div class="announce-header"><h3>📢 Announcements</h3><p>Stay updated with village news</p></div>
                 <div id="announcementsList"></div>
                 <div id="adminPanel" class="admin-panel" style="display:none;">
                     <textarea id="announceText" rows="3" placeholder="Write announcement..."></textarea>
@@ -270,22 +710,22 @@
     applyTheme();
 
     // ========== DATA STORAGE ==========
-    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_final3')) || [];
+    let allUsers = JSON.parse(localStorage.getItem('nahantara_users_pro')) || [];
     let currentUser = null;
-    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_final3')) || [];
-    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_final3')) || [];
-    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_final3')) || [];
-    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_final3')) || [];
-    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_final3')) || [];
+    let allPosts = JSON.parse(localStorage.getItem('nahantara_posts_pro')) || [];
+    let storiesData = JSON.parse(localStorage.getItem('nahantara_stories_pro')) || [];
+    let announcements = JSON.parse(localStorage.getItem('nahantara_announcements_pro')) || [];
+    let dmMessages = JSON.parse(localStorage.getItem('nahantara_dm_pro')) || [];
+    let groupMessages = JSON.parse(localStorage.getItem('nahantara_group_pro')) || [];
     
     function saveAll() {
-        localStorage.setItem('nahantara_users_final3', JSON.stringify(allUsers));
-        localStorage.setItem('nahantara_posts_final3', JSON.stringify(allPosts));
-        localStorage.setItem('nahantara_stories_final3', JSON.stringify(storiesData));
-        localStorage.setItem('nahantara_announcements_final3', JSON.stringify(announcements));
-        localStorage.setItem('nahantara_dm_final3', JSON.stringify(dmMessages));
-        localStorage.setItem('nahantara_group_final3', JSON.stringify(groupMessages));
-        console.log('💾 Saved - Posts:', allPosts.length, 'Users:', allUsers.length);
+        localStorage.setItem('nahantara_users_pro', JSON.stringify(allUsers));
+        localStorage.setItem('nahantara_posts_pro', JSON.stringify(allPosts));
+        localStorage.setItem('nahantara_stories_pro', JSON.stringify(storiesData));
+        localStorage.setItem('nahantara_announcements_pro', JSON.stringify(announcements));
+        localStorage.setItem('nahantara_dm_pro', JSON.stringify(dmMessages));
+        localStorage.setItem('nahantara_group_pro', JSON.stringify(groupMessages));
+        console.log('💾 Saved - Posts:', allPosts.length);
     }
     
     function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
@@ -303,7 +743,7 @@
         loginDiv.innerHTML = `
             <div class="login-card">
                 <h2>🌾 Welcome to Nahantara</h2>
-                <p>Enter your phone number to join</p>
+                <p>Enter your phone number to join the village</p>
                 <input type="tel" id="phoneInput" placeholder="+91 9876543210" maxlength="13">
                 <button onclick="sendOTP()">Send OTP</button>
                 <div class="otp-group" id="otpGroup">
@@ -339,41 +779,16 @@
         }
     };
     
-    function addGlobalNotification(msg) {
-        showToast(msg);
-    }
-    
-    // ========== FIND PEOPLE SECTION ==========
+    // ========== FIND PEOPLE ==========
     function renderFindPeople() {
         let container = document.getElementById('findPeopleContainer');
         if (!container) return;
-        
         let otherUsers = allUsers.filter(u => u.id !== currentUser.id);
-        if (otherUsers.length === 0) {
-            container.innerHTML = '';
-            return;
-        }
-        
-        let html = `
-            <div class="find-people-section">
-                <div class="section-header">
-                    <h4>👥 Find People to Connect</h4>
-                    <span>See All →</span>
-                </div>
-                <div class="people-list">
-                    ${otherUsers.map(u => {
-                        let isFollowing = currentUser.following.includes(u.id);
-                        return `
-                            <div class="person-card" onclick="viewUserProfile('${u.id}')">
-                                <div class="person-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div>
-                                <div class="person-name">${escapeHtml(u.username.slice(0, 10))}</div>
-                                <button class="${isFollowing ? 'unfollow-small-btn' : 'follow-small-btn'}" onclick="event.stopPropagation(); quickFollow('${u.id}')">${isFollowing ? 'Following' : 'Follow'}</button>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            </div>
-        `;
+        if (otherUsers.length === 0) { container.innerHTML = ''; return; }
+        let html = `<div class="find-people-section"><div class="section-header"><h4>👥 Find People to Connect</h4><span>See All →</span></div><div class="people-list">${otherUsers.map(u => {
+            let isFollowing = currentUser.following.includes(u.id);
+            return `<div class="person-card" onclick="viewUserProfile('${u.id}')"><div class="person-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div><div class="person-name">${escapeHtml(u.username.slice(0, 10))}</div><button class="${isFollowing ? 'unfollow-small-btn' : 'follow-small-btn'}" onclick="event.stopPropagation(); quickFollow('${u.id}')">${isFollowing ? 'Following' : 'Follow'}</button></div>`;
+        }).join('')}</div></div>`;
         container.innerHTML = html;
     }
     
@@ -406,10 +821,10 @@
         if (!container) return;
         let users = allUsers.filter(u => u.id !== currentUser.id);
         let ownStory = hasStory(currentUser.id);
-        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><div>Your Story</div></div>`;
+        let html = `<div class="story ${ownStory ? 'has-story' : ''}" onclick="uploadStory()"><div class="story-ring"><div class="story-avatar">✚</div></div><div class="story-name">Your Story</div></div>`;
         users.slice(0, 15).forEach(u => {
             let has = hasStory(u.id);
-            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><div>${u.username.slice(0, 12)}</div></div>`;
+            html += `<div class="story ${has ? 'has-story' : ''}" onclick="viewUserProfile('${u.id}')"><div class="story-ring"><div class="story-avatar">${u.avatar ? `<img src="${u.avatar}">` : u.username.charAt(0).toUpperCase()}</div></div><div class="story-name">${u.username.slice(0, 12)}</div></div>`;
         });
         container.innerHTML = html;
     }
@@ -425,7 +840,7 @@
                     saveAll();
                     renderStories();
                     renderProfile();
-                    showToast("📸 Story uploaded!");
+                    showToast("📸 Story uploaded! (24h auto-delete)");
                 };
                 reader.readAsDataURL(file);
             }
@@ -438,7 +853,7 @@
         if (!stories.length) { showToast("No stories"); return; }
         let idx = 0, modal = document.createElement('div'); modal.className = 'story-viewer';
         let img = document.createElement('img'); img.className = 'story-img';
-        let close = document.createElement('div'); close.innerText = '✕'; close.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer;';
+        let close = document.createElement('div'); close.innerText = '✕'; close.style.cssText = 'position:absolute; top:20px; right:20px; color:white; font-size:32px; cursor:pointer; z-index:2001;';
         close.onclick = () => modal.remove();
         let update = () => img.src = stories[idx].image;
         update();
@@ -507,7 +922,7 @@
         let feedDiv = document.getElementById('feedContainer');
         if (!feedDiv) return;
         if (!allPosts.length) {
-            feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Click + to create your first post!</p></div>';
+            feedDiv.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">🌾</div><h3 style="color:var(--text-primary);">No posts yet</h3><p style="color:var(--text-secondary);">Click + to create your first post!</p></div>';
             return;
         }
         feedDiv.innerHTML = allPosts.map(post => `
@@ -528,7 +943,7 @@
                 <div class="post-caption"><strong>${escapeHtml(post.username)}</strong> ${escapeHtml(post.text || '')}</div>
                 <div id="commentBox-${post.id}" style="display:none; padding:8px 12px;">
                     <div>${post.comments && post.comments.map(c => `<div><strong>${escapeHtml(c.username)}</strong> ${escapeHtml(c.text)}</div>`).join('') || ''}</div>
-                    <div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:10px; border-radius:25px; border:0.5px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"><button onclick="submitComment(${post.id})" style="padding:8px 16px; background:var(--accent-color); color:white; border:none; border-radius:25px;">Post</button></div>
+                    <div style="display:flex; gap:8px; margin-top:8px;"><input id="commentInput-${post.id}" placeholder="Add comment..." style="flex:1; padding:10px; border-radius:25px; border:0.5px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"><button onclick="submitComment(${post.id})" style="padding:8px 16px; background:var(--accent-gradient); color:white; border:none; border-radius:25px; cursor:pointer;">Post</button></div>
                 </div>
             </div>
         `).join('');
@@ -536,14 +951,14 @@
     
     window.submitComment = (postId) => { let inp = document.getElementById(`commentInput-${postId}`); if (inp && inp.value.trim()) { addComment(postId, inp.value); inp.value = ''; } };
     window.toggleCommentBox = (id) => { let box = document.getElementById(`commentBox-${id}`); if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none'; };
-    window.openFullImage = (src) => { let modal = document.createElement('div'); modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center;'; modal.innerHTML = `<img src="${src}" style="max-width:90%;"><div style="position:absolute; top:30px; right:30px; color:white; font-size:40px; cursor:pointer;" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
+    window.openFullImage = (src) => { let modal = document.createElement('div'); modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center;'; modal.innerHTML = `<img src="${src}" style="max-width:90%; max-height:80%; border-radius:16px;"><div style="position:absolute; top:30px; right:30px; color:white; font-size:40px; cursor:pointer;" onclick="this.parentElement.remove()">✕</div>`; document.body.appendChild(modal); };
     
     // ========== ANNOUNCEMENTS ==========
     function renderAnnouncements() {
         let cont = document.getElementById('announcementsList');
         if (!cont) return;
         if (!announcements.length) cont.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">📭 No announcements yet</div>';
-        else cont.innerHTML = announcements.map(a => `<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)}</div><div>${escapeHtml(a.text)}</div><div style="font-size:10px; color:var(--text-secondary); margin-top:8px;">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('');
+        else cont.innerHTML = announcements.map(a => `<div class="announcement-card"><div class="admin-badge">👑 ${escapeHtml(a.adminName)}</div><div style="margin:8px 0;">${escapeHtml(a.text)}</div><div style="font-size:10px; color:var(--text-secondary);">${new Date(a.timestamp).toLocaleString()}</div></div>`).join('');
         let panel = document.getElementById('adminPanel');
         if (panel) panel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
     }
@@ -556,8 +971,7 @@
         saveAll();
         renderAnnouncements();
         document.getElementById('announceText').value = '';
-        addGlobalNotification(`📢 New announcement: ${text.slice(0,50)}`);
-        showToast("Announcement posted!");
+        showToast("📢 Announcement posted!");
     };
     
     // ========== CHAT ==========
@@ -581,20 +995,20 @@
                 <div class="profile-stats"><div><div class="stat-num">${userPosts.length}</div><div class="stat-label">posts</div></div><div><div class="stat-num">${currentUser.followers.length}</div><div class="stat-label">followers</div></div><div><div class="stat-num">${currentUser.following.length}</div><div class="stat-label">following</div></div></div>
             </div>
             <div class="edit-btn" onclick="openEditModal()">✏️ Edit Profile</div>
-            <div style="padding:0 16px 12px;"><strong>${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br><span style="color:var(--text-secondary);">📱 ${currentUser.phone}</span><br>${escapeHtml(currentUser.bio)}</div>
+            <div style="padding:0 16px 12px;"><strong style="color:var(--text-primary);">${escapeHtml(currentUser.username)}</strong> ${currentUser.role === 'admin' ? '👑 Admin' : '🌾 User'}<br><span style="color:var(--text-secondary);">📱 ${currentUser.phone}</span><br>${escapeHtml(currentUser.bio)}</div>
             <div class="profile-grid" id="userPostGrid"></div>
         `;
         let grid = document.getElementById('userPostGrid');
         if (grid) {
             let userImages = userPosts.filter(p => p.image);
-            if (!userImages.length) grid.innerHTML = '<div style="grid-column:span3; text-align:center; padding:40px;">No posts yet</div>';
+            if (!userImages.length) grid.innerHTML = '<div style="grid-column:span3; text-align:center; padding:40px; color:var(--text-secondary);">No posts yet</div>';
             else grid.innerHTML = userImages.map(p => `<div class="grid-item" onclick="openFullImage('${p.image}')"><img src="${p.image}"></div>`).join('');
         }
     }
     
     window.openEditModal = () => {
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><h3>Edit Profile</h3><input id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}"><input id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}"><select id="editRole"><option value="user" ${currentUser.role === 'user' ? 'selected' : ''}>🌾 User</option><option value="admin" ${currentUser.role === 'admin' ? 'selected' : ''}>👑 Admin</option></select><div id="codeDiv" style="display:${currentUser.role === 'admin' ? 'block' : 'none'};"><input id="adminCode" type="password" placeholder="Admin Code (7)"><small>Enter "7" to become admin</small></div><button onclick="saveProfileEdit()" style="background:var(--accent-color); color:white;">Save</button><button onclick="this.parentElement.parentElement.remove()">Cancel</button></div>`;
+        modal.innerHTML = `<div class="modal-card"><h3>Edit Profile</h3><input id="editName" placeholder="Username" value="${escapeHtml(currentUser.username)}"><input id="editBio" placeholder="Bio" value="${escapeHtml(currentUser.bio)}"><select id="editRole"><option value="user" ${currentUser.role === 'user' ? 'selected' : ''}>🌾 User</option><option value="admin" ${currentUser.role === 'admin' ? 'selected' : ''}>👑 Admin</option></select><div id="codeDiv" style="display:${currentUser.role === 'admin' ? 'block' : 'none'};"><input id="adminCode" type="password" placeholder="Admin Code (7)"><small>Enter "7" to become admin</small></div><button onclick="saveProfileEdit()" style="background:var(--accent-gradient); color:white;">Save</button><button onclick="this.parentElement.parentElement.remove()">Cancel</button></div>`;
         document.body.appendChild(modal);
         let roleSelect = document.getElementById('editRole');
         let codeDiv = document.getElementById('codeDiv');
@@ -645,7 +1059,7 @@
         let isFollowing = currentUser.following.includes(targetUser.id);
         let hasUserStory = hasStory(targetUser.id);
         let modal = document.createElement('div'); modal.className = 'modal-overlay';
-        modal.innerHTML = `<div class="modal-card"><div style="text-align:center;"><div class="story-avatar" style="width:80px; height:80px; margin:0 auto 12px;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;border-radius:50%;">` : targetUser.username.charAt(0).toUpperCase()}</div><h3>${escapeHtml(targetUser.username)}</h3><p>📱 ${targetUser.phone}</p><p>${targetUser.followers.length} followers</p><p>${escapeHtml(targetUser.bio)}</p></div><button onclick="followUser('${targetUser.id}'); this.parentElement.parentElement.remove();" style="background:${isFollowing ? '#efefef' : 'var(--accent-color)'}; color:${isFollowing ? 'black' : 'white'};">${isFollowing ? 'Unfollow' : 'Follow'}</button><button onclick="if(${hasUserStory}) { this.parentElement.parentElement.remove(); viewStory('${targetUser.id}'); } else { showToast('No story'); }">📸 View Story</button><button onclick="this.parentElement.parentElement.remove()">Close</button></div>`;
+        modal.innerHTML = `<div class="modal-card"><div style="text-align:center; margin-bottom:16px;"><div class="story-avatar" style="width:80px; height:80px; margin:0 auto 12px;">${targetUser.avatar ? `<img src="${targetUser.avatar}" style="width:100%;border-radius:50%;">` : targetUser.username.charAt(0).toUpperCase()}</div><h3 style="color:var(--text-primary);">${escapeHtml(targetUser.username)}</h3><p style="color:var(--text-secondary);">📱 ${targetUser.phone}</p><p style="color:var(--text-secondary);">${targetUser.followers.length} followers</p><p style="margin:8px 0; color:var(--text-primary);">${escapeHtml(targetUser.bio)}</p></div><button onclick="followUser('${targetUser.id}'); this.parentElement.parentElement.remove();" style="background:${isFollowing ? 'var(--bg-secondary)' : 'var(--accent-gradient)'}; color:${isFollowing ? 'var(--text-primary)' : 'white'};">${isFollowing ? 'Unfollow' : 'Follow'}</button><button onclick="if(${hasUserStory}) { this.parentElement.parentElement.remove(); viewStory('${targetUser.id}'); } else { showToast('No story'); }" style="margin-top:8px;">📸 View Story</button><button onclick="this.parentElement.parentElement.remove()" style="margin-top:8px; background:var(--bg-secondary); color:var(--text-primary);">Close</button></div>`;
         document.body.appendChild(modal);
     };
     
@@ -753,7 +1167,7 @@
                 id: 'user_' + Date.now(),
                 phone: verifiedPhone,
                 username: 'User_' + verifiedPhone.slice(-6),
-                bio: '🌾 New to Nahantara',
+                bio: '🌾 Living my best life in Nahantara',
                 avatar: null,
                 followers: [],
                 following: [],
